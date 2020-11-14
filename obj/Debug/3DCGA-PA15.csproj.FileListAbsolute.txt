@@ -1,0 +1,10 @@
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\bin\Debug\3DCGA-PA15.exe.config
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\bin\Debug\3DCGA-PA15.exe
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\bin\Debug\3DCGA-PA15.pdb
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.csprojAssemblyReference.cache
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\_3DCGA_PA15.Form1.resources
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\_3DCGA_PA15.Properties.Resources.resources
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.csproj.GenerateResource.cache
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.csproj.CoreCompileInputs.cache
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.exe
+C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.pdb
