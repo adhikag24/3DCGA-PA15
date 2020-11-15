@@ -59,7 +59,6 @@
             this.upBtn.TabIndex = 3;
             this.upBtn.Text = "Up";
             this.upBtn.UseVisualStyleBackColor = true;
-            this.upBtn.Click += new System.EventHandler(this.upBtn_Click);
             // 
             // frontBtn
             // 
@@ -69,7 +68,6 @@
             this.frontBtn.TabIndex = 4;
             this.frontBtn.Text = "Front";
             this.frontBtn.UseVisualStyleBackColor = true;
-            this.frontBtn.Click += new System.EventHandler(this.frontBtn_Click);
             // 
             // leftBtn
             // 
@@ -79,7 +77,6 @@
             this.leftBtn.TabIndex = 5;
             this.leftBtn.Text = "Left";
             this.leftBtn.UseVisualStyleBackColor = true;
-            this.leftBtn.Click += new System.EventHandler(this.leftBtn_Click);
             // 
             // rightBtn
             // 
@@ -89,7 +86,6 @@
             this.rightBtn.TabIndex = 7;
             this.rightBtn.Text = "Right";
             this.rightBtn.UseVisualStyleBackColor = true;
-            this.rightBtn.Click += new System.EventHandler(this.rightBtn_Click);
             // 
             // backBtn
             // 
@@ -99,7 +95,6 @@
             this.backBtn.TabIndex = 6;
             this.backBtn.Text = "Back";
             this.backBtn.UseVisualStyleBackColor = true;
-            this.backBtn.Click += new System.EventHandler(this.backBtn_Click);
             // 
             // translateRB
             // 
@@ -142,7 +137,6 @@
             this.downBtn.TabIndex = 11;
             this.downBtn.Text = "Down";
             this.downBtn.UseVisualStyleBackColor = true;
-            this.downBtn.Click += new System.EventHandler(this.downBtn_Click);
             // 
             // selectListBox
             // 
