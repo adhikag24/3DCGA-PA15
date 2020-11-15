@@ -38,6 +38,7 @@
             this.rotateRB = new System.Windows.Forms.RadioButton();
             this.debugTextBox = new System.Windows.Forms.TextBox();
             this.downBtn = new System.Windows.Forms.Button();
+            this.selectListBox = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -130,7 +131,7 @@
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
             this.debugTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debugTextBox.Size = new System.Drawing.Size(835, 399);
+            this.debugTextBox.Size = new System.Drawing.Size(410, 198);
             this.debugTextBox.TabIndex = 10;
             // 
             // downBtn
@@ -143,11 +144,21 @@
             this.downBtn.UseVisualStyleBackColor = true;
             this.downBtn.Click += new System.EventHandler(this.downBtn_Click);
             // 
+            // selectListBox
+            // 
+            this.selectListBox.FormattingEnabled = true;
+            this.selectListBox.ItemHeight = 16;
+            this.selectListBox.Location = new System.Drawing.Point(419, 218);
+            this.selectListBox.Name = "selectListBox";
+            this.selectListBox.Size = new System.Drawing.Size(410, 196);
+            this.selectListBox.TabIndex = 12;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1266, 515);
+            this.ClientSize = new System.Drawing.Size(850, 515);
+            this.Controls.Add(this.selectListBox);
             this.Controls.Add(this.downBtn);
             this.Controls.Add(this.debugTextBox);
             this.Controls.Add(this.rotateRB);
@@ -180,6 +191,7 @@
         private System.Windows.Forms.RadioButton rotateRB;
         private System.Windows.Forms.TextBox debugTextBox;
         private System.Windows.Forms.Button downBtn;
+        private System.Windows.Forms.ListBox selectListBox;
     }
 }
 
