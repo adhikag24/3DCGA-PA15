@@ -39,6 +39,10 @@
             this.debugTextBox = new System.Windows.Forms.TextBox();
             this.downBtn = new System.Windows.Forms.Button();
             this.selectListBox = new System.Windows.Forms.ListBox();
+            this.resetBtn = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,13 +51,13 @@
             this.pictureBox1.BackColor = System.Drawing.Color.White;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(400, 400);
+            this.pictureBox1.Size = new System.Drawing.Size(800, 400);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // upBtn
             // 
-            this.upBtn.Location = new System.Drawing.Point(256, 418);
+            this.upBtn.Location = new System.Drawing.Point(90, 435);
             this.upBtn.Name = "upBtn";
             this.upBtn.Size = new System.Drawing.Size(75, 36);
             this.upBtn.TabIndex = 3;
@@ -63,7 +67,7 @@
             // 
             // frontBtn
             // 
-            this.frontBtn.Location = new System.Drawing.Point(175, 418);
+            this.frontBtn.Location = new System.Drawing.Point(9, 435);
             this.frontBtn.Name = "frontBtn";
             this.frontBtn.Size = new System.Drawing.Size(75, 36);
             this.frontBtn.TabIndex = 4;
@@ -73,7 +77,7 @@
             // 
             // leftBtn
             // 
-            this.leftBtn.Location = new System.Drawing.Point(175, 460);
+            this.leftBtn.Location = new System.Drawing.Point(9, 477);
             this.leftBtn.Name = "leftBtn";
             this.leftBtn.Size = new System.Drawing.Size(75, 36);
             this.leftBtn.TabIndex = 5;
@@ -83,7 +87,7 @@
             // 
             // rightBtn
             // 
-            this.rightBtn.Location = new System.Drawing.Point(337, 460);
+            this.rightBtn.Location = new System.Drawing.Point(171, 477);
             this.rightBtn.Name = "rightBtn";
             this.rightBtn.Size = new System.Drawing.Size(75, 36);
             this.rightBtn.TabIndex = 7;
@@ -93,7 +97,7 @@
             // 
             // backBtn
             // 
-            this.backBtn.Location = new System.Drawing.Point(337, 418);
+            this.backBtn.Location = new System.Drawing.Point(171, 435);
             this.backBtn.Name = "backBtn";
             this.backBtn.Size = new System.Drawing.Size(75, 36);
             this.backBtn.TabIndex = 6;
@@ -104,7 +108,7 @@
             // translateRB
             // 
             this.translateRB.AutoSize = true;
-            this.translateRB.Location = new System.Drawing.Point(13, 419);
+            this.translateRB.Location = new System.Drawing.Point(9, 519);
             this.translateRB.Name = "translateRB";
             this.translateRB.Size = new System.Drawing.Size(89, 21);
             this.translateRB.TabIndex = 8;
@@ -115,7 +119,7 @@
             // rotateRB
             // 
             this.rotateRB.AutoSize = true;
-            this.rotateRB.Location = new System.Drawing.Point(13, 446);
+            this.rotateRB.Location = new System.Drawing.Point(9, 546);
             this.rotateRB.Name = "rotateRB";
             this.rotateRB.Size = new System.Drawing.Size(71, 21);
             this.rotateRB.TabIndex = 9;
@@ -126,17 +130,17 @@
             // debugTextBox
             // 
             this.debugTextBox.BackColor = System.Drawing.Color.White;
-            this.debugTextBox.Location = new System.Drawing.Point(419, 13);
+            this.debugTextBox.Location = new System.Drawing.Point(590, 435);
             this.debugTextBox.Multiline = true;
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
             this.debugTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debugTextBox.Size = new System.Drawing.Size(768, 198);
+            this.debugTextBox.Size = new System.Drawing.Size(222, 203);
             this.debugTextBox.TabIndex = 10;
             // 
             // downBtn
             // 
-            this.downBtn.Location = new System.Drawing.Point(256, 460);
+            this.downBtn.Location = new System.Drawing.Point(90, 477);
             this.downBtn.Name = "downBtn";
             this.downBtn.Size = new System.Drawing.Size(75, 36);
             this.downBtn.TabIndex = 11;
@@ -148,16 +152,57 @@
             // 
             this.selectListBox.FormattingEnabled = true;
             this.selectListBox.ItemHeight = 16;
-            this.selectListBox.Location = new System.Drawing.Point(419, 218);
+            this.selectListBox.Location = new System.Drawing.Point(286, 435);
             this.selectListBox.Name = "selectListBox";
-            this.selectListBox.Size = new System.Drawing.Size(410, 196);
+            this.selectListBox.Size = new System.Drawing.Size(226, 148);
             this.selectListBox.TabIndex = 12;
+            // 
+            // resetBtn
+            // 
+            this.resetBtn.Location = new System.Drawing.Point(8, 573);
+            this.resetBtn.Name = "resetBtn";
+            this.resetBtn.Size = new System.Drawing.Size(75, 36);
+            this.resetBtn.TabIndex = 13;
+            this.resetBtn.Text = "Reset";
+            this.resetBtn.UseVisualStyleBackColor = true;
+            this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(287, 415);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(112, 17);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Selected Object:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 415);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(64, 17);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "Controls:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(591, 415);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(107, 17);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Debug console:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1199, 515);
+            this.ClientSize = new System.Drawing.Size(825, 655);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.resetBtn);
             this.Controls.Add(this.selectListBox);
             this.Controls.Add(this.downBtn);
             this.Controls.Add(this.debugTextBox);
@@ -192,6 +237,10 @@
         private System.Windows.Forms.TextBox debugTextBox;
         private System.Windows.Forms.Button downBtn;
         private System.Windows.Forms.ListBox selectListBox;
+        private System.Windows.Forms.Button resetBtn;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 

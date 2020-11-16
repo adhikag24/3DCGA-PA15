@@ -33,6 +33,9 @@ namespace _3DCGA_PA15
             public TPoint[] VS;
             public TSurface[] S;
             public List<int> visibleSurfaceIndex = new List<int>();
+            public double[,] TranslateM;
+            public double[,] RotateM;
+
             public TObject(int pNum, int sNum)
             {
                 P = new TPoint[pNum];
@@ -44,25 +47,52 @@ namespace _3DCGA_PA15
             }
         }
 
-
-        public void translateObject()
+        public void resetTransM(int index)
         {
-
+            obj[index].TranslateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            obj[index].RotateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         }
 
-        public void rotateObjectOnX(ref double[,] M, double angle)
+        public void translateObject(int index, double dx=0, double dy=0, double dz=0)
         {
-
+            double[,] temp = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { dx, dy, dz, 1 } };
+            obj[index].TranslateM = matrixMultiplication(obj[index].TranslateM, temp);
         }
 
-        public void rotateObjectOnY(ref double[,] M, double angle)
+        public void rotateObjectOnX(int index, double angle)
         {
-
+            double[,] temp = new double[4, 4]
+            {
+            {1, 0, 0, 0 },
+            {0, Math.Cos(angle * Math.PI/180), Math.Sin(angle * Math.PI/180), 0},
+            {0, -Math.Sin(angle * Math.PI/180), Math.Cos(angle * Math.PI/180), 0},
+            {0, 0, 0, 1 }
+            };
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, temp);
         }
 
-        public void rotateObjectOnZ(ref double[,] M, double angle)
+        public void rotateObjectOnY(int index, double angle)
         {
+            double[,] temp = new double[4, 4]
+            {
+                {Math.Cos(angle * Math.PI/180), 0,  -Math.Sin(angle * Math.PI/180), 0 },
+                {0, 1, 0, 0 },
+                {Math.Sin(angle * Math.PI/180), 0,Math.Cos(angle * Math.PI/180), 0 },
+                { 0 ,0, 0, 1 }
+            };
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, temp);
+        }
 
+        public void rotateObjectOnZ(int index, double angle)
+        {
+            double[,] temp = new double[4, 4]
+            {
+                {Math.Cos(angle * Math.PI/180), Math.Sin(angle * Math.PI/180), 0, 0 },
+                {-Math.Sin(angle * Math.PI/180), Math.Cos(angle * Math.PI/180), 0, 0 },
+                {0, 0, 1, 0 },
+                {0, 0, 0, 1 }
+            };
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, temp);
         }
 
 
@@ -73,10 +103,10 @@ namespace _3DCGA_PA15
 
         Bitmap bmp;
         Graphics g;
-        public TObject[] obj = new TObject[1];
         public string debug = "";
         TPoint VRP, VPN, VUP, COP, N, upUnit, upVec, v, u, CW, DOP = new TPoint();
         double windowUmin, windowVmin, windowUmax, windowVmax, FP, BP;
+        public int selectedObjectIndex;
         public double[,] T1 = new double[4, 4];
         public double[,] T2 = new double[4, 4];
         public double[,] T3 = new double[4, 4];
@@ -87,15 +117,9 @@ namespace _3DCGA_PA15
         public double[,] T9 = new double[4, 4];
         public double[,] Pr1 = new double[4, 4];
         public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
-        public double[,] Wt = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+        public double[,] Wt = new double[4, 4];
         public double[,] Vt = new double[4, 4];
-        public double[,] St = new double[4, 4] { { 100, 0, 0, 0 }, { 0, -100, 0, 0 }, { 0, 0, 0, 0 }, { 200, 200, 0, 1 } };
-
-        public TPoint[] translateCoord = new TPoint[1];
-        public double[] angle = new double[1];
-        public double[,,] Translate = new double[1, 4, 4];
-        public double[,,] Rotate = new double[1, 4, 4];
-        public double[,,] Res = new double[1, 4, 4];
+        public double[,] St = new double[4, 4] { { 100, 0, 0, 0 }, { 0, -100, 0, 0 }, { 0, 0, 0, 0 }, { 400, 200, 0, 1 } };
 
 
         
@@ -178,6 +202,13 @@ namespace _3DCGA_PA15
             temp = P1.x * P2.x + P1.y * P2.y + P1.z * P2.z;
             return temp;
         }
+
+        private void resetBtn_Click(object sender, EventArgs e)
+        {
+            resetTransM(0);
+            display();
+        }
+
         public TPoint crossProduct(TPoint P1, TPoint P2)
         {
             TPoint tempPoint;
@@ -232,19 +263,6 @@ namespace _3DCGA_PA15
         {
             bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             g = Graphics.FromImage(bmp);
-
-            // 1. Prepare the objects
-            obj[0] = new TObject(4, 4);
-            setPoint(ref obj[0].P[0], -1, -1, 1);
-            setPoint(ref obj[0].P[1], 1, -1, 1);
-            setPoint(ref obj[0].P[2], 0, 1, 0);
-            setPoint(ref obj[0].P[3], 0, -1, -1);
-            setSurface(ref obj[0].S[0], 0, 1, 2, Color.Red);
-            setSurface(ref obj[0].S[1], 1, 3, 2, Color.Yellow);
-            setSurface(ref obj[0].S[2], 3, 0, 2, Color.Green);
-            setSurface(ref obj[0].S[3], 0, 3, 1, Color.Blue);
-
-
 
             // 2. Prepare the perspective projection parameters
             setPoint(ref VRP, 0, 0, 0);
@@ -336,6 +354,7 @@ namespace _3DCGA_PA15
 
             for(int i=0; i<obj.Length; i++)
             {
+                Wt = matrixMultiplication(obj[i].TranslateM, obj[i].RotateM);
                 for (int j = 0; j < obj[i].P.Length; j++)
                 {
                     obj[i].VW[j] = multiplyMatrix(obj[i].P[j], Wt);
@@ -350,6 +369,26 @@ namespace _3DCGA_PA15
                 //for (int j = 0; j < obj[i].visibleSurfaceIndex.Count; j++) debug += obj[i].visibleSurfaceIndex[j] + Environment.NewLine;
                 draw(i, obj[i].S, obj[i].VS);
             }
+            //debug = "";
+            //debug += "Translate: " + Environment.NewLine;
+            //for(int i=0; i<4; i++)
+            //{
+            //    for (int j = 0; j < 4; j++)
+            //    {
+            //        debug += obj[0].TranslateM[i, j] + "   ";
+            //    }
+            //    debug += Environment.NewLine;
+            //}
+            //debug += "Rotate: " + Environment.NewLine;
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    for (int j = 0; j < 4; j++)
+            //    {
+            //        debug += obj[0].RotateM[i, j] + "   ";
+            //    }
+            //    debug += Environment.NewLine;
+            //}
+            debug += selectedObjectIndex;
             debugTextBox.Text = debug;
         }
 
@@ -380,38 +419,96 @@ namespace _3DCGA_PA15
         }
 
 
+        public TObject[] obj = new TObject[2];
+
         private void Form1_Load(object sender, EventArgs e)
         {
             translateRB.Checked = true;
+            // 1. Prepare the objects
+            obj[0] = new TObject(4, 4);
+            setPoint(ref obj[0].P[0], -1, -1, 1);
+            setPoint(ref obj[0].P[1], 1, -1, 1);
+            setPoint(ref obj[0].P[2], 0, 1, 0);
+            setPoint(ref obj[0].P[3], 0, -1, -1);
+            setSurface(ref obj[0].S[0], 0, 1, 2, Color.Red);
+            setSurface(ref obj[0].S[1], 1, 3, 2, Color.Yellow);
+            setSurface(ref obj[0].S[2], 3, 0, 2, Color.Green);
+            setSurface(ref obj[0].S[3], 0, 3, 1, Color.Blue);
+
+            obj[1] = new TObject(5, 6);
+            setPoint(ref obj[1].P[0], -1, -1, 1);
+            setPoint(ref obj[1].P[1], 1, -1, 1);
+            setPoint(ref obj[1].P[2], 1, -1, -1);
+            setPoint(ref obj[1].P[3], -1, -1, -1);
+            setPoint(ref obj[1].P[4], 0, 1, 0);
+            setSurface(ref obj[1].S[0], 0, 1, 4, Color.Purple);
+            setSurface(ref obj[1].S[1], 1, 2, 4, Color.Orange);
+            setSurface(ref obj[1].S[2], 2, 3, 4, Color.Magenta);
+            setSurface(ref obj[1].S[3], 3, 0, 4, Color.Black);
+            setSurface(ref obj[1].S[4], 3, 2, 0, Color.Gray);
+            setSurface(ref obj[1].S[5], 2, 1, 0, Color.Aqua);
+
+            for (int i = 0; i < obj.Length; i++)
+            {
+                selectListBox.Items.Add(i);
+                resetTransM(i);
+            }
+
+            selectListBox.SetSelected(0, true);
+
             display();
         }
 
+
+
+
+
+
+
         private void rightBtn_Click(object sender, EventArgs e)
         {
+            selectedObjectIndex = selectListBox.SelectedIndex;
+            if(translateRB.Checked) translateObject(selectedObjectIndex, 1, 0, 0);
+            else rotateObjectOnZ(selectedObjectIndex, -1);
             display();
         }
 
         private void leftBtn_Click(object sender, EventArgs e)
         {
+            selectedObjectIndex = selectListBox.SelectedIndex;
+            if (translateRB.Checked) translateObject(selectedObjectIndex, -1, 0, 0);
+            else rotateObjectOnZ(selectedObjectIndex, 1);
             display();
         }
 
         private void frontBtn_Click(object sender, EventArgs e)
         {
+            selectedObjectIndex = selectListBox.SelectedIndex;
+            if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, 1);
+            else rotateObjectOnY(selectedObjectIndex, -1);
             display();
         }
 
         private void backBtn_Click(object sender, EventArgs e)
         {
+            selectedObjectIndex = selectListBox.SelectedIndex;
+            if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, -1);
+            else rotateObjectOnY(selectedObjectIndex, 1);
             display();
         }
 
         private void upBtn_Click(object sender, EventArgs e)
         {
+            selectedObjectIndex = selectListBox.SelectedIndex;
+            if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 1, 0);
+            else rotateObjectOnX(selectedObjectIndex, -1);
             display();
         }
         private void downBtn_Click(object sender, EventArgs e)
         {
+            selectedObjectIndex = selectListBox.SelectedIndex;
+            if (translateRB.Checked) translateObject(selectedObjectIndex, 0, -1, 0);
+            else rotateObjectOnX(selectedObjectIndex, 1);
             display();
         }
         
