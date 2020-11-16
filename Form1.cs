@@ -28,25 +28,77 @@ namespace _3DCGA_PA15
             public int id;
             public TPoint[] P;
             public TPoint[] VW;
+            public TPoint[] VPr1;
             public TPoint[] VV;
             public TPoint[] VS;
             public TSurface[] S;
-            public double[,] Wt = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            public double[,] Translate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            public double[,] Rotate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            public List<int> visibleSurfaceIndex = new List<int>();
             public TObject(int pNum, int sNum)
             {
                 P = new TPoint[pNum];
                 VW = new TPoint[pNum];
+                VPr1 = new TPoint[pNum];
                 VV = new TPoint[pNum];
                 VS = new TPoint[pNum];
                 S = new TSurface[sNum];
             }
         }
 
-        
-        
 
+        public void translateObject()
+        {
+
+        }
+
+        public void rotateObjectOnX(ref double[,] M, double angle)
+        {
+
+        }
+
+        public void rotateObjectOnY(ref double[,] M, double angle)
+        {
+
+        }
+
+        public void rotateObjectOnZ(ref double[,] M, double angle)
+        {
+
+        }
+
+
+
+
+
+
+
+        Bitmap bmp;
+        Graphics g;
+        public TObject[] obj = new TObject[1];
+        public string debug = "";
+        TPoint VRP, VPN, VUP, COP, N, upUnit, upVec, v, u, CW, DOP = new TPoint();
+        double windowUmin, windowVmin, windowUmax, windowVmax, FP, BP;
+        public double[,] T1 = new double[4, 4];
+        public double[,] T2 = new double[4, 4];
+        public double[,] T3 = new double[4, 4];
+        public double[,] T4 = new double[4, 4];
+        public double[,] T5 = new double[4, 4];
+        public double[,] T7 = new double[4, 4];
+        public double[,] T8 = new double[4, 4];
+        public double[,] T9 = new double[4, 4];
+        public double[,] Pr1 = new double[4, 4];
+        public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
+        public double[,] Wt = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+        public double[,] Vt = new double[4, 4];
+        public double[,] St = new double[4, 4] { { 100, 0, 0, 0 }, { 0, -100, 0, 0 }, { 0, 0, 0, 0 }, { 200, 200, 0, 1 } };
+
+        public TPoint[] translateCoord = new TPoint[1];
+        public double[] angle = new double[1];
+        public double[,,] Translate = new double[1, 4, 4];
+        public double[,,] Rotate = new double[1, 4, 4];
+        public double[,,] Res = new double[1, 4, 4];
+
+
+        
 
 
 
@@ -93,6 +145,7 @@ namespace _3DCGA_PA15
             temp.w = 1;
             return temp;
         }
+
         public double[,] matrixMultiplication(double[,] M1, double[,] M2)
         {
             double[,] temp = new double[4, 4];
@@ -146,66 +199,52 @@ namespace _3DCGA_PA15
             return tempPoint;
         }
 
+        public TPoint VN;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        Bitmap bmp;
-        Graphics g;
-        TPoint VRP, VPN, VUP, COP, N, upUnit, upVec, v, u, CW, DOP = new TPoint();
-        double windowUmin, windowVmin, windowUmax, windowVmax, FP, BP;
-        public double[,] T1 = new double[4, 4];
-        public double[,] T2 = new double[4, 4];
-        public double[,] T3 = new double[4, 4];
-        public double[,] T4 = new double[4, 4];
-        public double[,] T5 = new double[4, 4];
-        public double[,] T7 = new double[4, 4];
-        public double[,] T8 = new double[4, 4];
-        public double[,] T9 = new double[4, 4];
-        public double[,] Pr1 = new double[4, 4];
-        public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
-        public double[,] Vt = new double[4, 4];
-        public double[,] St = new double[4, 4] { { 100, 0, 0, 0 }, { 0, -100, 0, 0 }, { 0, 0, 0, 0 }, { 200, 200, 0, 1 } };
-
-
-
+        public void backfaceCulling(int index, TSurface[] S, TPoint[] V)
+        {
+            obj[index].visibleSurfaceIndex.Clear();
+            TPoint p1, p2, p3, p1p2, p2p3, N;
+            double res;
+            for (int i=0; i<S.Length; i++)
+            {
+                p1 = V[S[i].p1];
+                //debug += "p1 => " + p1.x.ToString() + "  " + p1.y.ToString() + "  " + p1.z.ToString() + Environment.NewLine;
+                p2 = V[S[i].p2];
+                //debug += "p2 => " + p2.x.ToString() + "  " + p2.y.ToString() + "  " + p2.z.ToString() + Environment.NewLine;
+                p3 = V[S[i].p3];
+                //debug += "p3 => " + p3.x.ToString() + "  " + p3.y.ToString() + "  " + p3.z.ToString() + Environment.NewLine;
+                p1p2 = findVector(p1, p2);
+                //debug += "p1p2 => " + p1p2.x.ToString() + "  " + p1p2.y.ToString() + "  " + p1p2.z.ToString() + Environment.NewLine;
+                p2p3 = findVector(p2, p3);
+                //debug += "p2p3 => " + p2p3.x.ToString() + "  " + p2p3.y.ToString() + "  " + p2p3.z.ToString() + Environment.NewLine;
+                N = crossProduct(p1p2, p2p3);
+                //debug += "N => " + N.x.ToString() + "  " + N.y.ToString() + "  " + N.z.ToString() + Environment.NewLine;
+                setPoint(ref VN, 0, 0, -1);
+                res = dotProduct(VN, N);
+                //debug += res.ToString() + Environment.NewLine;
+                //debug += Environment.NewLine;
+                if (res < 0) obj[index].visibleSurfaceIndex.Add(i);
+            }
+        }
 
         public void display()
         {
+            bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            g = Graphics.FromImage(bmp);
+
             // 1. Prepare the objects
-            TObject obj = new TObject(4, 4);
-            setPoint(ref obj.P[0], -1, -1, 1);
-            setPoint(ref obj.P[1], 1, -1, 1);
-            setPoint(ref obj.P[2], 0, 1, 0);
-            setPoint(ref obj.P[3], 0, -1, -1);
-            setSurface(ref obj.S[0], 0, 1, 2, Color.Red);
-            setSurface(ref obj.S[1], 1, 3, 2, Color.Yellow);
-            setSurface(ref obj.S[2], 3, 0, 2, Color.Green);
-            setSurface(ref obj.S[3], 3, 0, 1, Color.Blue);
+            obj[0] = new TObject(4, 4);
+            setPoint(ref obj[0].P[0], -1, -1, 1);
+            setPoint(ref obj[0].P[1], 1, -1, 1);
+            setPoint(ref obj[0].P[2], 0, 1, 0);
+            setPoint(ref obj[0].P[3], 0, -1, -1);
+            setSurface(ref obj[0].S[0], 0, 1, 2, Color.Red);
+            setSurface(ref obj[0].S[1], 1, 3, 2, Color.Yellow);
+            setSurface(ref obj[0].S[2], 3, 0, 2, Color.Green);
+            setSurface(ref obj[0].S[3], 0, 3, 1, Color.Blue);
+
+
 
             // 2. Prepare the perspective projection parameters
             setPoint(ref VRP, 0, 0, 0);
@@ -295,50 +334,44 @@ namespace _3DCGA_PA15
             Pr1 = matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(T1, T2), T3), T4), T5), T7), T8), T9);
             Vt = matrixMultiplication(Pr1, Pr2);
 
-            for (int i=0; i<obj.P.Length; i++)
+            for(int i=0; i<obj.Length; i++)
             {
-                obj.VW[i] = multiplyMatrix(obj.P[i], obj.Wt);
-                obj.VV[i] = multiplyMatrix(obj.VW[i], Vt);
-                obj.VS[i] = multiplyMatrix(obj.VV[i], St);
+                for (int j = 0; j < obj[i].P.Length; j++)
+                {
+                    obj[i].VW[j] = multiplyMatrix(obj[i].P[j], Wt);
+                    obj[i].VPr1[j] = multiplyMatrix(obj[i].VW[j], Pr1);
+                }
+                backfaceCulling(i, obj[i].S, obj[i].VPr1);
+                for (int j = 0; j < obj[i].P.Length; j++)
+                {
+                    obj[i].VV[j] = multiplyMatrix(obj[i].VPr1[j], Pr2);
+                    obj[i].VS[j] = multiplyMatrix(obj[i].VV[j], St);
+                }
+                //for (int j = 0; j < obj[i].visibleSurfaceIndex.Count; j++) debug += obj[i].visibleSurfaceIndex[j] + Environment.NewLine;
+                draw(i, obj[i].S, obj[i].VS);
             }
-
-            draw(obj.S, obj.VS);
+            debugTextBox.Text = debug;
         }
 
-        public void draw(TSurface[] S, TPoint[] VS)
+        public void draw(int index, TSurface[] S, TPoint[] VS)
         {
-            bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-            g = Graphics.FromImage(bmp);
-            Pen redPen = new Pen(Color.Red);
-            Pen blackPen = new Pen(Color.Black);
+            
             TPoint p1, p2, p3;
-            for(int i=0; i<S.Length; i++)
+            for (int i = 0; i < S.Length; i++)
             {
-                p1 = VS[S[i].p1];
-                p2 = VS[S[i].p2];
-                p3 = VS[S[i].p3];
-                g.DrawLine(blackPen, new Point(Convert.ToInt32(p1.x), Convert.ToInt32(p1.y)), new Point(Convert.ToInt32(p2.x), Convert.ToInt32(p2.y)));
-                g.DrawLine(blackPen, new Point(Convert.ToInt32(p2.x), Convert.ToInt32(p2.y)), new Point(Convert.ToInt32(p3.x), Convert.ToInt32(p3.y)));
-                g.DrawLine(blackPen, new Point(Convert.ToInt32(p3.x), Convert.ToInt32(p3.y)), new Point(Convert.ToInt32(p1.x), Convert.ToInt32(p1.y)));
+                if (obj[index].visibleSurfaceIndex.Contains(i))
+                {
+                    Pen pen = new Pen(S[i].c);
+                    p1 = VS[S[i].p1];
+                    p2 = VS[S[i].p2];
+                    p3 = VS[S[i].p3];
+                    g.DrawLine(pen, new Point(Convert.ToInt32(p1.x), Convert.ToInt32(p1.y)), new Point(Convert.ToInt32(p2.x), Convert.ToInt32(p2.y)));
+                    g.DrawLine(pen, new Point(Convert.ToInt32(p2.x), Convert.ToInt32(p2.y)), new Point(Convert.ToInt32(p3.x), Convert.ToInt32(p3.y)));
+                    g.DrawLine(pen, new Point(Convert.ToInt32(p3.x), Convert.ToInt32(p3.y)), new Point(Convert.ToInt32(p1.x), Convert.ToInt32(p1.y)));
+                }
             }
             pictureBox1.Image = bmp;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         public Form1()
@@ -350,10 +383,37 @@ namespace _3DCGA_PA15
         private void Form1_Load(object sender, EventArgs e)
         {
             translateRB.Checked = true;
-
             display();
         }
 
+        private void rightBtn_Click(object sender, EventArgs e)
+        {
+            display();
+        }
 
+        private void leftBtn_Click(object sender, EventArgs e)
+        {
+            display();
+        }
+
+        private void frontBtn_Click(object sender, EventArgs e)
+        {
+            display();
+        }
+
+        private void backBtn_Click(object sender, EventArgs e)
+        {
+            display();
+        }
+
+        private void upBtn_Click(object sender, EventArgs e)
+        {
+            display();
+        }
+        private void downBtn_Click(object sender, EventArgs e)
+        {
+            display();
+        }
+        
     }
 }

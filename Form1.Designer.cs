@@ -57,8 +57,9 @@
             this.upBtn.Name = "upBtn";
             this.upBtn.Size = new System.Drawing.Size(75, 36);
             this.upBtn.TabIndex = 3;
-            this.upBtn.Text = "Up";
+            this.upBtn.Text = "Up(W)";
             this.upBtn.UseVisualStyleBackColor = true;
+            this.upBtn.Click += new System.EventHandler(this.upBtn_Click);
             // 
             // frontBtn
             // 
@@ -66,8 +67,9 @@
             this.frontBtn.Name = "frontBtn";
             this.frontBtn.Size = new System.Drawing.Size(75, 36);
             this.frontBtn.TabIndex = 4;
-            this.frontBtn.Text = "Front";
+            this.frontBtn.Text = "Front(Q)";
             this.frontBtn.UseVisualStyleBackColor = true;
+            this.frontBtn.Click += new System.EventHandler(this.frontBtn_Click);
             // 
             // leftBtn
             // 
@@ -75,8 +77,9 @@
             this.leftBtn.Name = "leftBtn";
             this.leftBtn.Size = new System.Drawing.Size(75, 36);
             this.leftBtn.TabIndex = 5;
-            this.leftBtn.Text = "Left";
+            this.leftBtn.Text = "Left(A)";
             this.leftBtn.UseVisualStyleBackColor = true;
+            this.leftBtn.Click += new System.EventHandler(this.leftBtn_Click);
             // 
             // rightBtn
             // 
@@ -84,8 +87,9 @@
             this.rightBtn.Name = "rightBtn";
             this.rightBtn.Size = new System.Drawing.Size(75, 36);
             this.rightBtn.TabIndex = 7;
-            this.rightBtn.Text = "Right";
+            this.rightBtn.Text = "Right(D)";
             this.rightBtn.UseVisualStyleBackColor = true;
+            this.rightBtn.Click += new System.EventHandler(this.rightBtn_Click);
             // 
             // backBtn
             // 
@@ -93,8 +97,9 @@
             this.backBtn.Name = "backBtn";
             this.backBtn.Size = new System.Drawing.Size(75, 36);
             this.backBtn.TabIndex = 6;
-            this.backBtn.Text = "Back";
+            this.backBtn.Text = "Back(E)";
             this.backBtn.UseVisualStyleBackColor = true;
+            this.backBtn.Click += new System.EventHandler(this.backBtn_Click);
             // 
             // translateRB
             // 
@@ -126,7 +131,7 @@
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
             this.debugTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debugTextBox.Size = new System.Drawing.Size(410, 198);
+            this.debugTextBox.Size = new System.Drawing.Size(768, 198);
             this.debugTextBox.TabIndex = 10;
             // 
             // downBtn
@@ -135,8 +140,9 @@
             this.downBtn.Name = "downBtn";
             this.downBtn.Size = new System.Drawing.Size(75, 36);
             this.downBtn.TabIndex = 11;
-            this.downBtn.Text = "Down";
+            this.downBtn.Text = "Down(S)";
             this.downBtn.UseVisualStyleBackColor = true;
+            this.downBtn.Click += new System.EventHandler(this.downBtn_Click);
             // 
             // selectListBox
             // 
@@ -151,7 +157,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 515);
+            this.ClientSize = new System.Drawing.Size(1199, 515);
             this.Controls.Add(this.selectListBox);
             this.Controls.Add(this.downBtn);
             this.Controls.Add(this.debugTextBox);
