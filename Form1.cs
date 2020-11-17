@@ -28,9 +28,7 @@ namespace _3DCGA_PA15
             public int id;
             public TPoint[] P;
             public TPoint[] VW;
-            public TPoint[] VPr15;
-            public TPoint[] VPr6;
-            public TPoint[] VPr79;
+            public TPoint[] VPr1;
             public TPoint[] VV;
             public TPoint[] VS;
             public TSurface[] S;
@@ -42,9 +40,7 @@ namespace _3DCGA_PA15
             {
                 P = new TPoint[pNum];
                 VW = new TPoint[pNum];
-                VPr15 = new TPoint[pNum];
-                VPr6 = new TPoint[pNum];
-                VPr79 = new TPoint[pNum];
+                VPr1 = new TPoint[pNum];
                 VV = new TPoint[pNum];
                 VS = new TPoint[pNum];
                 S = new TSurface[sNum];
@@ -74,8 +70,7 @@ namespace _3DCGA_PA15
         public double[,] T7 = new double[4, 4];
         public double[,] T8 = new double[4, 4];
         public double[,] T9 = new double[4, 4];
-        public double[,] Pr15 = new double[4, 4];
-        public double[,] Pr79 = new double[4, 4];
+        public double[,] Pr1 = new double[4, 4];
         public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
         public double[,] Wt = new double[4, 4];
         public double[,] Vt = new double[4, 4];
@@ -184,6 +179,13 @@ namespace _3DCGA_PA15
 
         public void rotateObjectOnX(int index, double angle)
         {
+            double dx, dy, dz;
+            dx = obj[index].TranslateM[3, 0];
+            dy = obj[index].TranslateM[3, 1];
+            dz = obj[index].TranslateM[3, 2];
+
+            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0}, { 0, 1, 0, 0}, { 0, 0, 1, 0}, { -dx, -dy, -dz, 1} };
+
             double[,] temp = new double[4, 4]
             {
             {1, 0, 0, 0 },
@@ -191,11 +193,21 @@ namespace _3DCGA_PA15
             {0, -Math.Sin(angle * Math.PI/180), Math.Cos(angle * Math.PI/180), 0},
             {0, 0, 0, 1 }
             };
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, temp);
+
+            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
         }
 
         public void rotateObjectOnY(int index, double angle)
         {
+            double dx, dy, dz;
+            dx = obj[index].TranslateM[3, 0];
+            dy = obj[index].TranslateM[3, 1];
+            dz = obj[index].TranslateM[3, 2];
+
+            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -dx, -dy, -dz, 1 } };
+
             double[,] temp = new double[4, 4]
             {
                 {Math.Cos(angle * Math.PI/180), 0,  -Math.Sin(angle * Math.PI/180), 0 },
@@ -203,11 +215,21 @@ namespace _3DCGA_PA15
                 {Math.Sin(angle * Math.PI/180), 0,Math.Cos(angle * Math.PI/180), 0 },
                 { 0 ,0, 0, 1 }
             };
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, temp);
+
+            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
         }
 
         public void rotateObjectOnZ(int index, double angle)
         {
+            double dx, dy, dz;
+            dx = obj[index].TranslateM[3, 0];
+            dy = obj[index].TranslateM[3, 1];
+            dz = obj[index].TranslateM[3, 2];
+
+            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -dx, -dy, -dz, 1 } };
+
             double[,] temp = new double[4, 4]
             {
                 {Math.Cos(angle * Math.PI/180), Math.Sin(angle * Math.PI/180), 0, 0 },
@@ -215,7 +237,10 @@ namespace _3DCGA_PA15
                 {0, 0, 1, 0 },
                 {0, 0, 0, 1 }
             };
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, temp);
+
+            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
         }
 
 
@@ -364,8 +389,7 @@ namespace _3DCGA_PA15
             setRowMatrix(ref T9, 2, 0, 0, 1, (-1 / (COP.z / (COP.z - BP))));
             setRowMatrix(ref T9, 3, 0, 0, 0, 1);
 
-            Pr15 = matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(T1, T2), T3), T4), T5);
-            Pr79 = matrixMultiplication(matrixMultiplication(T7, T8), T9);
+            Pr1 = matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(T1, T2), T3), T4), T5), T7), T8), T9);
 
             for (int i = 0; i < obj.Length; i++)
             {
@@ -373,16 +397,12 @@ namespace _3DCGA_PA15
                 for (int j = 0; j < obj[i].P.Length; j++)
                 {
                     obj[i].VW[j] = multiplyMatrix(obj[i].P[j], Wt);
-                    obj[i].VPr15[j] = multiplyMatrix(obj[i].VW[j], Pr15);
+                    obj[i].VPr1[j] = multiplyMatrix(obj[i].VW[j], Pr1);
                 }
+                backfaceCulling(i, obj[i].S, obj[i].VPr1);
                 for (int j = 0; j < obj[i].P.Length; j++)
                 {
-                    obj[i].VPr79[j] = multiplyMatrix(obj[i].VPr15[j], Pr79);
-                }
-                backfaceCulling(i, obj[i].S, obj[i].VPr79);
-                for (int j = 0; j < obj[i].P.Length; j++)
-                {
-                    obj[i].VV[j] = multiplyMatrix(obj[i].VPr79[j], Pr2);
+                    obj[i].VV[j] = multiplyMatrix(obj[i].VPr1[j], Pr2);
                     obj[i].VS[j] = multiplyMatrix(obj[i].VV[j], St);
                 }
                 //for (int j = 0; j < obj[i].visibleSurfaceIndex.Count; j++) debug += obj[i].visibleSurfaceIndex[j] + Environment.NewLine;
@@ -407,7 +427,7 @@ namespace _3DCGA_PA15
             //    }
             //    debug += Environment.NewLine;
             //}
-            debug += selectedObjectIndex + Environment.NewLine;
+            //debug += selectedObjectIndex + Environment.NewLine;
             debugTextBox.Text = debug;
         }
 
@@ -526,32 +546,32 @@ namespace _3DCGA_PA15
             selectedObjectIndex = selectListBox.SelectedIndex;
             if(e.KeyCode == Keys.W)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 1, 0);
+                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0.1, 0);
                 else rotateObjectOnX(selectedObjectIndex, -1);
             }
             else if(e.KeyCode == Keys.S)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, -1, 0);
+                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, -0.1, 0);
                 else rotateObjectOnX(selectedObjectIndex, 1);
             }
             else if (e.KeyCode == Keys.A)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, -1, 0, 0);
+                if (translateRB.Checked) translateObject(selectedObjectIndex, -0.1, 0, 0);
                 else rotateObjectOnZ(selectedObjectIndex, 1);
             }
             else if(e.KeyCode == Keys.D)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 1, 0, 0);
+                if (translateRB.Checked) translateObject(selectedObjectIndex, 0.1, 0, 0);
                 else rotateObjectOnZ(selectedObjectIndex, -1);
             }
             else if(e.KeyCode == Keys.Q)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, 1);
+                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, 0.1);
                 else rotateObjectOnY(selectedObjectIndex, -1);
             }
             else if(e.KeyCode == Keys.E)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, -1);
+                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, -0.1);
                 else rotateObjectOnY(selectedObjectIndex, 1);
             }
             display();
