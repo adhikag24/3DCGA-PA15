@@ -16,13 +16,11 @@ namespace _3DCGA_PA15
         {
             public double x, y, z, w;
         }
-
         public struct TSurface
         {
             public int p1, p2, p3;
             public Color c;
         }
-
         public class TObject
         {
             public int id;
@@ -35,7 +33,6 @@ namespace _3DCGA_PA15
             public List<int> visibleSurfaceIndex = new List<int>();
             public double[,] TranslateM;
             public double[,] RotateM;
-
             public TObject(int pNum, int sNum)
             {
                 P = new TPoint[pNum];
@@ -45,6 +42,10 @@ namespace _3DCGA_PA15
                 VS = new TPoint[pNum];
                 S = new TSurface[sNum];
             }
+        }
+        public class SETElement
+        {
+            public int ymax, xofymin, dx, dy, carrier = 0;
         }
 
 
@@ -100,7 +101,6 @@ namespace _3DCGA_PA15
             V.z = z;
             V.w = 1;
         }
-
         public void setSurface(ref TSurface S, int p1, int p2, int p3, Color c)
         {
             S.p1 = p1;
@@ -125,7 +125,6 @@ namespace _3DCGA_PA15
             temp.w = 1;
             return temp;
         }
-
         public double[,] matrixMultiplication(double[,] M1, double[,] M2)
         {
             double[,] temp = new double[4, 4];
@@ -142,7 +141,6 @@ namespace _3DCGA_PA15
             }
             return temp;
         }
-
         public TPoint findVector(TPoint p1, TPoint p2)
         {
             TPoint temp;
@@ -158,99 +156,6 @@ namespace _3DCGA_PA15
             temp = P1.x * P2.x + P1.y * P2.y + P1.z * P2.z;
             return temp;
         }
-
-        private void resetBtn_Click(object sender, EventArgs e)
-        {
-            selectedObjectIndex = selectListBox.SelectedIndex;
-            resetTransM(selectedObjectIndex);
-            display();
-        }
-        public void resetTransM(int index)
-        {
-            obj[index].TranslateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            obj[index].RotateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-        }
-
-        public void translateObject(int index, double dx=0, double dy=0, double dz=0)
-        {
-            double[,] temp = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { dx, dy, dz, 1 } };
-            obj[index].TranslateM = matrixMultiplication(obj[index].TranslateM, temp);
-        }
-
-        public void rotateObjectOnX(int index, double angle)
-        {
-            double dx, dy, dz;
-            dx = obj[index].TranslateM[3, 0];
-            dy = obj[index].TranslateM[3, 1];
-            dz = obj[index].TranslateM[3, 2];
-
-            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0}, { 0, 1, 0, 0}, { 0, 0, 1, 0}, { -dx, -dy, -dz, 1} };
-
-            double[,] temp = new double[4, 4]
-            {
-            {1, 0, 0, 0 },
-            {0, Math.Cos(angle * Math.PI/180), Math.Sin(angle * Math.PI/180), 0},
-            {0, -Math.Sin(angle * Math.PI/180), Math.Cos(angle * Math.PI/180), 0},
-            {0, 0, 0, 1 }
-            };
-
-            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
-
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
-        }
-
-        public void rotateObjectOnY(int index, double angle)
-        {
-            double dx, dy, dz;
-            dx = obj[index].TranslateM[3, 0];
-            dy = obj[index].TranslateM[3, 1];
-            dz = obj[index].TranslateM[3, 2];
-
-            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -dx, -dy, -dz, 1 } };
-
-            double[,] temp = new double[4, 4]
-            {
-                {Math.Cos(angle * Math.PI/180), 0,  -Math.Sin(angle * Math.PI/180), 0 },
-                {0, 1, 0, 0 },
-                {Math.Sin(angle * Math.PI/180), 0,Math.Cos(angle * Math.PI/180), 0 },
-                { 0 ,0, 0, 1 }
-            };
-
-            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
-
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
-        }
-
-        public void rotateObjectOnZ(int index, double angle)
-        {
-            double dx, dy, dz;
-            dx = obj[index].TranslateM[3, 0];
-            dy = obj[index].TranslateM[3, 1];
-            dz = obj[index].TranslateM[3, 2];
-
-            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -dx, -dy, -dz, 1 } };
-
-            double[,] temp = new double[4, 4]
-            {
-                {Math.Cos(angle * Math.PI/180), Math.Sin(angle * Math.PI/180), 0, 0 },
-                {-Math.Sin(angle * Math.PI/180), Math.Cos(angle * Math.PI/180), 0, 0 },
-                {0, 0, 1, 0 },
-                {0, 0, 0, 1 }
-            };
-
-            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
-
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
-        }
-
-
-
-
-
-
-
-
-
         public TPoint crossProduct(TPoint P1, TPoint P2)
         {
             TPoint tempPoint;
@@ -271,6 +176,77 @@ namespace _3DCGA_PA15
             tempPoint.w = 1;
             return tempPoint;
         }
+
+
+
+
+
+        public void resetTransM(int index)
+        {
+            obj[index].TranslateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            obj[index].RotateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+        }
+
+        public void translateObject(int index, double dx=0, double dy=0, double dz=0)
+        {
+            double[,] temp = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { dx, dy, dz, 1 } };
+            obj[index].TranslateM = matrixMultiplication(obj[index].TranslateM, temp);
+        }
+        public void rotateObjectOnX(int index, double angle)
+        {
+            double dx, dy, dz;
+            dx = obj[index].TranslateM[3, 0];
+            dy = obj[index].TranslateM[3, 1];
+            dz = obj[index].TranslateM[3, 2];
+            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0}, { 0, 1, 0, 0}, { 0, 0, 1, 0}, { -dx, -dy, -dz, 1} };
+            double[,] temp = new double[4, 4]
+            {
+            {1, 0, 0, 0 },
+            {0, Math.Cos(angle * Math.PI/180), Math.Sin(angle * Math.PI/180), 0},
+            {0, -Math.Sin(angle * Math.PI/180), Math.Cos(angle * Math.PI/180), 0},
+            {0, 0, 0, 1 }
+            };
+            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
+        }
+        public void rotateObjectOnY(int index, double angle)
+        {
+            double dx, dy, dz;
+            dx = obj[index].TranslateM[3, 0];
+            dy = obj[index].TranslateM[3, 1];
+            dz = obj[index].TranslateM[3, 2];
+            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -dx, -dy, -dz, 1 } };
+            double[,] temp = new double[4, 4]
+            {
+                {Math.Cos(angle * Math.PI/180), 0,  -Math.Sin(angle * Math.PI/180), 0 },
+                {0, 1, 0, 0 },
+                {Math.Sin(angle * Math.PI/180), 0,Math.Cos(angle * Math.PI/180), 0 },
+                { 0 ,0, 0, 1 }
+            };
+            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
+        }
+        public void rotateObjectOnZ(int index, double angle)
+        {
+            double dx, dy, dz;
+            dx = obj[index].TranslateM[3, 0];
+            dy = obj[index].TranslateM[3, 1];
+            dz = obj[index].TranslateM[3, 2];
+            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -dx, -dy, -dz, 1 } };
+            double[,] temp = new double[4, 4]
+            {
+                {Math.Cos(angle * Math.PI/180), Math.Sin(angle * Math.PI/180), 0, 0 },
+                {-Math.Sin(angle * Math.PI/180), Math.Cos(angle * Math.PI/180), 0, 0 },
+                {0, 0, 1, 0 },
+                {0, 0, 0, 1 }
+            };
+            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
+        }
+
+
+
+
 
         public void backfaceCulling(int index, TSurface[] S, TPoint[] V)
         {
@@ -296,6 +272,303 @@ namespace _3DCGA_PA15
                 //debug += res.ToString() + Environment.NewLine;
                 //debug += Environment.NewLine;
                 if (res < 0) obj[index].visibleSurfaceIndex.Add(i);
+            }
+        }
+        public void polygonFill(TPoint[] P, Pen pen)
+        {
+            int dx, dy, ymin, ymax, xofymin;
+            int wholeymin = 9999;
+            int wholeymax = 0;
+
+            var indexItemCount = new Int16[pictureBox1.Width];
+            for (int i = 0; i < pictureBox1.Width; i++)
+            {
+                indexItemCount[i] = 0;
+            }
+
+            var SET = new SETElement[pictureBox1.Height, pictureBox1.Width];
+
+            for (int i=0; i<P.Length; i++)
+            {
+                TPoint first_vertices, second_vertices;
+                int x1, y1, x2, y2;
+                SETElement se = new SETElement();
+                if(i == P.Length-1)
+                {
+                    first_vertices = P[i];
+                    second_vertices = P[0];
+                    x1 = Convert.ToInt32(first_vertices.x);
+                    y1 = Convert.ToInt32(first_vertices.y);
+                    x2 = Convert.ToInt32(second_vertices.x);
+                    y2 = Convert.ToInt32(second_vertices.y);
+                    g.DrawLine(pen, x1, y1, x2, y2);
+
+                    dx = x2 - x1;
+                    dy = y2 - y1;
+                    if (y1 > y2)
+                    {
+                        ymax = y1;
+                        ymin = y2;
+                    }
+                    else
+                    {
+                        ymax = y2;
+                        ymin = y1;
+                    }
+                    if (ymin == y1) xofymin = x1;
+                    else xofymin = x2;
+                    if (dy < 0)
+                    {
+                        dy *= -1;
+                        dx *= -1;
+                    }
+                    if (dy != 0)
+                    {
+                        if (ymin < wholeymin)
+                        {
+                            wholeymin = ymin;
+                        }
+
+                        if (ymax > wholeymax)
+                        {
+                            wholeymax = ymax;
+                        }
+
+                        se.ymax = ymax;
+                        se.xofymin = xofymin;
+                        se.dx = dx;
+                        se.dy = dy;
+
+                        try
+                        {
+                            SET[ymin, indexItemCount[ymin]] = se;
+                            indexItemCount[ymin]++;
+                        }
+                        catch(Exception e)
+                        {
+                            MessageBox.Show("Polygon reached the screen limit!");
+                            Console.WriteLine(e);
+                        }
+                    }
+                }
+                else
+                {
+                    first_vertices = P[i];
+                    second_vertices = P[i+1];
+                    x1 = Convert.ToInt32(first_vertices.x);
+                    y1 = Convert.ToInt32(first_vertices.y);
+                    x2 = Convert.ToInt32(second_vertices.x);
+                    y2 = Convert.ToInt32(second_vertices.y);
+                    g.DrawLine(pen, x1, y1, x2, y2);
+
+                    dx = x2 - x1;
+                    dy = y2 - y1;
+
+                    if (y1 > y2)
+                    {
+                        ymax = y1;
+                        ymin = y2;
+                    }
+                    else
+                    {
+                        ymax = y2;
+                        ymin = y1;
+                    }
+
+                    if (ymin == y1)
+                    {
+                        xofymin = x1;
+                    }
+                    else
+                    {
+                        xofymin = x2;
+                    }
+
+                    if (dy < 0)
+                    {
+                        dy *= -1;
+                        dx *= -1;
+                    }
+
+                    if (dy != 0)
+                    {
+
+                        if (ymin < wholeymin)
+                        {
+                            wholeymin = ymin;
+                        }
+
+                        if (ymax > wholeymax)
+                        {
+                            wholeymax = ymax;
+                        }
+
+                        se.ymax = ymax;
+                        se.xofymin = xofymin;
+                        se.dx = dx;
+                        se.dy = dy;
+
+                        try
+                        {
+                            SET[ymin, indexItemCount[ymin]] = se;
+                            indexItemCount[ymin]++;
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show("Polygon reached the screen limit!");
+                            Console.WriteLine(e);
+                        }
+                    }
+                }
+            }
+            constructAEL(SET, wholeymin, wholeymax, pen);
+        }
+
+        private void filledCB_CheckedChanged(object sender, EventArgs e)
+        {
+            frontSurfaceCB.Checked = true;
+            if(filledCB.Checked) frontSurfaceCB.Enabled = false;
+            else frontSurfaceCB.Enabled = true;
+            display();
+        }
+
+        private void frontSurfaceCB_CheckedChanged(object sender, EventArgs e)
+        {
+            display();
+        }
+
+        public SETElement[] ymaxCheck(SETElement[] cr, int index, int currentY)
+        {
+            int new_index = 0;
+            var coppied_row = new SETElement[pictureBox1.Width];
+            cr.CopyTo(coppied_row, 0);
+            for (int i = 0; i < index + 1; i++)
+            {
+                if (coppied_row[i] != null)
+                {
+                    if (coppied_row[i].ymax < currentY)
+                    {
+                        coppied_row[i] = null;
+                    }
+                }
+
+            }
+
+            var checkedCurrentRow = new SETElement[pictureBox1.Width];
+            for (int i = 0; i < index + 1; i++)
+            {
+                if (coppied_row[i] != null)
+                {
+                    checkedCurrentRow[new_index] = coppied_row[i];
+                    new_index++;
+                }
+            }
+
+            return checkedCurrentRow;
+        }
+
+        public SETElement[] processCurrentRow(SETElement[] cr, int index)
+        {
+            var processed = new SETElement[pictureBox1.Width];
+            cr.CopyTo(processed, 0);
+            for (int i = 0; i < index + 1; i++)
+            {
+                if (processed[i] != null)
+                {
+                    processed[i].carrier += processed[i].dx;
+
+                    if (processed[i].carrier >= processed[i].dy)
+                    {
+                        while (processed[i].carrier >= processed[i].dy)
+                        {
+                            processed[i].xofymin++;
+                            processed[i].carrier -= processed[i].dy;
+                        }
+                    }
+                    else if (processed[i].carrier < 0)
+                    {
+                        while (processed[i].carrier < 0)
+                        {
+                            processed[i].xofymin--;
+                            processed[i].carrier += processed[i].dy;
+                        }
+                    }
+                }
+            }
+            return processed;
+        }
+
+        public SETElement[] sortCurrentRow(SETElement[] cr, int index)
+        {
+            var sorted = new SETElement[pictureBox1.Width];
+            cr.CopyTo(sorted, 0);
+            SETElement temp = new SETElement();
+            for (int i = 0; i < index + 1; i++)
+            {
+                for (int j = 0; j < index; j++)
+                {
+                    if (sorted[j + 1] != null)
+                    {
+                        if (sorted[j].xofymin > sorted[j + 1].xofymin)
+                        {
+                            temp = sorted[j];
+                            sorted[j] = sorted[j + 1];
+                            sorted[j + 1] = temp;
+                        }
+                    }
+                }
+            }
+            return sorted;
+        }
+
+        public void constructAEL(SETElement[,] se, int wholeymin, int wholeymax, Pen pen)
+        {
+            var current_row = new SETElement[pictureBox1.Width];
+            int current_row_index = 0;
+            for (int i = wholeymin; i <= wholeymax; i++)
+            {
+
+                current_row = ymaxCheck(current_row, current_row_index, i);
+
+                current_row = processCurrentRow(current_row, current_row_index);
+
+                current_row = sortCurrentRow(current_row, current_row_index);
+
+                var temp_row = new SETElement[current_row_index + 1];
+                int temp_counter = 0;
+
+                for (int k = 0; k < pictureBox1.Width; k++)
+                {
+                    if (current_row[k] != null)
+                    {
+                        temp_row[temp_counter] = current_row[k];
+                        temp_counter++;
+                    }
+                }
+                for (int j = 0; j < pictureBox1.Width; j++)
+                {
+
+                    if (se[i, j] == null)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        current_row[current_row_index] = se[i, j];
+                        current_row_index++;
+                    }
+                }
+                for (int x = 0; x < temp_counter + 1; x++)
+                {
+                    if (x < temp_counter)
+                    {
+                        if (x % 2 == 0)
+                        {
+                            g.DrawLine(pen, temp_row[x].xofymin, i, temp_row[x + 1].xofymin, i);
+                        }
+                    }
+                }
+                pictureBox1.Image = bmp;
             }
         }
 
@@ -406,7 +679,6 @@ namespace _3DCGA_PA15
                     obj[i].VS[j] = multiplyMatrix(obj[i].VV[j], St);
                 }
                 //for (int j = 0; j < obj[i].visibleSurfaceIndex.Count; j++) debug += obj[i].visibleSurfaceIndex[j] + Environment.NewLine;
-                draw(i, obj[i].S, obj[i].VS);
             }
             //debug = "";
             //debug += "Translate: " + Environment.NewLine;
@@ -428,24 +700,52 @@ namespace _3DCGA_PA15
             //    debug += Environment.NewLine;
             //}
             //debug += selectedObjectIndex + Environment.NewLine;
+            draw();
             debugTextBox.Text = debug;
         }
 
-        public void draw(int index, TSurface[] S, TPoint[] VS)
+        public void draw()
         {
-
-            TPoint p1, p2, p3;
-            for (int i = 0; i < S.Length; i++)
+            TPoint[] P = new TPoint[3];
+            for (int i = 0; i < obj.Length; i++)
             {
-                if (obj[index].visibleSurfaceIndex.Contains(i))
+                for (int j = 0; j < obj[i].S.Length; j++)
                 {
-                    Pen pen = new Pen(S[i].c);
-                    p1 = VS[S[i].p1];
-                    p2 = VS[S[i].p2];
-                    p3 = VS[S[i].p3];
-                    g.DrawLine(pen, new Point(Convert.ToInt32(p1.x), Convert.ToInt32(p1.y)), new Point(Convert.ToInt32(p2.x), Convert.ToInt32(p2.y)));
-                    g.DrawLine(pen, new Point(Convert.ToInt32(p2.x), Convert.ToInt32(p2.y)), new Point(Convert.ToInt32(p3.x), Convert.ToInt32(p3.y)));
-                    g.DrawLine(pen, new Point(Convert.ToInt32(p3.x), Convert.ToInt32(p3.y)), new Point(Convert.ToInt32(p1.x), Convert.ToInt32(p1.y)));
+                    if (frontSurfaceCB.Checked)
+                    {
+                        if (obj[i].visibleSurfaceIndex.Contains(j))
+                        {
+                            Pen pen = new Pen(obj[i].S[j].c);
+                            P[0] = obj[i].VS[obj[i].S[j].p1];
+                            P[1] = obj[i].VS[obj[i].S[j].p2];
+                            P[2] = obj[i].VS[obj[i].S[j].p3];
+                            if (!filledCB.Checked)
+                            {
+                                for (int k = 0; k < 3; k++)
+                                {
+                                    if (k == 2) g.DrawLine(pen, new Point(Convert.ToInt32(P[k].x), Convert.ToInt32(P[k].y)), new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y)));
+                                    else g.DrawLine(pen, new Point(Convert.ToInt32(P[k].x), Convert.ToInt32(P[k].y)), new Point(Convert.ToInt32(P[k + 1].x), Convert.ToInt32(P[k + 1].y)));
+                                }
+                            }
+                            else polygonFill(P, pen);
+                        }
+                    }
+                    else
+                    {
+                        Pen pen = new Pen(obj[i].S[j].c);
+                        P[0] = obj[i].VS[obj[i].S[j].p1];
+                        P[1] = obj[i].VS[obj[i].S[j].p2];
+                        P[2] = obj[i].VS[obj[i].S[j].p3];
+                        if (!filledCB.Checked)
+                        {
+                            for (int k = 0; k < 3; k++)
+                            {
+                                if (k == 2) g.DrawLine(pen, new Point(Convert.ToInt32(P[k].x), Convert.ToInt32(P[k].y)), new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y)));
+                                else g.DrawLine(pen, new Point(Convert.ToInt32(P[k].x), Convert.ToInt32(P[k].y)), new Point(Convert.ToInt32(P[k + 1].x), Convert.ToInt32(P[k + 1].y)));
+                            }
+                        }
+                        else polygonFill(P, pen);
+                    }
                 }
             }
             pictureBox1.Image = bmp;
@@ -502,7 +802,6 @@ namespace _3DCGA_PA15
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            translateRB.Checked = true;
             // 1. Prepare the objects
             obj[0] = new TObject(4, 4);
             setPoint(ref obj[0].P[0], -1, -1, 1);
@@ -533,7 +832,15 @@ namespace _3DCGA_PA15
                 resetTransM(i);
             }
 
+            translateObject(0, -2, 0, 0);
+            rotateObjectOnX(0, 45);
+            translateObject(1, 2, 0, 0);
+            rotateObjectOnY(1, -45);
+
             selectListBox.SetSelected(0, true);
+
+            translateRB.Checked = true;
+            frontSurfaceCB.Checked = true;
 
             display();
         }
@@ -573,6 +880,31 @@ namespace _3DCGA_PA15
             {
                 if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, -0.1);
                 else rotateObjectOnY(selectedObjectIndex, 1);
+            }
+            else if (e.KeyCode == Keys.T)
+            {
+                if (translateRB.Checked)
+                {
+                    translateRB.Checked = false;
+                    rotateRB.Checked = true;
+                }
+                else
+                {
+                    translateRB.Checked = true;
+                    rotateRB.Checked = false;
+                }
+            }
+            else if(e.KeyCode == Keys.Up)
+            {
+                int index = selectListBox.SelectedIndex;
+                if (index > 0) index -= 1;
+                selectListBox.SetSelected(index, true);
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                int index = selectListBox.SelectedIndex;
+                if (index < selectListBox.Items.Count-1) index += 1;
+                selectListBox.SetSelected(index, true);
             }
             display();
         }
@@ -627,5 +959,11 @@ namespace _3DCGA_PA15
             display();
         }
 
+        private void resetBtn_Click(object sender, EventArgs e)
+        {
+            selectedObjectIndex = selectListBox.SelectedIndex;
+            resetTransM(selectedObjectIndex);
+            display();
+        }
     }
 }

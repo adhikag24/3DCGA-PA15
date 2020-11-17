@@ -43,6 +43,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.frontSurfaceCB = new System.Windows.Forms.CheckBox();
+            this.filledCB = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -155,7 +158,7 @@
             this.selectListBox.Location = new System.Drawing.Point(286, 435);
             this.selectListBox.Name = "selectListBox";
             this.selectListBox.Size = new System.Drawing.Size(226, 148);
-            this.selectListBox.TabIndex = 12;
+            this.selectListBox.TabIndex = 1;
             // 
             // resetBtn
             // 
@@ -194,11 +197,47 @@
             this.label3.TabIndex = 16;
             this.label3.Text = "Debug console:";
             // 
+            // frontSurfaceCB
+            // 
+            this.frontSurfaceCB.AutoSize = true;
+            this.frontSurfaceCB.Location = new System.Drawing.Point(104, 520);
+            this.frontSurfaceCB.Name = "frontSurfaceCB";
+            this.frontSurfaceCB.Size = new System.Drawing.Size(146, 21);
+            this.frontSurfaceCB.TabIndex = 17;
+            this.frontSurfaceCB.Text = "Front Surface only";
+            this.frontSurfaceCB.UseVisualStyleBackColor = true;
+            this.frontSurfaceCB.CheckedChanged += new System.EventHandler(this.frontSurfaceCB_CheckedChanged);
+            // 
+            // filledCB
+            // 
+            this.filledCB.AutoSize = true;
+            this.filledCB.Location = new System.Drawing.Point(104, 547);
+            this.filledCB.Name = "filledCB";
+            this.filledCB.Size = new System.Drawing.Size(63, 21);
+            this.filledCB.TabIndex = 18;
+            this.filledCB.Text = "Filled";
+            this.filledCB.UseVisualStyleBackColor = true;
+            this.filledCB.CheckedChanged += new System.EventHandler(this.filledCB_CheckedChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label4.Location = new System.Drawing.Point(6, 625);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(246, 87);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Shortcut keys:\r\n* T - Translate/Rotate toggle\r\n* Up Arrow - Select next object\r\n*" +
+    " Down Arrow - Select previous object\r\n\r\n";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(825, 655);
+            this.ClientSize = new System.Drawing.Size(824, 723);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.filledCB);
+            this.Controls.Add(this.frontSurfaceCB);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -216,7 +255,7 @@
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "3DCGA-PA15";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -242,6 +281,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox frontSurfaceCB;
+        private System.Windows.Forms.CheckBox filledCB;
+        private System.Windows.Forms.Label label4;
     }
 }
 
