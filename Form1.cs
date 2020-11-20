@@ -61,7 +61,7 @@ namespace _3DCGA_PA15
         public TObject[] obj = new TObject[2];
         public string debug = "";
         TPoint VRP, VPN, VUP, COP, N, upUnit, upVec, v, u, CW, DOP, VN = new TPoint();
-        double windowUmin, windowVmin, windowUmax, windowVmax, FP, BP;
+        double windowUmin, windowVmin, windowUmax, windowVmax, BP;
         public int selectedObjectIndex;
         public double[,] T1 = new double[4, 4];
         public double[,] T2 = new double[4, 4];
@@ -276,9 +276,9 @@ namespace _3DCGA_PA15
         }
         public void polygonFill(TPoint[] P, Pen pen)
         {
-            int dx, dy, ymin, ymax, xofymin;
-            int wholeymin = 9999;
-            int wholeymax = 0;
+            int dx, dy, ymin, ymax, xofymin; // Declare the variable needed for polygon scanline fill
+            int wholeymin = 9999; // Initiate and set the wholeymin
+            int wholeymax = 0; // Initiate and set the wholeymax
 
             var indexItemCount = new Int16[pictureBox1.Width];
             for (int i = 0; i < pictureBox1.Width; i++)
@@ -286,7 +286,7 @@ namespace _3DCGA_PA15
                 indexItemCount[i] = 0;
             }
 
-            var SET = new SETElement[pictureBox1.Height, pictureBox1.Width];
+            var SET = new SETElement[pictureBox1.Height, pictureBox1.Width]; // Create 2d array of SET element
 
             for (int i=0; i<P.Length; i++)
             {
@@ -324,15 +324,9 @@ namespace _3DCGA_PA15
                     }
                     if (dy != 0)
                     {
-                        if (ymin < wholeymin)
-                        {
-                            wholeymin = ymin;
-                        }
+                        if (ymin < wholeymin) wholeymin = ymin;
 
-                        if (ymax > wholeymax)
-                        {
-                            wholeymax = ymax;
-                        }
+                        if (ymax > wholeymax) wholeymax = ymax;
 
                         se.ymax = ymax;
                         se.xofymin = xofymin;
@@ -375,14 +369,8 @@ namespace _3DCGA_PA15
                         ymin = y1;
                     }
 
-                    if (ymin == y1)
-                    {
-                        xofymin = x1;
-                    }
-                    else
-                    {
-                        xofymin = x2;
-                    }
+                    if (ymin == y1) xofymin = x1;
+                    else xofymin = x2;
 
                     if (dy < 0)
                     {
@@ -392,16 +380,9 @@ namespace _3DCGA_PA15
 
                     if (dy != 0)
                     {
+                        if (ymin < wholeymin) wholeymin = ymin;
 
-                        if (ymin < wholeymin)
-                        {
-                            wholeymin = ymin;
-                        }
-
-                        if (ymax > wholeymax)
-                        {
-                            wholeymax = ymax;
-                        }
+                        if (ymax > wholeymax) wholeymax = ymax;
 
                         se.ymax = ymax;
                         se.xofymin = xofymin;
@@ -422,19 +403,6 @@ namespace _3DCGA_PA15
                 }
             }
             constructAEL(SET, wholeymin, wholeymax, pen);
-        }
-
-        private void filledCB_CheckedChanged(object sender, EventArgs e)
-        {
-            frontSurfaceCB.Checked = true;
-            if(filledCB.Checked) frontSurfaceCB.Enabled = false;
-            else frontSurfaceCB.Enabled = true;
-            display();
-        }
-
-        private void frontSurfaceCB_CheckedChanged(object sender, EventArgs e)
-        {
-            display();
         }
 
         public SETElement[] ymaxCheck(SETElement[] cr, int index, int currentY)
@@ -547,12 +515,7 @@ namespace _3DCGA_PA15
                 }
                 for (int j = 0; j < pictureBox1.Width; j++)
                 {
-
-                    if (se[i, j] == null)
-                    {
-                        continue;
-                    }
-                    else
+                    if (se[i, j] != null)
                     {
                         current_row[current_row_index] = se[i, j];
                         current_row_index++;
@@ -586,7 +549,6 @@ namespace _3DCGA_PA15
             windowVmin = -2;
             windowUmax = 2;
             windowVmax = 2;
-            FP = 2;
             BP = -2;
 
             // 3. Calculate the perspective projection derivative parameters
@@ -704,6 +666,22 @@ namespace _3DCGA_PA15
             debugTextBox.Text = debug;
         }
 
+
+
+
+        public void warnock()
+        {
+
+        }
+
+
+
+
+
+
+
+
+
         public void draw()
         {
             TPoint[] P = new TPoint[3];
@@ -716,6 +694,7 @@ namespace _3DCGA_PA15
                         if (obj[i].visibleSurfaceIndex.Contains(j))
                         {
                             Pen pen = new Pen(obj[i].S[j].c);
+                            SolidBrush brush = new SolidBrush(obj[i].S[j].c);
                             P[0] = obj[i].VS[obj[i].S[j].p1];
                             P[1] = obj[i].VS[obj[i].S[j].p2];
                             P[2] = obj[i].VS[obj[i].S[j].p3];
@@ -727,12 +706,21 @@ namespace _3DCGA_PA15
                                     else g.DrawLine(pen, new Point(Convert.ToInt32(P[k].x), Convert.ToInt32(P[k].y)), new Point(Convert.ToInt32(P[k + 1].x), Convert.ToInt32(P[k + 1].y)));
                                 }
                             }
-                            else polygonFill(P, pen);
+                            else
+                            {
+                                //polygonFill(P, pen);
+                                Point[] pp = new Point[3];
+                                pp[0] = new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y));
+                                pp[1] = new Point(Convert.ToInt32(P[1].x), Convert.ToInt32(P[1].y));
+                                pp[2] = new Point(Convert.ToInt32(P[2].x), Convert.ToInt32(P[2].y));
+                                g.FillPolygon(brush, pp);
+                            }
                         }
                     }
                     else
                     {
                         Pen pen = new Pen(obj[i].S[j].c);
+                        SolidBrush brush = new SolidBrush(obj[i].S[j].c);
                         P[0] = obj[i].VS[obj[i].S[j].p1];
                         P[1] = obj[i].VS[obj[i].S[j].p2];
                         P[2] = obj[i].VS[obj[i].S[j].p3];
@@ -744,7 +732,15 @@ namespace _3DCGA_PA15
                                 else g.DrawLine(pen, new Point(Convert.ToInt32(P[k].x), Convert.ToInt32(P[k].y)), new Point(Convert.ToInt32(P[k + 1].x), Convert.ToInt32(P[k + 1].y)));
                             }
                         }
-                        else polygonFill(P, pen);
+                        else
+                        {
+                            //polygonFill(P, pen);
+                            Point[] pp = new Point[3];
+                            pp[0] = new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y));
+                            pp[1] = new Point(Convert.ToInt32(P[1].x), Convert.ToInt32(P[1].y));
+                            pp[2] = new Point(Convert.ToInt32(P[2].x), Convert.ToInt32(P[2].y));
+                            g.FillPolygon(brush, pp);
+                        }
                     }
                 }
             }
@@ -963,6 +959,19 @@ namespace _3DCGA_PA15
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
             resetTransM(selectedObjectIndex);
+            display();
+        }
+
+        private void filledCB_CheckedChanged(object sender, EventArgs e)
+        {
+            frontSurfaceCB.Checked = true;
+            if (filledCB.Checked) frontSurfaceCB.Enabled = false;
+            else frontSurfaceCB.Enabled = true;
+            display();
+        }
+
+        private void frontSurfaceCB_CheckedChanged(object sender, EventArgs e)
+        {
             display();
         }
     }
