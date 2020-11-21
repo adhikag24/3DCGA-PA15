@@ -46,6 +46,8 @@
             this.frontSurfaceCB = new System.Windows.Forms.CheckBox();
             this.filledCB = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,6 +59,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(800, 400);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             // 
             // upBtn
             // 
@@ -133,12 +136,12 @@
             // debugTextBox
             // 
             this.debugTextBox.BackColor = System.Drawing.Color.White;
-            this.debugTextBox.Location = new System.Drawing.Point(590, 435);
+            this.debugTextBox.Location = new System.Drawing.Point(818, 12);
             this.debugTextBox.Multiline = true;
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
             this.debugTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debugTextBox.Size = new System.Drawing.Size(222, 203);
+            this.debugTextBox.Size = new System.Drawing.Size(583, 700);
             this.debugTextBox.TabIndex = 10;
             // 
             // downBtn
@@ -230,11 +233,31 @@
             this.label4.Text = "Shortcut keys:\r\n* T - Translate/Rotate toggle\r\n* Up Arrow - Select next object\r\n*" +
     " Down Arrow - Select previous object\r\n\r\n";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(561, 465);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(46, 17);
+            this.label5.TabIndex = 20;
+            this.label5.Text = "label5";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(561, 487);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(46, 17);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "label6";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(824, 723);
+            this.ClientSize = new System.Drawing.Size(1413, 723);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.filledCB);
             this.Controls.Add(this.frontSurfaceCB);
@@ -284,6 +307,8 @@
         private System.Windows.Forms.CheckBox frontSurfaceCB;
         private System.Windows.Forms.CheckBox filledCB;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }
 

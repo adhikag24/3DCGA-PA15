@@ -72,10 +72,10 @@ namespace _3DCGA_PA15
         public double[,] T8 = new double[4, 4];
         public double[,] T9 = new double[4, 4];
         public double[,] Pr1 = new double[4, 4];
-        public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
+        public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         public double[,] Wt = new double[4, 4];
         public double[,] Vt = new double[4, 4];
-        public double[,] St = new double[4, 4] { { 100, 0, 0, 0 }, { 0, -100, 0, 0 }, { 0, 0, 0, 0 }, { 400, 200, 0, 1 } };
+        public double[,] St = new double[4, 4] { { 100, 0, 0, 0 }, { 0, -100, 0, 0 }, { 0, 0, 1, 0 }, { 400, 200, 0, 1 } };
 
 
 
@@ -94,28 +94,28 @@ namespace _3DCGA_PA15
 
 
 
-        public void setPoint(ref TPoint V, double x, double y, double z)
+        public void SetPoint(ref TPoint V, double x, double y, double z)
         {
             V.x = x;
             V.y = y;
             V.z = z;
             V.w = 1;
         }
-        public void setSurface(ref TSurface S, int p1, int p2, int p3, Color c)
+        public void SetSurface(ref TSurface S, int p1, int p2, int p3, Color c)
         {
             S.p1 = p1;
             S.p2 = p2;
             S.p3 = p3;
             S.c = c;
         }
-        public void setRowMatrix(ref double[,] M, int row, double a, double b, double c, double d)
+        public void SetRowMatrix(ref double[,] M, int row, double a, double b, double c, double d)
         {
             M[row, 0] = a;
             M[row, 1] = b;
             M[row, 2] = c;
             M[row, 3] = d;
         }
-        public TPoint multiplyMatrix(TPoint P, double[,] M)
+        public TPoint MultiplyMatrix(TPoint P, double[,] M)
         {
             TPoint temp;
             double w = P.x * M[0, 3] + P.y * M[1, 3] + P.z * M[2, 3] + P.w * M[3, 3];
@@ -125,7 +125,7 @@ namespace _3DCGA_PA15
             temp.w = 1;
             return temp;
         }
-        public double[,] matrixMultiplication(double[,] M1, double[,] M2)
+        public double[,] MatrixMultiplication(double[,] M1, double[,] M2)
         {
             double[,] temp = new double[4, 4];
             for (int i = 0; i < 4; i++)
@@ -141,7 +141,7 @@ namespace _3DCGA_PA15
             }
             return temp;
         }
-        public TPoint findVector(TPoint p1, TPoint p2)
+        public TPoint FindVector(TPoint p1, TPoint p2)
         {
             TPoint temp;
             temp.x = p2.x - p1.x;
@@ -150,13 +150,13 @@ namespace _3DCGA_PA15
             temp.w = 1;
             return temp;
         }
-        public double dotProduct(TPoint P1, TPoint P2)
+        public double DotProduct(TPoint P1, TPoint P2)
         {
             double temp;
             temp = P1.x * P2.x + P1.y * P2.y + P1.z * P2.z;
             return temp;
         }
-        public TPoint crossProduct(TPoint P1, TPoint P2)
+        public TPoint CrossProduct(TPoint P1, TPoint P2)
         {
             TPoint tempPoint;
             tempPoint.x = (P1.y * P2.z) - (P2.y * P1.z);
@@ -165,7 +165,7 @@ namespace _3DCGA_PA15
             tempPoint.w = 1;
             return tempPoint;
         }
-        public TPoint unitVector(TPoint P)
+        public TPoint UnitVector(TPoint P)
         {
             TPoint tempPoint;
             double temp;
@@ -181,18 +181,18 @@ namespace _3DCGA_PA15
 
 
 
-        public void resetTransM(int index)
+        public void ResetTransM(int index)
         {
             obj[index].TranslateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
             obj[index].RotateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         }
 
-        public void translateObject(int index, double dx=0, double dy=0, double dz=0)
+        public void TranslateObject(int index, double dx=0, double dy=0, double dz=0)
         {
             double[,] temp = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { dx, dy, dz, 1 } };
-            obj[index].TranslateM = matrixMultiplication(obj[index].TranslateM, temp);
+            obj[index].TranslateM = MatrixMultiplication(obj[index].TranslateM, temp);
         }
-        public void rotateObjectOnX(int index, double angle)
+        public void RotateObjectOnX(int index, double angle)
         {
             double dx, dy, dz;
             dx = obj[index].TranslateM[3, 0];
@@ -206,10 +206,10 @@ namespace _3DCGA_PA15
             {0, -Math.Sin(angle * Math.PI/180), Math.Cos(angle * Math.PI/180), 0},
             {0, 0, 0, 1 }
             };
-            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
+            double[,] res1 = MatrixMultiplication(MatrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+            obj[index].RotateM = MatrixMultiplication(obj[index].RotateM, res1);
         }
-        public void rotateObjectOnY(int index, double angle)
+        public void RotateObjectOnY(int index, double angle)
         {
             double dx, dy, dz;
             dx = obj[index].TranslateM[3, 0];
@@ -223,10 +223,10 @@ namespace _3DCGA_PA15
                 {Math.Sin(angle * Math.PI/180), 0,Math.Cos(angle * Math.PI/180), 0 },
                 { 0 ,0, 0, 1 }
             };
-            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
+            double[,] res1 = MatrixMultiplication(MatrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+            obj[index].RotateM = MatrixMultiplication(obj[index].RotateM, res1);
         }
-        public void rotateObjectOnZ(int index, double angle)
+        public void RotateObjectOnZ(int index, double angle)
         {
             double dx, dy, dz;
             dx = obj[index].TranslateM[3, 0];
@@ -240,15 +240,15 @@ namespace _3DCGA_PA15
                 {0, 0, 1, 0 },
                 {0, 0, 0, 1 }
             };
-            double[,] res1 = matrixMultiplication(matrixMultiplication(minTranslate, temp), obj[index].TranslateM);
-            obj[index].RotateM = matrixMultiplication(obj[index].RotateM, res1);
+            double[,] res1 = MatrixMultiplication(MatrixMultiplication(minTranslate, temp), obj[index].TranslateM);
+            obj[index].RotateM = MatrixMultiplication(obj[index].RotateM, res1);
         }
 
 
 
 
 
-        public void backfaceCulling(int index, TSurface[] S, TPoint[] V)
+        public void BackfaceCulling(int index, TSurface[] S, TPoint[] V)
         {
             obj[index].visibleSurfaceIndex.Clear();
             TPoint p1, p2, p3, p1p2, p2p3, N;
@@ -261,20 +261,20 @@ namespace _3DCGA_PA15
                 //debug += "p2 => " + p2.x.ToString() + "  " + p2.y.ToString() + "  " + p2.z.ToString() + Environment.NewLine;
                 p3 = V[S[i].p3];
                 //debug += "p3 => " + p3.x.ToString() + "  " + p3.y.ToString() + "  " + p3.z.ToString() + Environment.NewLine;
-                p1p2 = findVector(p1, p2);
+                p1p2 = FindVector(p1, p2);
                 //debug += "p1p2 => " + p1p2.x.ToString() + "  " + p1p2.y.ToString() + "  " + p1p2.z.ToString() + Environment.NewLine;
-                p2p3 = findVector(p2, p3);
+                p2p3 = FindVector(p2, p3);
                 //debug += "p2p3 => " + p2p3.x.ToString() + "  " + p2p3.y.ToString() + "  " + p2p3.z.ToString() + Environment.NewLine;
-                N = crossProduct(p1p2, p2p3);
+                N = CrossProduct(p1p2, p2p3);
                 //debug += "N => " + N.x.ToString() + "  " + N.y.ToString() + "  " + N.z.ToString() + Environment.NewLine;
-                setPoint(ref VN, 0, 0, -1);
-                res = dotProduct(VN, N);
+                SetPoint(ref VN, 0, 0, -1);
+                res = DotProduct(VN, N);
                 //debug += res.ToString() + Environment.NewLine;
                 //debug += Environment.NewLine;
                 if (res < 0) obj[index].visibleSurfaceIndex.Add(i);
             }
         }
-        public void polygonFill(TPoint[] P, Pen pen)
+        public void PolygonFill(TPoint[] P, Pen pen)
         {
             int dx, dy, ymin, ymax, xofymin; // Declare the variable needed for polygon scanline fill
             int wholeymin = 9999; // Initiate and set the wholeymin
@@ -402,10 +402,10 @@ namespace _3DCGA_PA15
                     }
                 }
             }
-            constructAEL(SET, wholeymin, wholeymax, pen);
+            ConstructAEL(SET, wholeymin, wholeymax, pen);
         }
 
-        public SETElement[] ymaxCheck(SETElement[] cr, int index, int currentY)
+        public SETElement[] YmaxCheck(SETElement[] cr, int index, int currentY)
         {
             int new_index = 0;
             var coppied_row = new SETElement[pictureBox1.Width];
@@ -435,7 +435,7 @@ namespace _3DCGA_PA15
             return checkedCurrentRow;
         }
 
-        public SETElement[] processCurrentRow(SETElement[] cr, int index)
+        public SETElement[] ProcessCurrentRow(SETElement[] cr, int index)
         {
             var processed = new SETElement[pictureBox1.Width];
             cr.CopyTo(processed, 0);
@@ -466,7 +466,7 @@ namespace _3DCGA_PA15
             return processed;
         }
 
-        public SETElement[] sortCurrentRow(SETElement[] cr, int index)
+        public SETElement[] SortCurrentRow(SETElement[] cr, int index)
         {
             var sorted = new SETElement[pictureBox1.Width];
             cr.CopyTo(sorted, 0);
@@ -489,18 +489,18 @@ namespace _3DCGA_PA15
             return sorted;
         }
 
-        public void constructAEL(SETElement[,] se, int wholeymin, int wholeymax, Pen pen)
+        public void ConstructAEL(SETElement[,] se, int wholeymin, int wholeymax, Pen pen)
         {
             var current_row = new SETElement[pictureBox1.Width];
             int current_row_index = 0;
             for (int i = wholeymin; i <= wholeymax; i++)
             {
 
-                current_row = ymaxCheck(current_row, current_row_index, i);
+                current_row = YmaxCheck(current_row, current_row_index, i);
 
-                current_row = processCurrentRow(current_row, current_row_index);
+                current_row = ProcessCurrentRow(current_row, current_row_index);
 
-                current_row = sortCurrentRow(current_row, current_row_index);
+                current_row = SortCurrentRow(current_row, current_row_index);
 
                 var temp_row = new SETElement[current_row_index + 1];
                 int temp_counter = 0;
@@ -535,16 +535,16 @@ namespace _3DCGA_PA15
             }
         }
 
-        public void display()
+        public void Display()
         {
             bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             g = Graphics.FromImage(bmp);
 
             // 2. Prepare the perspective projection parameters
-            setPoint(ref VRP, 0, 0, 0);
-            setPoint(ref VPN, 0, 0, 1);
-            setPoint(ref VUP, 0, 1, 0);
-            setPoint(ref COP, 0, 0, 4);
+            SetPoint(ref VRP, 0, 0, 0);
+            SetPoint(ref VPN, 0, 0, 1);
+            SetPoint(ref VUP, 0, 1, 0);
+            SetPoint(ref COP, 0, 0, 4);
             windowUmin = -2;
             windowVmin = -2;
             windowUmax = 2;
@@ -553,50 +553,50 @@ namespace _3DCGA_PA15
 
             // 3. Calculate the perspective projection derivative parameters
             // N
-            N = unitVector(VPN);
+            N = UnitVector(VPN);
             // v
-            upUnit = unitVector(VUP);
+            upUnit = UnitVector(VUP);
             double temp;
             TPoint tempPoint = new TPoint();
-            temp = dotProduct(upUnit, N);
+            temp = DotProduct(upUnit, N);
             tempPoint.x = temp * N.x;
             tempPoint.y = temp * N.y;
             tempPoint.z = temp * N.z;
-            setPoint(ref upVec, upUnit.x - tempPoint.x, upUnit.y - tempPoint.y, upUnit.z - tempPoint.z);
-            v = unitVector(upVec);
+            SetPoint(ref upVec, upUnit.x - tempPoint.x, upUnit.y - tempPoint.y, upUnit.z - tempPoint.z);
+            v = UnitVector(upVec);
             // u
-            u = crossProduct(v, N);
+            u = CrossProduct(v, N);
             // CW
-            setPoint(ref CW, (windowUmax + windowUmin) / 2, (windowVmax + windowVmin) / 2, 0);
+            SetPoint(ref CW, (windowUmax + windowUmin) / 2, (windowVmax + windowVmin) / 2, 0);
             // DOP
-            setPoint(ref DOP, (CW.x - COP.x), (CW.y - COP.y), (CW.z - COP.z));
+            SetPoint(ref DOP, (CW.x - COP.x), (CW.y - COP.y), (CW.z - COP.z));
 
             // 4. Calculate the perspective projection matrix
             // T1
             double rx = VRP.x;
             double ry = VRP.y;
             double rz = VRP.z;
-            setRowMatrix(ref T1, 0, 1, 0, 0, 0);
-            setRowMatrix(ref T1, 1, 0, 1, 0, 0);
-            setRowMatrix(ref T1, 2, 0, 0, 1, 0);
-            setRowMatrix(ref T1, 3, -rx, -ry, -rz, 1);
+            SetRowMatrix(ref T1, 0, 1, 0, 0, 0);
+            SetRowMatrix(ref T1, 1, 0, 1, 0, 0);
+            SetRowMatrix(ref T1, 2, 0, 0, 1, 0);
+            SetRowMatrix(ref T1, 3, -rx, -ry, -rz, 1);
             // T2
-            setRowMatrix(ref T2, 0, u.x, v.x, N.x, 0);
-            setRowMatrix(ref T2, 1, u.y, v.y, N.y, 0);
-            setRowMatrix(ref T2, 2, u.z, v.z, N.z, 0);
-            setRowMatrix(ref T2, 3, 0, 0, 0, 1);
+            SetRowMatrix(ref T2, 0, u.x, v.x, N.x, 0);
+            SetRowMatrix(ref T2, 1, u.y, v.y, N.y, 0);
+            SetRowMatrix(ref T2, 2, u.z, v.z, N.z, 0);
+            SetRowMatrix(ref T2, 3, 0, 0, 0, 1);
             // T3
-            setRowMatrix(ref T3, 0, 1, 0, 0, 0);
-            setRowMatrix(ref T3, 1, 0, 1, 0, 0);
-            setRowMatrix(ref T3, 2, 0, 0, 1, 0);
-            setRowMatrix(ref T3, 3, -COP.x, -COP.y, -COP.z, 1);
+            SetRowMatrix(ref T3, 0, 1, 0, 0, 0);
+            SetRowMatrix(ref T3, 1, 0, 1, 0, 0);
+            SetRowMatrix(ref T3, 2, 0, 0, 1, 0);
+            SetRowMatrix(ref T3, 3, -COP.x, -COP.y, -COP.z, 1);
             // T4
             double shx = -DOP.x / DOP.z;
             double shy = -DOP.y / DOP.z;
-            setRowMatrix(ref T4, 0, 1, 0, 0, 0);
-            setRowMatrix(ref T4, 1, 0, 1, 0, 0);
-            setRowMatrix(ref T4, 2, shx, shy, 1, 0);
-            setRowMatrix(ref T4, 3, 0, 0, 0, 1);
+            SetRowMatrix(ref T4, 0, 1, 0, 0, 0);
+            SetRowMatrix(ref T4, 1, 0, 1, 0, 0);
+            SetRowMatrix(ref T4, 2, shx, shy, 1, 0);
+            SetRowMatrix(ref T4, 3, 0, 0, 0, 1);
             // T5
             double w, h;
             w = ((COP.z - BP) * (windowUmax - windowUmin)) / (2 * COP.z);
@@ -604,41 +604,41 @@ namespace _3DCGA_PA15
             double sx = 1 / w;
             double sy = 1 / h;
             double sz = -1 / (BP - COP.z);
-            setRowMatrix(ref T5, 0, sx, 0, 0, 0);
-            setRowMatrix(ref T5, 1, 0, sy, 0, 0);
-            setRowMatrix(ref T5, 2, 0, 0, sz, 0);
-            setRowMatrix(ref T5, 3, 0, 0, 0, 1);
+            SetRowMatrix(ref T5, 0, sx, 0, 0, 0);
+            SetRowMatrix(ref T5, 1, 0, sy, 0, 0);
+            SetRowMatrix(ref T5, 2, 0, 0, sz, 0);
+            SetRowMatrix(ref T5, 3, 0, 0, 0, 1);
             // T7
-            setRowMatrix(ref T7, 0, 1, 0, 0, 0);
-            setRowMatrix(ref T7, 1, 0, 1, 0, 0);
-            setRowMatrix(ref T7, 2, 0, 0, 1, 0);
-            setRowMatrix(ref T7, 3, 0, 0, -(-COP.z / (COP.z - BP)), 1);
+            SetRowMatrix(ref T7, 0, 1, 0, 0, 0);
+            SetRowMatrix(ref T7, 1, 0, 1, 0, 0);
+            SetRowMatrix(ref T7, 2, 0, 0, 1, 0);
+            SetRowMatrix(ref T7, 3, 0, 0, -(-COP.z / (COP.z - BP)), 1);
             // T8
-            setRowMatrix(ref T8, 0, (COP.z - BP) / COP.z, 0, 0, 0);
-            setRowMatrix(ref T8, 1, 0, (COP.z - BP) / COP.z, 0, 0);
-            setRowMatrix(ref T8, 2, 0, 0, 1, 0);
-            setRowMatrix(ref T8, 3, 0, 0, 0, 1);
+            SetRowMatrix(ref T8, 0, (COP.z - BP) / COP.z, 0, 0, 0);
+            SetRowMatrix(ref T8, 1, 0, (COP.z - BP) / COP.z, 0, 0);
+            SetRowMatrix(ref T8, 2, 0, 0, 1, 0);
+            SetRowMatrix(ref T8, 3, 0, 0, 0, 1);
             // T9
-            setRowMatrix(ref T9, 0, 1, 0, 0, 0);
-            setRowMatrix(ref T9, 1, 0, 1, 0, 0);
-            setRowMatrix(ref T9, 2, 0, 0, 1, (-1 / (COP.z / (COP.z - BP))));
-            setRowMatrix(ref T9, 3, 0, 0, 0, 1);
+            SetRowMatrix(ref T9, 0, 1, 0, 0, 0);
+            SetRowMatrix(ref T9, 1, 0, 1, 0, 0);
+            SetRowMatrix(ref T9, 2, 0, 0, 1, (-1 / (COP.z / (COP.z - BP))));
+            SetRowMatrix(ref T9, 3, 0, 0, 0, 1);
 
-            Pr1 = matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(matrixMultiplication(T1, T2), T3), T4), T5), T7), T8), T9);
+            Pr1 = MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(T1, T2), T3), T4), T5), T7), T8), T9);
 
             for (int i = 0; i < obj.Length; i++)
             {
-                Wt = matrixMultiplication(obj[i].TranslateM, obj[i].RotateM);
+                Wt = MatrixMultiplication(obj[i].TranslateM, obj[i].RotateM);
                 for (int j = 0; j < obj[i].P.Length; j++)
                 {
-                    obj[i].VW[j] = multiplyMatrix(obj[i].P[j], Wt);
-                    obj[i].VPr1[j] = multiplyMatrix(obj[i].VW[j], Pr1);
+                    obj[i].VW[j] = MultiplyMatrix(obj[i].P[j], Wt);
+                    obj[i].VPr1[j] = MultiplyMatrix(obj[i].VW[j], Pr1);
                 }
-                backfaceCulling(i, obj[i].S, obj[i].VPr1);
+                BackfaceCulling(i, obj[i].S, obj[i].VPr1);
                 for (int j = 0; j < obj[i].P.Length; j++)
                 {
-                    obj[i].VV[j] = multiplyMatrix(obj[i].VPr1[j], Pr2);
-                    obj[i].VS[j] = multiplyMatrix(obj[i].VV[j], St);
+                    obj[i].VV[j] = MultiplyMatrix(obj[i].VPr1[j], Pr2);
+                    obj[i].VS[j] = MultiplyMatrix(obj[i].VV[j], St);
                 }
                 //for (int j = 0; j < obj[i].visibleSurfaceIndex.Count; j++) debug += obj[i].visibleSurfaceIndex[j] + Environment.NewLine;
             }
@@ -662,16 +662,149 @@ namespace _3DCGA_PA15
             //    debug += Environment.NewLine;
             //}
             //debug += selectedObjectIndex + Environment.NewLine;
-            draw();
+            Draw();
+            debug = "";
             debugTextBox.Text = debug;
         }
 
+        
 
 
-
-        public void warnock()
+        public void GeneratePolygonList()
         {
+            debug = "";
+            int count = 1;
+            for(int i=0; i<obj.Length; i++)
+            {
+                for(int j=0; j<obj[i].S.Length; j++)
+                {
+                    if (obj[i].visibleSurfaceIndex.Contains(j))
+                    {
+                        debug += "Polygon " + count + Environment.NewLine;
+                        debug += "p1 => (" + obj[i].VS[obj[i].S[j].p1].x + "    " + obj[i].VS[obj[i].S[j].p1].y + "    " + obj[i].VS[obj[i].S[j].p1].z + ")" + Environment.NewLine;
+                        debug += "p2 => (" + obj[i].VS[obj[i].S[j].p2].x + "    " + obj[i].VS[obj[i].S[j].p2].y + "    " + obj[i].VS[obj[i].S[j].p2].z + ")" + Environment.NewLine;
+                        debug += "p3 => (" + obj[i].VS[obj[i].S[j].p3].x + "    " + obj[i].VS[obj[i].S[j].p3].y + "    " + obj[i].VS[obj[i].S[j].p3].z + ")" + Environment.NewLine;
+                        debug += obj[i].S[j].c + Environment.NewLine;
+                        debug += Environment.NewLine;
+                        count++;
+                    }
+                }
+            }
+        }
 
+        public double CrossProduct2D(TPoint p1, TPoint p2)
+        {
+            return (p1.x * p2.y) - (p2.x * p1.y);
+        }
+
+        public double Sign(TPoint p, TPoint p1, TPoint p2)
+        {
+            TPoint p1p = FindVector(p, p1);
+            TPoint p1p2 = FindVector(p1, p2);
+            double temp = CrossProduct2D(p1p, p1p2);
+            return temp;
+        }
+
+        public bool IsPointInTriangle(TPoint pt, TPoint v1, TPoint v2, TPoint v3)
+        {
+            double d1, d2, d3;
+            d1 = Sign(pt, v1, v2);
+            d2 = Sign(pt, v2, v3);
+            d3 = Sign(pt, v3, v1);
+            return ((d1 < 0) && (d2 < 0) && (d3 < 0)) || ((d1 > 0) && (d2 > 0) && (d3 > 0));
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            label5.Text = e.X.ToString();
+            label6.Text = e.Y.ToString();
+        }
+
+        public Color GetClosestPixelColor(int x, int y)
+        {
+            double zmax = 0;
+            TPoint tempPoint = new TPoint();
+            tempPoint.x = x;
+            tempPoint.y = y;
+            tempPoint.z = 0;
+            Color zmaxColor = Color.White;
+            for (int i = 0; i < obj.Length; i++)
+            {
+                for (int j = 0; j < obj[i].S.Length; j++)
+                {
+                    if (obj[i].visibleSurfaceIndex.Contains(j))
+                    {
+                        TPoint p1 = obj[i].VS[obj[i].S[j].p1];
+                        TPoint p2 = obj[i].VS[obj[i].S[j].p2];
+                        TPoint p3 = obj[i].VS[obj[i].S[j].p3];
+                        if(IsPointInTriangle(tempPoint, p1, p2, p3))
+                        {
+                            //debug += obj[i].S[j].c + " => ";
+                            TPoint p1p2 = FindVector(p1, p2);
+                            TPoint p2p3 = FindVector(p2, p3);
+                            TPoint N = CrossProduct(p1p2, p2p3);
+                            double d = -(N.x * p1.x + N.y * p1.y + N.z * p1.z);
+                            double t = -(d + N.x * x + N.y * y) / N.z * -1;
+                            double newZ = -1 * t;
+                            if (zmax < newZ)
+                            {
+                                zmax = newZ;
+                                zmaxColor = obj[i].S[j].c;
+                            }
+                            //debug += newZ + Environment.NewLine;
+                        }
+                    }
+                }
+            }
+            //debug += Environment.NewLine + zmaxColor + " => " + zmax;
+            return zmaxColor;
+        }
+
+        public bool IsOnlyOneIntersecting(int xmin, int ymin, int xmax, int ymax)
+        {
+            return true;
+        }
+
+        public bool IsOnlyOneContained(int xmin, int ymin, int xmax, int ymax)
+        {
+            return true;
+        }
+
+        public bool IsOnlyOneSurrounding(int xmin, int ymin, int xmax, int ymax)
+        {
+            return true;
+        }
+
+
+        public void Warnock(int xmin, int ymin, int xmax, int ymax)
+        {
+            if((xmax-xmin == 1) && (ymax-ymin == 1))
+            {
+                // Find polygon P closest to viewer at pixel
+                // fill pixel with color of the polygon
+                bmp.SetPixel(xmax - xmin, ymax - ymin, GetClosestPixelColor(xmax - xmin, ymax - ymin));
+            }
+            else
+            {
+                int nS = 0, nIC = 0;
+
+                
+                // For each polygon P
+                // Check if only one intersecting or only one contained polygon
+                // Check if only one surrounding polygon
+                // Check if more than one polygon is intersecting, contained, or surrounding polygon
+                // Perform polygon clip each polygon
+                // Increase nS or nIC accordingly
+                // If area is easy to draw then 
+                // draw area accordingly
+                // Else
+                int xmid = (xmin + xmax) / 2;
+                int ymid = (ymin + ymax) / 2;
+                Warnock(xmin, ymin, xmid, ymid);
+                Warnock(xmid + 1, ymin, xmax, ymid);
+                Warnock(xmid + 1, ymid + 1, xmax, ymax);
+                Warnock(xmin, ymid + 1, xmid, ymax);
+            }
         }
 
 
@@ -682,7 +815,7 @@ namespace _3DCGA_PA15
 
 
 
-        public void draw()
+        public void Draw()
         {
             TPoint[] P = new TPoint[3];
             for (int i = 0; i < obj.Length; i++)
@@ -708,7 +841,7 @@ namespace _3DCGA_PA15
                             }
                             else
                             {
-                                //polygonFill(P, pen);
+                                //PolygonFill(P, pen);
                                 Point[] pp = new Point[3];
                                 pp[0] = new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y));
                                 pp[1] = new Point(Convert.ToInt32(P[1].x), Convert.ToInt32(P[1].y));
@@ -734,7 +867,7 @@ namespace _3DCGA_PA15
                         }
                         else
                         {
-                            //polygonFill(P, pen);
+                            //PolygonFill(P, pen);
                             Point[] pp = new Point[3];
                             pp[0] = new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y));
                             pp[1] = new Point(Convert.ToInt32(P[1].x), Convert.ToInt32(P[1].y));
@@ -800,45 +933,45 @@ namespace _3DCGA_PA15
         {
             // 1. Prepare the objects
             obj[0] = new TObject(4, 4);
-            setPoint(ref obj[0].P[0], -1, -1, 1);
-            setPoint(ref obj[0].P[1], 1, -1, 1);
-            setPoint(ref obj[0].P[2], 0, 1, 0);
-            setPoint(ref obj[0].P[3], 0, -1, -1);
-            setSurface(ref obj[0].S[0], 0, 1, 2, Color.Red);
-            setSurface(ref obj[0].S[1], 1, 3, 2, Color.Yellow);
-            setSurface(ref obj[0].S[2], 3, 0, 2, Color.Green);
-            setSurface(ref obj[0].S[3], 0, 3, 1, Color.Blue);
+            SetPoint(ref obj[0].P[0], -1, -1, 1);
+            SetPoint(ref obj[0].P[1], 1, -1, 1);
+            SetPoint(ref obj[0].P[2], 0, 1, 0);
+            SetPoint(ref obj[0].P[3], 0, -1, -1);
+            SetSurface(ref obj[0].S[0], 0, 1, 2, Color.Red);
+            SetSurface(ref obj[0].S[1], 1, 3, 2, Color.Yellow);
+            SetSurface(ref obj[0].S[2], 3, 0, 2, Color.Green);
+            SetSurface(ref obj[0].S[3], 0, 3, 1, Color.Blue);
 
             obj[1] = new TObject(5, 6);
-            setPoint(ref obj[1].P[0], -1, -1, 1);
-            setPoint(ref obj[1].P[1], 1, -1, 1);
-            setPoint(ref obj[1].P[2], 1, -1, -1);
-            setPoint(ref obj[1].P[3], -1, -1, -1);
-            setPoint(ref obj[1].P[4], 0, 1, 0);
-            setSurface(ref obj[1].S[0], 0, 1, 4, Color.Purple);
-            setSurface(ref obj[1].S[1], 1, 2, 4, Color.Orange);
-            setSurface(ref obj[1].S[2], 2, 3, 4, Color.Magenta);
-            setSurface(ref obj[1].S[3], 3, 0, 4, Color.Black);
-            setSurface(ref obj[1].S[4], 3, 2, 0, Color.Gray);
-            setSurface(ref obj[1].S[5], 2, 1, 0, Color.Aqua);
+            SetPoint(ref obj[1].P[0], -1, -1, 1);
+            SetPoint(ref obj[1].P[1], 1, -1, 1);
+            SetPoint(ref obj[1].P[2], 1, -1, -1);
+            SetPoint(ref obj[1].P[3], -1, -1, -1);
+            SetPoint(ref obj[1].P[4], 0, 1, 0);
+            SetSurface(ref obj[1].S[0], 0, 1, 4, Color.Purple);
+            SetSurface(ref obj[1].S[1], 1, 2, 4, Color.Orange);
+            SetSurface(ref obj[1].S[2], 2, 3, 4, Color.Magenta);
+            SetSurface(ref obj[1].S[3], 3, 0, 4, Color.Black);
+            SetSurface(ref obj[1].S[4], 3, 2, 0, Color.Gray);
+            SetSurface(ref obj[1].S[5], 2, 1, 0, Color.Aqua);
 
             for (int i = 0; i < obj.Length; i++)
             {
                 selectListBox.Items.Add(i);
-                resetTransM(i);
+                ResetTransM(i);
             }
 
-            translateObject(0, -2, 0, 0);
-            rotateObjectOnX(0, 45);
-            translateObject(1, 2, 0, 0);
-            rotateObjectOnY(1, -45);
+            TranslateObject(0, -2, 0, 0);
+            RotateObjectOnX(0, 45);
+            TranslateObject(1, 2, 0, 0);
+            RotateObjectOnY(1, -45);
 
             selectListBox.SetSelected(0, true);
 
             translateRB.Checked = true;
             frontSurfaceCB.Checked = true;
 
-            display();
+            Display();
         }
 
 
@@ -849,33 +982,33 @@ namespace _3DCGA_PA15
             selectedObjectIndex = selectListBox.SelectedIndex;
             if(e.KeyCode == Keys.W)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0.1, 0);
-                else rotateObjectOnX(selectedObjectIndex, -1);
+                if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0.1, 0);
+                else RotateObjectOnX(selectedObjectIndex, -1);
             }
             else if(e.KeyCode == Keys.S)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, -0.1, 0);
-                else rotateObjectOnX(selectedObjectIndex, 1);
+                if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, -0.1, 0);
+                else RotateObjectOnX(selectedObjectIndex, 1);
             }
             else if (e.KeyCode == Keys.A)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, -0.1, 0, 0);
-                else rotateObjectOnZ(selectedObjectIndex, 1);
+                if (translateRB.Checked) TranslateObject(selectedObjectIndex, -0.1, 0, 0);
+                else RotateObjectOnZ(selectedObjectIndex, 1);
             }
             else if(e.KeyCode == Keys.D)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0.1, 0, 0);
-                else rotateObjectOnZ(selectedObjectIndex, -1);
+                if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0.1, 0, 0);
+                else RotateObjectOnZ(selectedObjectIndex, -1);
             }
             else if(e.KeyCode == Keys.Q)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, 0.1);
-                else rotateObjectOnY(selectedObjectIndex, -1);
+                if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0, 0.1);
+                else RotateObjectOnY(selectedObjectIndex, -1);
             }
             else if(e.KeyCode == Keys.E)
             {
-                if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, -0.1);
-                else rotateObjectOnY(selectedObjectIndex, 1);
+                if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0, -0.1);
+                else RotateObjectOnY(selectedObjectIndex, 1);
             }
             else if (e.KeyCode == Keys.T)
             {
@@ -902,7 +1035,7 @@ namespace _3DCGA_PA15
                 if (index < selectListBox.Items.Count-1) index += 1;
                 selectListBox.SetSelected(index, true);
             }
-            display();
+            Display();
         }
 
 
@@ -910,56 +1043,56 @@ namespace _3DCGA_PA15
         private void upBtn_Click(object sender, EventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
-            if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 1, 0);
-            else rotateObjectOnX(selectedObjectIndex, -1);
-            display();
+            if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 1, 0);
+            else RotateObjectOnX(selectedObjectIndex, -1);
+            Display();
         }
 
         private void downBtn_Click(object sender, EventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
-            if (translateRB.Checked) translateObject(selectedObjectIndex, 0, -1, 0);
-            else rotateObjectOnX(selectedObjectIndex, 1);
-            display();
+            if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, -1, 0);
+            else RotateObjectOnX(selectedObjectIndex, 1);
+            Display();
         }
 
         private void leftBtn_Click(object sender, EventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
-            if (translateRB.Checked) translateObject(selectedObjectIndex, -1, 0, 0);
-            else rotateObjectOnZ(selectedObjectIndex, 1);
-            display();
+            if (translateRB.Checked) TranslateObject(selectedObjectIndex, -1, 0, 0);
+            else RotateObjectOnZ(selectedObjectIndex, 1);
+            Display();
         }
 
         private void rightBtn_Click(object sender, EventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
-            if (translateRB.Checked) translateObject(selectedObjectIndex, 1, 0, 0);
-            else rotateObjectOnZ(selectedObjectIndex, -1);
-            display();
+            if (translateRB.Checked) TranslateObject(selectedObjectIndex, 1, 0, 0);
+            else RotateObjectOnZ(selectedObjectIndex, -1);
+            Display();
         }
 
         private void frontBtn_Click(object sender, EventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
-            if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, 1);
-            else rotateObjectOnY(selectedObjectIndex, -1);
-            display();
+            if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0, 1);
+            else RotateObjectOnY(selectedObjectIndex, -1);
+            Display();
         }
 
         private void backBtn_Click(object sender, EventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
-            if (translateRB.Checked) translateObject(selectedObjectIndex, 0, 0, -1);
-            else rotateObjectOnY(selectedObjectIndex, 1);
-            display();
+            if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0, -1);
+            else RotateObjectOnY(selectedObjectIndex, 1);
+            Display();
         }
 
         private void resetBtn_Click(object sender, EventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
-            resetTransM(selectedObjectIndex);
-            display();
+            ResetTransM(selectedObjectIndex);
+            Display();
         }
 
         private void filledCB_CheckedChanged(object sender, EventArgs e)
@@ -967,12 +1100,12 @@ namespace _3DCGA_PA15
             frontSurfaceCB.Checked = true;
             if (filledCB.Checked) frontSurfaceCB.Enabled = false;
             else frontSurfaceCB.Enabled = true;
-            display();
+            Display();
         }
 
         private void frontSurfaceCB_CheckedChanged(object sender, EventArgs e)
         {
-            display();
+            Display();
         }
     }
 }
