@@ -664,6 +664,11 @@ namespace _3DCGA_PA15
             //debug += selectedObjectIndex + Environment.NewLine;
             Draw();
             debug = "";
+            //GeneratePolygonList();
+            //debug += "One polygon contained: " + IsOnlyOneContained(0, 0, pictureBox1.Width / 2, pictureBox1.Height / 2) + Environment.NewLine;
+            //debug += "One polygon intersected: " + IsOnlyOneIntersecting(0, 0, pictureBox1.Width / 2, pictureBox1.Height / 2) + Environment.NewLine;
+            IsOnlyOneIntersecting(0, 0, pictureBox1.Width / 2, pictureBox1.Height / 2);
+            //IsOnlyOneIntersecting(0, 0, pictureBox1.Width / 2, pictureBox1.Height / 2);
             debugTextBox.Text = debug;
         }
 
@@ -760,14 +765,154 @@ namespace _3DCGA_PA15
             return zmaxColor;
         }
 
-        public bool IsOnlyOneIntersecting(int xmin, int ymin, int xmax, int ymax)
+        public bool IsPolygonInsideArea(TPoint p1, TPoint p2,TPoint p3, int xmin, int ymin, int xmax, int ymax)
         {
-            return true;
+            TPoint A = new TPoint();
+            TPoint B = new TPoint();
+            TPoint C = new TPoint();
+            TPoint D = new TPoint();
+            SetPoint(ref A, xmin, ymax, 0);
+            SetPoint(ref B, xmax, ymax, 0);
+            SetPoint(ref C, xmax, ymin, 0);
+            SetPoint(ref D, xmin, ymin, 0);
+            TPoint AB = FindVector(A, B);
+            TPoint BC = FindVector(B, C);
+            TPoint CD = FindVector(C, D);
+            TPoint DA = FindVector(D, A);
+            double cAB1, cBC1, cCD1, cDA1, cAB2, cBC2, cCD2, cDA2, cAB3, cBC3, cCD3, cDA3;
+            bool p1In, p2In, p3In;
+
+            TPoint Ap1 = FindVector(A, p1);
+            TPoint Bp1 = FindVector(B, p1);
+            TPoint Cp1 = FindVector(C, p1);
+            TPoint Dp1 = FindVector(D, p1);
+            cAB1 = CrossProduct2D(Ap1, AB);
+            cBC1 = CrossProduct2D(Bp1, BC);
+            cCD1 = CrossProduct2D(Cp1, CD);
+            cDA1 = CrossProduct2D(Dp1, DA);
+            p1In = ((cAB1 > 0) && (cBC1 > 0) && (cCD1 > 0) && (cDA1 > 0));
+
+            TPoint Ap2 = FindVector(A, p2);
+            TPoint Bp2 = FindVector(B, p2);
+            TPoint Cp2 = FindVector(C, p2);
+            TPoint Dp2 = FindVector(D, p2);
+            cAB2 = CrossProduct2D(Ap2, AB);
+            cBC2 = CrossProduct2D(Bp2, BC);
+            cCD2 = CrossProduct2D(Cp2, CD);
+            cDA2 = CrossProduct2D(Dp2, DA);
+            p2In = ((cAB2 > 0) && (cBC2 > 0) && (cCD2 > 0) && (cDA2 > 0));
+
+            TPoint Ap3 = FindVector(A, p3);
+            TPoint Bp3 = FindVector(B, p3);
+            TPoint Cp3 = FindVector(C, p3);
+            TPoint Dp3 = FindVector(D, p3);
+            cAB3 = CrossProduct2D(Ap3, AB);
+            cBC3 = CrossProduct2D(Bp3, BC);
+            cCD3 = CrossProduct2D(Cp3, CD);
+            cDA3 = CrossProduct2D(Dp3, DA);
+            p3In = ((cAB3 > 0) && (cBC3 > 0) && (cCD3 > 0) && (cDA3 > 0));
+
+            return (p1In && p2In && p3In);
+        }
+
+        public bool IsPolygonIntersectArea(TPoint p1, TPoint p2, TPoint p3, int xmin, int ymin, int xmax, int ymax)
+        {
+            TPoint A = new TPoint();
+            TPoint B = new TPoint();
+            TPoint C = new TPoint();
+            TPoint D = new TPoint();
+            SetPoint(ref A, xmin, ymax, 0);
+            SetPoint(ref B, xmax, ymax, 0);
+            SetPoint(ref C, xmax, ymin, 0);
+            SetPoint(ref D, xmin, ymin, 0);
+            TPoint AB = FindVector(A, B);
+            TPoint BC = FindVector(B, C);
+            TPoint CD = FindVector(C, D);
+            TPoint DA = FindVector(D, A);
+            double cAB1, cBC1, cCD1, cDA1, cAB2, cBC2, cCD2, cDA2, cAB3, cBC3, cCD3, cDA3;
+            bool p1In, p2In, p3In;
+
+            TPoint Ap1 = FindVector(A, p1);
+            TPoint Bp1 = FindVector(B, p1);
+            TPoint Cp1 = FindVector(C, p1);
+            TPoint Dp1 = FindVector(D, p1);
+            cAB1 = CrossProduct2D(Ap1, AB);
+            cBC1 = CrossProduct2D(Bp1, BC);
+            cCD1 = CrossProduct2D(Cp1, CD);
+            cDA1 = CrossProduct2D(Dp1, DA);
+            p1In = ((cAB1 > 0) && (cBC1 > 0) && (cCD1 > 0) && (cDA1 > 0));
+
+            TPoint Ap2 = FindVector(A, p2);
+            TPoint Bp2 = FindVector(B, p2);
+            TPoint Cp2 = FindVector(C, p2);
+            TPoint Dp2 = FindVector(D, p2);
+            cAB2 = CrossProduct2D(Ap2, AB);
+            cBC2 = CrossProduct2D(Bp2, BC);
+            cCD2 = CrossProduct2D(Cp2, CD);
+            cDA2 = CrossProduct2D(Dp2, DA);
+            p2In = ((cAB2 > 0) && (cBC2 > 0) && (cCD2 > 0) && (cDA2 > 0));
+
+            TPoint Ap3 = FindVector(A, p3);
+            TPoint Bp3 = FindVector(B, p3);
+            TPoint Cp3 = FindVector(C, p3);
+            TPoint Dp3 = FindVector(D, p3);
+            cAB3 = CrossProduct2D(Ap3, AB);
+            cBC3 = CrossProduct2D(Bp3, BC);
+            cCD3 = CrossProduct2D(Cp3, CD);
+            cDA3 = CrossProduct2D(Dp3, DA);
+            p3In = ((cAB3 > 0) && (cBC3 > 0) && (cCD3 > 0) && (cDA3 > 0));
+
+            if (
+                ((p1In == true) && (p2In == true) && (p3In == false)) ||
+                ((p1In == true) && (p2In == false) && (p3In == true)) ||
+                ((p1In == false) && (p2In == true) && (p3In == true)) ||
+                ((p1In == true) && (p2In == false) && (p3In == false)) ||
+                ((p1In == false) && (p2In == true) && (p3In == false)) ||
+                ((p1In == false) && (p2In == false) && (p3In == true))
+                ) return true;
+            else return false;
+        }
+
+        public void IsOnlyOneIntersecting(int xmin, int ymin, int xmax, int ymax)
+        {
+            int count = 0;
+            for (int i = 0; i < obj.Length; i++)
+            {
+                for (int j = 0; j < obj[i].S.Length; j++)
+                {
+                    if (obj[i].visibleSurfaceIndex.Contains(j))
+                    {
+                        TPoint p1 = obj[i].VS[obj[i].S[j].p1];
+                        TPoint p2 = obj[i].VS[obj[i].S[j].p2];
+                        TPoint p3 = obj[i].VS[obj[i].S[j].p3];
+                        if (IsPolygonIntersectArea(p1, p2, p3, xmin, ymin, xmax, ymax))
+                        {
+                            debug += "Polygon " + i + " intersect" + Environment.NewLine;
+                            count++;
+                        }
+                    }
+                }
+            }
+            //return (count == 1);
         }
 
         public bool IsOnlyOneContained(int xmin, int ymin, int xmax, int ymax)
         {
-            return true;
+            int count = 0;
+            for (int i = 0; i < obj.Length; i++)
+            {
+                for (int j = 0; j < obj[i].S.Length; j++)
+                {
+                    if (obj[i].visibleSurfaceIndex.Contains(j))
+                    {
+                        TPoint p1 = obj[i].VS[obj[i].S[j].p1];
+                        TPoint p2 = obj[i].VS[obj[i].S[j].p2];
+                        TPoint p3 = obj[i].VS[obj[i].S[j].p3];
+                        if (IsPolygonInsideArea(p1, p2, p3, xmin, ymin, xmax, ymax)) count++;
+                    }
+                }
+            }
+            return (count == 1);
         }
 
         public bool IsOnlyOneSurrounding(int xmin, int ymin, int xmax, int ymax)
@@ -877,6 +1022,8 @@ namespace _3DCGA_PA15
                     }
                 }
             }
+            g.DrawLine(new Pen(Color.Blue), new Point(0, pictureBox1.Height / 2), new Point(pictureBox1.Width, pictureBox1.Height / 2));
+            g.DrawLine(new Pen(Color.Blue), new Point(pictureBox1.Width / 2, 0), new Point(pictureBox1.Width / 2, pictureBox1.Height));
             pictureBox1.Image = bmp;
         }
 
