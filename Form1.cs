@@ -274,7 +274,7 @@ namespace _3DCGA_PA15
                 if (res < 0) obj[index].visibleSurfaceIndex.Add(i);
             }
         }
-        public void PolygonFill(TPoint[] P, Pen pen)
+        public void PolygonFill(Pen pen, TPoint[] P)
         {
             int dx, dy, ymin, ymax, xofymin; // Declare the variable needed for polygon scanline fill
             int wholeymin = 9999; // Initiate and set the wholeymin
@@ -641,7 +641,7 @@ namespace _3DCGA_PA15
                     obj[i].VS[j] = MultiplyMatrix(obj[i].VV[j], St);
                 }
             }
-            Draw();
+            //Draw();
             debug = "";
             GeneratePolygonList();
             Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
@@ -677,6 +677,9 @@ namespace _3DCGA_PA15
             //}
 
             //Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
+            TPolygon temp21 = new TPolygon();
+            temp21 = IsOnlyOneIntersecting(0, 0, pictureBox1.Width / 2, pictureBox1.Height / 2);
+            if (temp21 != null) debug += temp21.c + Environment.NewLine;
             debugTextBox.Text = debug;
         }
 
@@ -938,18 +941,34 @@ namespace _3DCGA_PA15
 
         public void Warnock(int xmin, int ymin, int xmax, int ymax)
         {
-            if (xmin == 301 && ymin == 151 && xmax == 400 && ymax == 200) 
-                MessageBox.Show(xmin.ToString() + ymin.ToString() +  xmax.ToString() +  ymax.ToString());
-            // Base case if there are only one pixel left
-            if ((xmax - xmin == 1) || (ymax - ymin == 1)) // Width = 800 and Height = 400, 1 pixel?
+            if ((xmax == xmin) || (ymax == ymin))
             {
                 bmp.SetPixel(xmax - xmin, ymax - ymin, GetClosestPixelColor(xmax - xmin, ymax - ymin));
             }
-            // Base case if there are some polygons
             else
             {
-                // Case 1: All polygons are disjoint.
-                if(IsAllPolygonsAreDisjoint(xmin, ymin, xmax, ymax))
+                int nS = 0, nIC = 0;
+                List<TPolygon> clipped_polygon_list = new List<TPolygon>();
+                clipped_polygon_list.Clear();
+                for(int i=0; i<polygon_list.Count; i++)
+                {
+                    TPolygon tempPolygon = polygon_list[i];
+                    (TPolygon clippedPolygon, int clipped_side) = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
+                    if (clippedPolygon.P.Count == 0) continue;
+                    // ???
+                    //else if (tempPolygon.P.Count == clippedPolygon.P.Count)
+                    //{
+                    //    nIC++;
+                    //    clipped_polygon_list.Add(clippedPolygon);
+                    //}
+                    //else
+                    //{
+                    //    nS++;
+                    //    clipped_polygon_list.Add(clippedPolygon);
+                    //}
+                    // ???
+                }
+                if(nS == 0 && nIC == 0) // Case 1: All polygons are disjoint.
                 {
                     Point[] P = new Point[4];
                     SolidBrush brush = new SolidBrush(Color.White);
@@ -959,57 +978,46 @@ namespace _3DCGA_PA15
                     P[3] = new Point(xmin, ymin);
                     g.FillPolygon(brush, P);
                 }
-
-                // Case 2: Only one intersecting or one contained polygon is the area.
-                else if (IsOnlyOneIntersecting(xmin, ymin, xmax, ymax) != null || IsOnlyOneContained(xmin, ymin, xmax, ymax) != null)
+                else if(nS == 0 && nIC == 1) // Case 2: Only one intersecting or one contained polygon is the area.
                 {
-                    TPolygon temp = new TPolygon();
-                    if(IsOnlyOneIntersecting(xmin, ymin, xmax, ymax) != null) temp = IsOnlyOneIntersecting(xmin, ymin, xmax, ymax);
-                    else temp = IsOnlyOneContained(xmin, ymin, xmax, ymax);
-                    TPolygon clippedTemp = polygonClip(temp, xmin, ymin, xmax, ymax);
-                    SolidBrush brush = new SolidBrush(clippedTemp.c);
-                    Point[] P = new Point[clippedTemp.P.Count];
-                    for (int i=0; i< clippedTemp.P.Count; i++)
+                    SolidBrush brush = new SolidBrush(clipped_polygon_list[0].c);
+                    Point[] P = new Point[clipped_polygon_list[0].P.Count];
+                    for (int i = 0; i < clipped_polygon_list[0].P.Count; i++)
                     {
-                        P[i] = new Point(Convert.ToInt32(clippedTemp.P[i].x), Convert.ToInt32(clippedTemp.P[i].y));
+                        P[i] = new Point(Convert.ToInt32(clipped_polygon_list[0].P[i].x), Convert.ToInt32(clipped_polygon_list[0].P[i].y));
                     }
                     g.FillPolygon(brush, P);
                 }
-
-                // Case 3: Only one surrounding polygon in the area.
-                else if (IsOnlyOneSurrounding(xmin, ymin, xmax, ymax) != null)
+                else if(nS == 1 && nIC == 0) // Case 3: Only one surrounding polygon in the area.
                 {
-                    TPolygon temp = IsOnlyOneSurrounding(xmin, ymin, xmax, ymax);
                     Point[] P = new Point[4];
-                    SolidBrush brush = new SolidBrush(temp.c);
+                    SolidBrush brush = new SolidBrush(clipped_polygon_list[0].c);
                     P[0] = new Point(xmin, ymax);
                     P[1] = new Point(xmax, ymax);
                     P[2] = new Point(xmax, ymin);
                     P[3] = new Point(xmin, ymin);
                     g.FillPolygon(brush, P);
                 }
-
-                // Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
-                else if(IsMoreThanOnePolygon(xmin, ymin, xmax, ymax) != null)
+                else if(nS > 1) // Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
                 {
-                    TPolygon temp = IsMoreThanOnePolygon(xmin, ymin, xmax, ymax);
                     Point[] P = new Point[4];
-                    SolidBrush brush = new SolidBrush(temp.c);
+                    SolidBrush brush = new SolidBrush(Color.White);
                     P[0] = new Point(xmin, ymax);
                     P[1] = new Point(xmax, ymax);
                     P[2] = new Point(xmax, ymin);
                     P[3] = new Point(xmin, ymin);
                     g.FillPolygon(brush, P);
                 }
-
                 else
                 {
-                    int xmid = (xmin + xmax) / 2;
-                    int ymid = (ymin + ymax) / 2;
-                    Warnock(xmin, ymin, xmid, ymid);
-                    Warnock(xmid + 1, ymin, xmax, ymid);
-                    Warnock(xmid + 1, ymid + 1, xmax, ymax);
-                    Warnock(xmin, ymid + 1, xmid, ymax);
+                    // Dummy
+                    //int xmid = (xmin + xmax) / 2;
+                    //int ymid = (ymin + ymax) / 2;
+                    //Warnock(xmin, ymin, xmid, ymid);
+                    //Warnock(xmid + 1, ymin, xmax, ymid);
+                    //Warnock(xmid + 1, ymid + 1, xmax, ymax);
+                    //Warnock(xmin, ymid + 1, xmid, ymax);
+                    //
                 }
             }
         }
@@ -1034,7 +1042,7 @@ namespace _3DCGA_PA15
                         if (obj[i].visibleSurfaceIndex.Contains(j))
                         {
                             Pen pen = new Pen(obj[i].S[j].c);
-                            SolidBrush brush = new SolidBrush(obj[i].S[j].c);
+                            //SolidBrush brush = new SolidBrush(obj[i].S[j].c);
                             P[0] = obj[i].VS[obj[i].S[j].p1];
                             P[1] = obj[i].VS[obj[i].S[j].p2];
                             P[2] = obj[i].VS[obj[i].S[j].p3];
@@ -1049,18 +1057,21 @@ namespace _3DCGA_PA15
                             else
                             {
                                 //PolygonFill(P, pen);
-                                Point[] pp = new Point[3];
-                                pp[0] = new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y));
-                                pp[1] = new Point(Convert.ToInt32(P[1].x), Convert.ToInt32(P[1].y));
-                                pp[2] = new Point(Convert.ToInt32(P[2].x), Convert.ToInt32(P[2].y));
-                                g.FillPolygon(brush, pp);
+                                TPoint[] pp = new TPoint[3];
+                                SetPoint(ref pp[0], P[0].x, P[0].y, P[0].z);
+                                SetPoint(ref pp[1], P[1].x, P[1].y, P[1].z);
+                                SetPoint(ref pp[2], P[2].x, P[2].y, P[2].z);
+                                //pp[0] = new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y));
+                                //pp[1] = new Point(Convert.ToInt32(P[1].x), Convert.ToInt32(P[1].y));
+                                //pp[2] = new Point(Convert.ToInt32(P[2].x), Convert.ToInt32(P[2].y));
+                                PolygonFill(pen, pp);
                             }
                         }
                     }
                     else
                     {
                         Pen pen = new Pen(obj[i].S[j].c);
-                        SolidBrush brush = new SolidBrush(obj[i].S[j].c);
+                        //SolidBrush brush = new SolidBrush(obj[i].S[j].c);
                         P[0] = obj[i].VS[obj[i].S[j].p1];
                         P[1] = obj[i].VS[obj[i].S[j].p2];
                         P[2] = obj[i].VS[obj[i].S[j].p3];
@@ -1075,11 +1086,14 @@ namespace _3DCGA_PA15
                         else
                         {
                             //PolygonFill(P, pen);
-                            Point[] pp = new Point[3];
-                            pp[0] = new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y));
-                            pp[1] = new Point(Convert.ToInt32(P[1].x), Convert.ToInt32(P[1].y));
-                            pp[2] = new Point(Convert.ToInt32(P[2].x), Convert.ToInt32(P[2].y));
-                            g.FillPolygon(brush, pp);
+                            TPoint[] pp = new TPoint[3];
+                            SetPoint(ref pp[0], P[0].x, P[0].y, P[0].z);
+                            SetPoint(ref pp[1], P[1].x, P[1].y, P[1].z);
+                            SetPoint(ref pp[2], P[2].x, P[2].y, P[2].z);
+                            //pp[0] = new Point(Convert.ToInt32(P[0].x), Convert.ToInt32(P[0].y));
+                            //pp[1] = new Point(Convert.ToInt32(P[1].x), Convert.ToInt32(P[1].y));
+                            //pp[2] = new Point(Convert.ToInt32(P[2].x), Convert.ToInt32(P[2].y));
+                            PolygonFill(pen, pp);
                         }
                     }
                 }
@@ -1249,9 +1263,10 @@ namespace _3DCGA_PA15
             return temp_list;
         }
 
-        public TPolygon polygonClip(TPolygon polygon, int xmin, int ymin, int xmax, int ymax)
+        public Tuple<TPolygon, int> polygonClip(TPolygon polygon, int xmin, int ymin, int xmax, int ymax)
         {
             TPolygon tempPolygon = new TPolygon();
+            int clipped_side = 0;
             List<TPoint> polygon_points = new List<TPoint>();
             List<TPoint> temp_list = new List<TPoint>();
             List<int> inIndex = new List<int>();
@@ -1271,6 +1286,7 @@ namespace _3DCGA_PA15
                 if (polygon_points[i].x < xmin) outIndex.Add(i);
                 else inIndex.Add(i);
             }
+            if (outIndex.Count > 0) clipped_side++;
             temp_list = clip(polygon_points, inIndex, outIndex, "left", xmin);
             polygon_points.Clear();
             polygon_points.AddRange(temp_list);
@@ -1284,6 +1300,7 @@ namespace _3DCGA_PA15
                 if (polygon_points[i].x > xmax) outIndex.Add(i);
                 else inIndex.Add(i);
             }
+            if (outIndex.Count > 0) clipped_side++;
             temp_list = clip(polygon_points, inIndex, outIndex, "right", xmax);
             polygon_points.Clear();
             polygon_points.AddRange(temp_list);
@@ -1297,6 +1314,7 @@ namespace _3DCGA_PA15
                 if (polygon_points[i].y > ymax) outIndex.Add(i);
                 else inIndex.Add(i);
             }
+            if (outIndex.Count > 0) clipped_side++;
             temp_list = clip(polygon_points, inIndex, outIndex, "top", ymax);
             polygon_points.Clear();
             polygon_points.AddRange(temp_list);
@@ -1311,6 +1329,7 @@ namespace _3DCGA_PA15
                 if (polygon_points[i].y < ymin) outIndex.Add(i);
                 else inIndex.Add(i);
             }
+            if (outIndex.Count > 0) clipped_side++;
             temp_list = clip(polygon_points, inIndex, outIndex, "bottom", ymin);
             polygon_points.Clear();
             polygon_points.AddRange(temp_list);
@@ -1319,7 +1338,7 @@ namespace _3DCGA_PA15
             tempPolygon.c = polygon.c;
             tempPolygon.P = polygon_points;
 
-            return tempPolygon;
+            return Tuple.Create(tempPolygon, clipped_side);
         }
 
 
