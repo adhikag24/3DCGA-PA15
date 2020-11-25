@@ -48,7 +48,11 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.drawRB = new System.Windows.Forms.RadioButton();
+            this.warnockRB = new System.Windows.Forms.RadioButton();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -251,11 +255,47 @@
             this.label6.TabIndex = 21;
             this.label6.Text = "label6";
             // 
+            // drawRB
+            // 
+            this.drawRB.AutoSize = true;
+            this.drawRB.Location = new System.Drawing.Point(6, 21);
+            this.drawRB.Name = "drawRB";
+            this.drawRB.Size = new System.Drawing.Size(61, 21);
+            this.drawRB.TabIndex = 22;
+            this.drawRB.TabStop = true;
+            this.drawRB.Text = "Draw";
+            this.drawRB.UseVisualStyleBackColor = true;
+            this.drawRB.CheckedChanged += new System.EventHandler(this.drawRB_CheckedChanged);
+            // 
+            // warnockRB
+            // 
+            this.warnockRB.AutoSize = true;
+            this.warnockRB.Location = new System.Drawing.Point(6, 48);
+            this.warnockRB.Name = "warnockRB";
+            this.warnockRB.Size = new System.Drawing.Size(85, 21);
+            this.warnockRB.TabIndex = 23;
+            this.warnockRB.TabStop = true;
+            this.warnockRB.Text = "Warnock";
+            this.warnockRB.UseVisualStyleBackColor = true;
+            this.warnockRB.CheckedChanged += new System.EventHandler(this.warnockRB_CheckedChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.drawRB);
+            this.groupBox1.Controls.Add(this.warnockRB);
+            this.groupBox1.Location = new System.Drawing.Point(286, 589);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(200, 100);
+            this.groupBox1.TabIndex = 24;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Methods:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1413, 723);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -282,6 +322,8 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -309,6 +351,9 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.RadioButton drawRB;
+        private System.Windows.Forms.RadioButton warnockRB;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
 

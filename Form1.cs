@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace _3DCGA_PA15
@@ -183,11 +178,11 @@ namespace _3DCGA_PA15
 
         public void ResetTransM(int index)
         {
-            obj[index].TranslateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            obj[index].RotateM = new double[4,4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            obj[index].TranslateM = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            obj[index].RotateM = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         }
 
-        public void TranslateObject(int index, double dx=0, double dy=0, double dz=0)
+        public void TranslateObject(int index, double dx = 0, double dy = 0, double dz = 0)
         {
             double[,] temp = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { dx, dy, dz, 1 } };
             obj[index].TranslateM = MatrixMultiplication(obj[index].TranslateM, temp);
@@ -198,7 +193,7 @@ namespace _3DCGA_PA15
             dx = obj[index].TranslateM[3, 0];
             dy = obj[index].TranslateM[3, 1];
             dz = obj[index].TranslateM[3, 2];
-            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0}, { 0, 1, 0, 0}, { 0, 0, 1, 0}, { -dx, -dy, -dz, 1} };
+            double[,] minTranslate = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -dx, -dy, -dz, 1 } };
             double[,] temp = new double[4, 4]
             {
             {1, 0, 0, 0 },
@@ -288,12 +283,12 @@ namespace _3DCGA_PA15
 
             var SET = new SETElement[pictureBox1.Height, pictureBox1.Width]; // Create 2d array of SET element
 
-            for (int i=0; i<P.Length; i++)
+            for (int i = 0; i < P.Length; i++)
             {
                 TPoint first_vertices, second_vertices;
                 int x1, y1, x2, y2;
                 SETElement se = new SETElement();
-                if(i == P.Length-1)
+                if (i == P.Length - 1)
                 {
                     first_vertices = P[i];
                     second_vertices = P[0];
@@ -338,7 +333,7 @@ namespace _3DCGA_PA15
                             SET[ymin, indexItemCount[ymin]] = se;
                             indexItemCount[ymin]++;
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             MessageBox.Show("Polygon reached the screen limit!");
                             Console.WriteLine(e);
@@ -348,7 +343,7 @@ namespace _3DCGA_PA15
                 else
                 {
                     first_vertices = P[i];
-                    second_vertices = P[i+1];
+                    second_vertices = P[i + 1];
                     x1 = Convert.ToInt32(first_vertices.x);
                     y1 = Convert.ToInt32(first_vertices.y);
                     x2 = Convert.ToInt32(second_vertices.x);
@@ -641,45 +636,13 @@ namespace _3DCGA_PA15
                     obj[i].VS[j] = MultiplyMatrix(obj[i].VV[j], St);
                 }
             }
-            //Draw();
+            if (drawRB.Checked) Draw();
+            else if (warnockRB.Checked)
+            {
+                GeneratePolygonList();
+                Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
+            }
             debug = "";
-            GeneratePolygonList();
-            Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
-            ////debug += GetClosestPixelColor(400, 200) + Environment.NewLine;
-            //TPolygon temp1 = IsOnlyOneIntersecting(0, 0, pictureBox1.Width / 2, pictureBox1.Height / 2);
-            //if(temp1 != null) debug += temp1.c + Environment.NewLine;
-            //debug += Environment.NewLine;
-
-            //TPolygon temp2 = IsOnlyOneContained(0, 0, pictureBox1.Width / 2, pictureBox1.Height / 2);
-            //if (temp2 != null) debug += temp2.c + Environment.NewLine;
-            //debug += Environment.NewLine;
-
-            //TPolygon temp3 = IsOnlyOneSurrounding(250, 250, 275, 275);
-            //if (temp3 != null) debug += temp3.c + Environment.NewLine;
-            //debug += Environment.NewLine;
-            //TPolygon temp1 = new TPolygon();
-            //TPoint temp_p1 = new TPoint();
-            //TPoint temp_p2 = new TPoint();
-            //TPoint temp_p3 = new TPoint();
-            //SetPoint(ref temp_p1, 2, 5, 1);
-            //SetPoint(ref temp_p2, 5, 4, 1);
-            //SetPoint(ref temp_p3, 6, 9, 1);
-            //List<TPoint> tempPList = new List<TPoint>();
-            //tempPList.Add(temp_p1);
-            //tempPList.Add(temp_p2);
-            //tempPList.Add(temp_p3);
-            //temp1.P = tempPList;
-            //temp1.c = Color.Red;
-            //TPolygon clipped = polygonClip(temp1, 3, 3, 8, 7);
-            //for (int i = 0; i < clipped.P.Count; i++)
-            //{
-            //    debug += i + " => (" + clipped.P[i].x + "    " + clipped.P[i].y + "    " + clipped.P[i].z + ")" + Environment.NewLine;
-            //}
-
-            //Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
-            TPolygon temp21 = new TPolygon();
-            temp21 = IsOnlyOneIntersecting(0, 0, pictureBox1.Width / 2, pictureBox1.Height / 2);
-            if (temp21 != null) debug += temp21.c + Environment.NewLine;
             debugTextBox.Text = debug;
         }
 
@@ -695,11 +658,11 @@ namespace _3DCGA_PA15
         public void GeneratePolygonList()
         {
             polygon_list.Clear();
-            for (int i=0; i<obj.Length; i++)
+            for (int i = 0; i < obj.Length; i++)
             {
-                for(int j=0; j<obj[i].S.Length; j++)
+                for (int j = 0; j < obj[i].S.Length; j++)
                 {
-                    if(obj[i].visibleSurfaceIndex.Contains(j))
+                    if (obj[i].visibleSurfaceIndex.Contains(j))
                     {
                         List<TPoint> P = new List<TPoint>();
                         P.Add(obj[i].VS[obj[i].S[j].p1]);
@@ -787,157 +750,24 @@ namespace _3DCGA_PA15
             //debug += Environment.NewLine + zmaxColor + " => " + zmax;
             return zmaxColor;
         }
-        
-
-        public TPolygon IsOnlyOneIntersecting(int xmin, int ymin, int xmax, int ymax)
-        {
-            TPolygon temp = new TPolygon();
-            List<int> index = new List<int>();
-            for (int i = 0; i < polygon_list.Count; i++)
-            {
-                TPoint p1 = polygon_list[i].P[0];
-                TPoint p2 = polygon_list[i].P[1];
-                TPoint p3 = polygon_list[i].P[2];
-                if (IsPolygonIntersectArea(p1, p2, p3, xmin, ymin, xmax, ymax)) index.Add(i);
-            }
-            if (index.Count == 1)
-            {
-                int polygonIndex = index[0];
-                List<TPoint> P = new List<TPoint>();
-                P.Add(polygon_list[polygonIndex].P[0]);
-                P.Add(polygon_list[polygonIndex].P[1]);
-                P.Add(polygon_list[polygonIndex].P[2]);
-                temp.P = P;
-                temp.c = polygon_list[polygonIndex].c;
-                return temp;
-            }
-            else return null;
-        }
 
 
 
-        public TPolygon IsOnlyOneContained(int xmin, int ymin, int xmax, int ymax)
-        {
-            TPolygon temp = new TPolygon();
-            List<int> index = new List<int>();
-            for (int i = 0; i < polygon_list.Count; i++)
-            {
-                TPoint p1 = polygon_list[i].P[0];
-                TPoint p2 = polygon_list[i].P[1];
-                TPoint p3 = polygon_list[i].P[2];
-                if (IsPolygonInsideArea(p1, p2, p3, xmin, ymin, xmax, ymax)) index.Add(i);
-            }
-            if (index.Count == 1)
-            {
-                int polygonIndex = index[0];
-                List<TPoint> P = new List<TPoint>();
-                P.Add(polygon_list[polygonIndex].P[0]);
-                P.Add(polygon_list[polygonIndex].P[1]);
-                P.Add(polygon_list[polygonIndex].P[2]);
-                temp.P = P;
-                temp.c = polygon_list[polygonIndex].c;
-                return temp;
-            }
-            else return null;
-        }
 
 
-        public TPolygon IsOnlyOneSurrounding(int xmin, int ymin, int xmax, int ymax)
-        {
-            TPolygon temp = new TPolygon();
-            List<int> index = new List<int>();
-            for (int i = 0; i < polygon_list.Count; i++)
-            {
-                TPoint p1 = polygon_list[i].P[0];
-                TPoint p2 = polygon_list[i].P[1];
-                TPoint p3 = polygon_list[i].P[2];
-                if (IsAreaInsidePolygon(p1, p2, p3, xmin, ymin, xmax, ymax)) index.Add(i);
-            }
-            if (index.Count == 1)
-            {
-                int polygonIndex = index[0];
-                List<TPoint> P = new List<TPoint>();
-                P.Add(polygon_list[polygonIndex].P[0]);
-                P.Add(polygon_list[polygonIndex].P[1]);
-                P.Add(polygon_list[polygonIndex].P[2]);
-                temp.P = P;
-                temp.c = polygon_list[polygonIndex].c;
-                return temp;
-            }
-            else return null;
-        }
 
-        public bool IsAllPolygonsAreDisjoint(int xmin, int ymin, int xmax, int ymax)
-        {
-            bool flag = true;
-            for (int i = 0; i < polygon_list.Count; i++)
-            {
-                TPoint p1 = polygon_list[i].P[0];
-                TPoint p2 = polygon_list[i].P[1];
-                TPoint p3 = polygon_list[i].P[2];
-                if (IsPolygonIntersectArea(p1, p2, p3, xmin, ymin, xmax, ymax) 
-                    || IsPolygonInsideArea(p1, p2, p3, xmin, ymin, xmax, ymax)
-                    || IsAreaInsidePolygon(p1, p2, p3, xmin, ymin, xmax, ymax)) flag = false;
-            }
-            return flag;
-        }
 
-        public TPolygon IsMoreThanOnePolygon(int xmin, int ymin, int xmax, int ymax) // Selesaikan
-        {
-            TPolygon temp = new TPolygon();
-            List<TPolygon> surrounding_polygon_list = new List<TPolygon>();
-            for(int i=0; i<polygon_list.Count; i++)
-            {
-                TPoint p1 = polygon_list[i].P[0];
-                TPoint p2 = polygon_list[i].P[1];
-                TPoint p3 = polygon_list[i].P[2];
-                if (IsAreaInsidePolygon(p1, p2, p3, xmin, ymin, xmax, ymax)) surrounding_polygon_list.Add(polygon_list[i]);
-            }
-            if (surrounding_polygon_list.Count == 1) return surrounding_polygon_list[0];
-            else if (surrounding_polygon_list.Count > 1)
-            {
-                List<double> zmax = new List<double>();
-                List<double> zmin = new List<double>();
-                for (int i = 0; i < surrounding_polygon_list.Count; i++)
-                {
-                    TPoint p1 = surrounding_polygon_list[i].P[0];
-                    TPoint p2 = surrounding_polygon_list[i].P[1];
-                    TPoint p3 = surrounding_polygon_list[i].P[2];
-                    TPoint p1p2 = FindVector(p1, p2);
-                    TPoint p2p3 = FindVector(p2, p3);
-                    TPoint N = CrossProduct(p1p2, p2p3);
-                    double d = -(N.x * p1.x + N.y * p1.y + N.z * p1.z);
-                    double z1, z2, z3, z4;
-                    double t1, t2, t3, t4;
-                    t1 = -(d + N.x * xmin + N.y * ymin) / N.z * -1;
-                    t2 = -(d + N.x * xmax + N.y * ymin) / N.z * -1;
-                    t3 = -(d + N.x * xmax + N.y * ymax) / N.z * -1;
-                    t4 = -(d + N.x * xmin + N.y * ymax) / N.z * -1;
-                    z1 = t1 * -1;
-                    z2 = t2 * -1;
-                    z3 = t3 * -1;
-                    z4 = t4 * -1;
-                    zmax.Add(Math.Max(z1, Math.Max(z2, Math.Max(z3, z4))));
-                    zmin.Add(Math.Min(z1, Math.Min(z2, Math.Min(z3, z4))));
-                }
-                int front_polygon_index = 0;
-                for (int i = 0; i < zmin.Count; i++)
-                {
-                    int count = 0;
-                    for (int j = 0; j < zmax.Count; j++)
-                    {
-                        if (i == j) continue;
-                        else
-                        {
-                            if (zmin[i] > zmax[j]) count++;
-                        }
-                        front_polygon_index = i;
-                    }
-                }
-                return surrounding_polygon_list[front_polygon_index];
-            }
-            else return null;
-        }
+
+
+
+
+
+
+
+
+
+
+
 
         public void Warnock(int xmin, int ymin, int xmax, int ymax)
         {
@@ -950,35 +780,59 @@ namespace _3DCGA_PA15
                 int nS = 0, nIC = 0;
                 List<TPolygon> clipped_polygon_list = new List<TPolygon>();
                 clipped_polygon_list.Clear();
-                for(int i=0; i<polygon_list.Count; i++)
+                for (int i = 0; i < polygon_list.Count; i++)
                 {
                     TPolygon tempPolygon = polygon_list[i];
                     (TPolygon clippedPolygon, int clipped_side) = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
                     if (clippedPolygon.P.Count == 0) continue;
-                    // ???
-                    //else if (tempPolygon.P.Count == clippedPolygon.P.Count)
-                    //{
-                    //    nIC++;
-                    //    clipped_polygon_list.Add(clippedPolygon);
-                    //}
+                    else if (clipped_side == 4 && clippedPolygon.P.Count == 4)
+                    {
+                        nS++;
+                        clipped_polygon_list.Add(clippedPolygon);
+                    }
+                    else
+                    {
+                        nIC++;
+                        clipped_polygon_list.Add(clippedPolygon);
+                    }
                     //else
                     //{
-                    //    nS++;
-                    //    clipped_polygon_list.Add(clippedPolygon);
+                    //    if(clippedPolygon.P.Count == 4)
+                    //    {
+                    //        bool p0In = (clippedPolygon.P[0].x > xmin) && (clippedPolygon.P[0].x < xmax) || (clippedPolygon.P[0].y > ymin) && (clippedPolygon.P[0].y < ymax);
+                    //        bool p1In = (clippedPolygon.P[1].x > xmin) && (clippedPolygon.P[1].x < xmax) || (clippedPolygon.P[1].y > ymin) && (clippedPolygon.P[1].y < ymax);
+                    //        bool p2In = (clippedPolygon.P[2].x > xmin) && (clippedPolygon.P[2].x < xmax) || (clippedPolygon.P[2].y > ymin) && (clippedPolygon.P[2].y < ymax);
+                    //        bool p3In = (clippedPolygon.P[3].x > xmin) && (clippedPolygon.P[3].x < xmax) || (clippedPolygon.P[3].y > ymin) && (clippedPolygon.P[3].y < ymax);
+                    //        if (p0In && p1In && p2In && p3In)
+                    //        {
+                    //            nIC++;
+                    //            clipped_polygon_list.Add(clippedPolygon);
+                    //        }
+                    //        else
+                    //        {
+                    //            nS++;
+                    //            clipped_polygon_list.Add(clippedPolygon);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        nIC++;
+                    //        clipped_polygon_list.Add(clippedPolygon);
+                    //    }
                     //}
-                    // ???
                 }
-                if(nS == 0 && nIC == 0) // Case 1: All polygons are disjoint.
+
+                if (nS == 0 && nIC == 0) // Case 1: All polygons are disjoint.
                 {
                     Point[] P = new Point[4];
-                    SolidBrush brush = new SolidBrush(Color.White);
+                    SolidBrush brush = new SolidBrush(Color.Bisque);
                     P[0] = new Point(xmin, ymax);
                     P[1] = new Point(xmax, ymax);
                     P[2] = new Point(xmax, ymin);
                     P[3] = new Point(xmin, ymin);
                     g.FillPolygon(brush, P);
                 }
-                else if(nS == 0 && nIC == 1) // Case 2: Only one intersecting or one contained polygon is the area.
+                else if (nS == 0 && nIC == 1) // Case 2: Only one intersecting or one contained polygon is the area.
                 {
                     SolidBrush brush = new SolidBrush(clipped_polygon_list[0].c);
                     Point[] P = new Point[clipped_polygon_list[0].P.Count];
@@ -988,7 +842,7 @@ namespace _3DCGA_PA15
                     }
                     g.FillPolygon(brush, P);
                 }
-                else if(nS == 1 && nIC == 0) // Case 3: Only one surrounding polygon in the area.
+                else if (nS == 1 && nIC == 0) // Case 3: Only one surrounding polygon in the area.
                 {
                     Point[] P = new Point[4];
                     SolidBrush brush = new SolidBrush(clipped_polygon_list[0].c);
@@ -998,10 +852,29 @@ namespace _3DCGA_PA15
                     P[3] = new Point(xmin, ymin);
                     g.FillPolygon(brush, P);
                 }
-                else if(nS > 1) // Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
+                else if (nS > 1) // Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
                 {
+                    List<double> zmax = new List<double>();
+                    List<double> zmin = new List<double>();
+                    for (int i = 0; i < clipped_polygon_list.Count; i++)
+                    {
+                        zmax.Add(Math.Max(clipped_polygon_list[i].P[0].z, Math.Max(clipped_polygon_list[i].P[1].z, Math.Max(clipped_polygon_list[i].P[2].z, clipped_polygon_list[i].P[3].z))));
+                        zmin.Add(Math.Min(clipped_polygon_list[i].P[0].z, Math.Min(clipped_polygon_list[i].P[1].z, Math.Min(clipped_polygon_list[i].P[2].z, clipped_polygon_list[i].P[3].z))));
+                    }
+                    int front_polygon_index = 0;
+                    for (int i = 0; i < zmin.Count; i++)
+                    {
+                        for (int j = 0; j < zmax.Count; j++)
+                        {
+                            if (i == j) continue;
+                            else
+                            {
+                                if (zmin[i] > zmax[j]) front_polygon_index = i;
+                            }
+                        }
+                    }
                     Point[] P = new Point[4];
-                    SolidBrush brush = new SolidBrush(Color.White);
+                    SolidBrush brush = new SolidBrush(clipped_polygon_list[front_polygon_index].c);
                     P[0] = new Point(xmin, ymax);
                     P[1] = new Point(xmax, ymax);
                     P[2] = new Point(xmax, ymin);
@@ -1010,25 +883,26 @@ namespace _3DCGA_PA15
                 }
                 else
                 {
-                    // Dummy
-                    //int xmid = (xmin + xmax) / 2;
-                    //int ymid = (ymin + ymax) / 2;
-                    //Warnock(xmin, ymin, xmid, ymid);
-                    //Warnock(xmid + 1, ymin, xmax, ymid);
-                    //Warnock(xmid + 1, ymid + 1, xmax, ymax);
-                    //Warnock(xmin, ymid + 1, xmid, ymax);
-                    //
+                    int xmid = (xmin + xmax) / 2;
+                    int ymid = (ymin + ymax) / 2;
+                    Warnock(xmin, ymin, xmid, ymid);
+                    Warnock(xmid + 1, ymin, xmax, ymid);
+                    Warnock(xmid + 1, ymid + 1, xmax, ymax);
+                    Warnock(xmin, ymid + 1, xmid, ymax);
                 }
             }
+            pictureBox1.Image = bmp;
         }
 
+        private void drawRB_CheckedChanged(object sender, EventArgs e)
+        {
+            Display();
+        }
 
-
-
-
-
-
-
+        private void warnockRB_CheckedChanged(object sender, EventArgs e)
+        {
+            Display();
+        }
 
         public void Draw()
         {
@@ -1110,7 +984,82 @@ namespace _3DCGA_PA15
 
 
 
+        public Tuple<TPolygon, int> polygonClip(TPolygon polygon, int xmin, int ymin, int xmax, int ymax)
+        {
+            TPolygon tempPolygon = new TPolygon();
+            int clipped_side = 0;
+            List<TPoint> polygon_points = new List<TPoint>();
+            List<TPoint> temp_list = new List<TPoint>();
+            List<int> inIndex = new List<int>();
+            List<int> outIndex = new List<int>();
 
+            // Insert all polygon points to the list
+            for (int i = 0; i < polygon.P.Count; i++)
+            {
+                polygon_points.Add(polygon.P[i]);
+            }
+
+            // Left
+            inIndex.Clear();
+            outIndex.Clear();
+            for (int i = 0; i < polygon_points.Count; i++)
+            {
+                if (polygon_points[i].x < xmin) outIndex.Add(i);
+                else inIndex.Add(i);
+            }
+            temp_list = clip(polygon_points, inIndex, outIndex, "left", xmin);
+            if (outIndex.Count > 0) clipped_side++;
+            polygon_points.Clear();
+            polygon_points.AddRange(temp_list);
+            temp_list.Clear();
+
+            // Right
+            inIndex.Clear();
+            outIndex.Clear();
+            for (int i = 0; i < polygon_points.Count; i++)
+            {
+                if (polygon_points[i].x > xmax) outIndex.Add(i);
+                else inIndex.Add(i);
+            }
+            temp_list = clip(polygon_points, inIndex, outIndex, "right", xmax);
+            if (outIndex.Count > 0) clipped_side++;
+            polygon_points.Clear();
+            polygon_points.AddRange(temp_list);
+            temp_list.Clear();
+
+            // Top
+            inIndex.Clear();
+            outIndex.Clear();
+            for (int i = 0; i < polygon_points.Count; i++)
+            {
+                if (polygon_points[i].y > ymax) outIndex.Add(i);
+                else inIndex.Add(i);
+            }
+            temp_list = clip(polygon_points, inIndex, outIndex, "top", ymax);
+            if (outIndex.Count > 0) clipped_side++;
+            polygon_points.Clear();
+            polygon_points.AddRange(temp_list);
+            temp_list.Clear();
+
+            // Bottom
+            inIndex.Clear();
+            outIndex.Clear();
+            for (int i = 0; i < polygon_points.Count; i++)
+            {
+                if (polygon_points[i].y < ymin) outIndex.Add(i);
+                else inIndex.Add(i);
+            }
+            temp_list = clip(polygon_points, inIndex, outIndex, "bottom", ymin);
+            if (outIndex.Count > 0) clipped_side++;
+            polygon_points.Clear();
+            polygon_points.AddRange(temp_list);
+            temp_list.Clear();
+
+            tempPolygon.c = polygon.c;
+            tempPolygon.P = polygon_points;
+
+            return Tuple.Create(tempPolygon, clipped_side);
+        }
 
 
 
@@ -1263,248 +1212,10 @@ namespace _3DCGA_PA15
             return temp_list;
         }
 
-        public Tuple<TPolygon, int> polygonClip(TPolygon polygon, int xmin, int ymin, int xmax, int ymax)
-        {
-            TPolygon tempPolygon = new TPolygon();
-            int clipped_side = 0;
-            List<TPoint> polygon_points = new List<TPoint>();
-            List<TPoint> temp_list = new List<TPoint>();
-            List<int> inIndex = new List<int>();
-            List<int> outIndex = new List<int>();
-
-            // Insert all polygon points to the list
-            for (int i = 0; i < polygon.P.Count; i++)
-            {
-                polygon_points.Add(polygon.P[i]);
-            }
-
-            // Left
-            inIndex.Clear();
-            outIndex.Clear();
-            for (int i = 0; i < polygon_points.Count; i++)
-            {
-                if (polygon_points[i].x < xmin) outIndex.Add(i);
-                else inIndex.Add(i);
-            }
-            if (outIndex.Count > 0) clipped_side++;
-            temp_list = clip(polygon_points, inIndex, outIndex, "left", xmin);
-            polygon_points.Clear();
-            polygon_points.AddRange(temp_list);
-            temp_list.Clear();
-
-            // Right
-            inIndex.Clear();
-            outIndex.Clear();
-            for (int i = 0; i < polygon_points.Count; i++)
-            {
-                if (polygon_points[i].x > xmax) outIndex.Add(i);
-                else inIndex.Add(i);
-            }
-            if (outIndex.Count > 0) clipped_side++;
-            temp_list = clip(polygon_points, inIndex, outIndex, "right", xmax);
-            polygon_points.Clear();
-            polygon_points.AddRange(temp_list);
-            temp_list.Clear();
-
-            // Top
-            inIndex.Clear();
-            outIndex.Clear();
-            for (int i = 0; i < polygon_points.Count; i++)
-            {
-                if (polygon_points[i].y > ymax) outIndex.Add(i);
-                else inIndex.Add(i);
-            }
-            if (outIndex.Count > 0) clipped_side++;
-            temp_list = clip(polygon_points, inIndex, outIndex, "top", ymax);
-            polygon_points.Clear();
-            polygon_points.AddRange(temp_list);
-            for (int i = 0; i < polygon_points.Count; i++)
-                temp_list.Clear();
-
-            // Bottom
-            inIndex.Clear();
-            outIndex.Clear();
-            for (int i = 0; i < polygon_points.Count; i++)
-            {
-                if (polygon_points[i].y < ymin) outIndex.Add(i);
-                else inIndex.Add(i);
-            }
-            if (outIndex.Count > 0) clipped_side++;
-            temp_list = clip(polygon_points, inIndex, outIndex, "bottom", ymin);
-            polygon_points.Clear();
-            polygon_points.AddRange(temp_list);
-            temp_list.Clear();
-
-            tempPolygon.c = polygon.c;
-            tempPolygon.P = polygon_points;
-
-            return Tuple.Create(tempPolygon, clipped_side);
-        }
 
 
 
 
-
-
-        public bool IsPolygonInsideArea(TPoint p1, TPoint p2, TPoint p3, int xmin, int ymin, int xmax, int ymax)
-        {
-            TPoint A = new TPoint();
-            TPoint B = new TPoint();
-            TPoint C = new TPoint();
-            TPoint D = new TPoint();
-            SetPoint(ref A, xmin, ymax, 0);
-            SetPoint(ref B, xmax, ymax, 0);
-            SetPoint(ref C, xmax, ymin, 0);
-            SetPoint(ref D, xmin, ymin, 0);
-            TPoint AB = FindVector(A, B);
-            TPoint BC = FindVector(B, C);
-            TPoint CD = FindVector(C, D);
-            TPoint DA = FindVector(D, A);
-            double cAB1, cBC1, cCD1, cDA1, cAB2, cBC2, cCD2, cDA2, cAB3, cBC3, cCD3, cDA3;
-            bool p1In, p2In, p3In;
-
-            TPoint Ap1 = FindVector(A, p1);
-            TPoint Bp1 = FindVector(B, p1);
-            TPoint Cp1 = FindVector(C, p1);
-            TPoint Dp1 = FindVector(D, p1);
-            cAB1 = CrossProduct2D(Ap1, AB);
-            cBC1 = CrossProduct2D(Bp1, BC);
-            cCD1 = CrossProduct2D(Cp1, CD);
-            cDA1 = CrossProduct2D(Dp1, DA);
-            p1In = ((cAB1 > 0) && (cBC1 > 0) && (cCD1 > 0) && (cDA1 > 0));
-
-            TPoint Ap2 = FindVector(A, p2);
-            TPoint Bp2 = FindVector(B, p2);
-            TPoint Cp2 = FindVector(C, p2);
-            TPoint Dp2 = FindVector(D, p2);
-            cAB2 = CrossProduct2D(Ap2, AB);
-            cBC2 = CrossProduct2D(Bp2, BC);
-            cCD2 = CrossProduct2D(Cp2, CD);
-            cDA2 = CrossProduct2D(Dp2, DA);
-            p2In = ((cAB2 > 0) && (cBC2 > 0) && (cCD2 > 0) && (cDA2 > 0));
-
-            TPoint Ap3 = FindVector(A, p3);
-            TPoint Bp3 = FindVector(B, p3);
-            TPoint Cp3 = FindVector(C, p3);
-            TPoint Dp3 = FindVector(D, p3);
-            cAB3 = CrossProduct2D(Ap3, AB);
-            cBC3 = CrossProduct2D(Bp3, BC);
-            cCD3 = CrossProduct2D(Cp3, CD);
-            cDA3 = CrossProduct2D(Dp3, DA);
-            p3In = ((cAB3 > 0) && (cBC3 > 0) && (cCD3 > 0) && (cDA3 > 0));
-
-            return (p1In && p2In && p3In);
-        }
-
-        public bool IsPolygonIntersectArea(TPoint p1, TPoint p2, TPoint p3, int xmin, int ymin, int xmax, int ymax)
-        {
-            TPoint A = new TPoint();
-            TPoint B = new TPoint();
-            TPoint C = new TPoint();
-            TPoint D = new TPoint();
-            SetPoint(ref A, xmin, ymax, 0);
-            SetPoint(ref B, xmax, ymax, 0);
-            SetPoint(ref C, xmax, ymin, 0);
-            SetPoint(ref D, xmin, ymin, 0);
-            TPoint AB = FindVector(A, B);
-            TPoint BC = FindVector(B, C);
-            TPoint CD = FindVector(C, D);
-            TPoint DA = FindVector(D, A);
-            double cAB1, cBC1, cCD1, cDA1, cAB2, cBC2, cCD2, cDA2, cAB3, cBC3, cCD3, cDA3;
-            bool p1In, p2In, p3In;
-
-            TPoint Ap1 = FindVector(A, p1);
-            TPoint Bp1 = FindVector(B, p1);
-            TPoint Cp1 = FindVector(C, p1);
-            TPoint Dp1 = FindVector(D, p1);
-            cAB1 = CrossProduct2D(Ap1, AB);
-            cBC1 = CrossProduct2D(Bp1, BC);
-            cCD1 = CrossProduct2D(Cp1, CD);
-            cDA1 = CrossProduct2D(Dp1, DA);
-            p1In = ((cAB1 > 0) && (cBC1 > 0) && (cCD1 > 0) && (cDA1 > 0));
-
-            TPoint Ap2 = FindVector(A, p2);
-            TPoint Bp2 = FindVector(B, p2);
-            TPoint Cp2 = FindVector(C, p2);
-            TPoint Dp2 = FindVector(D, p2);
-            cAB2 = CrossProduct2D(Ap2, AB);
-            cBC2 = CrossProduct2D(Bp2, BC);
-            cCD2 = CrossProduct2D(Cp2, CD);
-            cDA2 = CrossProduct2D(Dp2, DA);
-            p2In = ((cAB2 > 0) && (cBC2 > 0) && (cCD2 > 0) && (cDA2 > 0));
-
-            TPoint Ap3 = FindVector(A, p3);
-            TPoint Bp3 = FindVector(B, p3);
-            TPoint Cp3 = FindVector(C, p3);
-            TPoint Dp3 = FindVector(D, p3);
-            cAB3 = CrossProduct2D(Ap3, AB);
-            cBC3 = CrossProduct2D(Bp3, BC);
-            cCD3 = CrossProduct2D(Cp3, CD);
-            cDA3 = CrossProduct2D(Dp3, DA);
-            p3In = ((cAB3 > 0) && (cBC3 > 0) && (cCD3 > 0) && (cDA3 > 0));
-
-            if (
-                ((p1In == true) && (p2In == true) && (p3In == false)) ||
-                ((p1In == true) && (p2In == false) && (p3In == true)) ||
-                ((p1In == false) && (p2In == true) && (p3In == true)) ||
-                ((p1In == true) && (p2In == false) && (p3In == false)) ||
-                ((p1In == false) && (p2In == true) && (p3In == false)) ||
-                ((p1In == false) && (p2In == false) && (p3In == true))
-                ) return true;
-            else return false;
-        }
-
-        public bool IsAreaInsidePolygon(TPoint p1, TPoint p2, TPoint p3, int xmin, int ymin, int xmax, int ymax)
-        {
-            TPoint A = new TPoint();
-            TPoint B = new TPoint();
-            TPoint C = new TPoint();
-            TPoint D = new TPoint();
-            SetPoint(ref A, xmin, ymax, 0);
-            SetPoint(ref B, xmax, ymax, 0);
-            SetPoint(ref C, xmax, ymin, 0);
-            SetPoint(ref D, xmin, ymin, 0);
-            TPoint p1p2 = FindVector(p1, p2);
-            TPoint p2p3 = FindVector(p2, p3);
-            TPoint p3p1 = FindVector(p3, p1);
-
-            double cp1p2A, cp2p3A, cp3p1A, cp1p2B, cp2p3B, cp3p1B, cp1p2C, cp2p3C, cp3p1C, cp1p2D, cp2p3D, cp3p1D;
-            bool AIn, BIn, CIn, DIn;
-
-            TPoint p1A = FindVector(p1, A);
-            TPoint p2A = FindVector(p2, A);
-            TPoint p3A = FindVector(p3, A);
-            cp1p2A = CrossProduct2D(p1A, p1p2);
-            cp2p3A = CrossProduct2D(p2A, p2p3);
-            cp3p1A = CrossProduct2D(p3A, p3p1);
-            AIn = ((cp1p2A > 0) && (cp2p3A > 0) && (cp3p1A > 0));
-
-            TPoint p1B = FindVector(p1, B);
-            TPoint p2B = FindVector(p2, B);
-            TPoint p3B = FindVector(p3, B);
-            cp1p2B = CrossProduct2D(p1B, p1p2);
-            cp2p3B = CrossProduct2D(p2B, p2p3);
-            cp3p1B = CrossProduct2D(p3B, p3p1);
-            BIn = ((cp1p2B > 0) && (cp2p3B > 0) && (cp3p1B > 0));
-
-            TPoint p1C = FindVector(p1, C);
-            TPoint p2C = FindVector(p2, C);
-            TPoint p3C = FindVector(p3, C);
-            cp1p2C = CrossProduct2D(p1C, p1p2);
-            cp2p3C = CrossProduct2D(p2C, p2p3);
-            cp3p1C = CrossProduct2D(p3C, p3p1);
-            CIn = ((cp1p2C > 0) && (cp2p3C > 0) && (cp3p1C > 0));
-
-            TPoint p1D = FindVector(p1, D);
-            TPoint p2D = FindVector(p2, D);
-            TPoint p3D = FindVector(p3, D);
-            cp1p2D = CrossProduct2D(p1D, p1p2);
-            cp2p3D = CrossProduct2D(p2D, p2p3);
-            cp3p1D = CrossProduct2D(p3D, p3p1);
-            DIn = ((cp1p2D > 0) && (cp2p3D > 0) && (cp3p1D > 0));
-
-            return (AIn && BIn && CIn && DIn);
-        }
 
 
 
@@ -1560,15 +1271,19 @@ namespace _3DCGA_PA15
                 ResetTransM(i);
             }
 
-            TranslateObject(0, -2, 0, 0);
-            RotateObjectOnX(0, 45);
-            TranslateObject(1, 2, 0, 0);
-            RotateObjectOnY(1, -45);
+            //TranslateObject(0, -2, 0, 0);
+            //RotateObjectOnX(0, 45);
+            //TranslateObject(1, 2, 0, 0);
+            //RotateObjectOnY(1, -45);
+
+            //TranslateObject(0, -2, 2, 0.5);
+            //TranslateObject(1, -2, 2, -0.5);
 
             selectListBox.SetSelected(0, true);
 
             translateRB.Checked = true;
             frontSurfaceCB.Checked = true;
+            warnockRB.Checked = true;
 
             Display();
         }
@@ -1579,12 +1294,12 @@ namespace _3DCGA_PA15
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
-            if(e.KeyCode == Keys.W)
+            if (e.KeyCode == Keys.W)
             {
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0.1, 0);
                 else RotateObjectOnX(selectedObjectIndex, -1);
             }
-            else if(e.KeyCode == Keys.S)
+            else if (e.KeyCode == Keys.S)
             {
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, -0.1, 0);
                 else RotateObjectOnX(selectedObjectIndex, 1);
@@ -1594,17 +1309,17 @@ namespace _3DCGA_PA15
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, -0.1, 0, 0);
                 else RotateObjectOnZ(selectedObjectIndex, 1);
             }
-            else if(e.KeyCode == Keys.D)
+            else if (e.KeyCode == Keys.D)
             {
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0.1, 0, 0);
                 else RotateObjectOnZ(selectedObjectIndex, -1);
             }
-            else if(e.KeyCode == Keys.Q)
+            else if (e.KeyCode == Keys.Q)
             {
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0, 0.1);
                 else RotateObjectOnY(selectedObjectIndex, -1);
             }
-            else if(e.KeyCode == Keys.E)
+            else if (e.KeyCode == Keys.E)
             {
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0, -0.1);
                 else RotateObjectOnY(selectedObjectIndex, 1);
@@ -1622,7 +1337,7 @@ namespace _3DCGA_PA15
                     rotateRB.Checked = false;
                 }
             }
-            else if(e.KeyCode == Keys.Up)
+            else if (e.KeyCode == Keys.Up)
             {
                 int index = selectListBox.SelectedIndex;
                 if (index > 0) index -= 1;
@@ -1631,7 +1346,7 @@ namespace _3DCGA_PA15
             else if (e.KeyCode == Keys.Down)
             {
                 int index = selectListBox.SelectedIndex;
-                if (index < selectListBox.Items.Count-1) index += 1;
+                if (index < selectListBox.Items.Count - 1) index += 1;
                 selectListBox.SetSelected(index, true);
             }
             Display();
