@@ -70,7 +70,7 @@ namespace _3DCGA_PA15
         public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         public double[,] Wt = new double[4, 4];
         public double[,] Vt = new double[4, 4];
-        public double[,] St = new double[4, 4] { { 100, 0, 0, 0 }, { 0, -100, 0, 0 }, { 0, 0, 1, 0 }, { 400, 200, 0, 1 } };
+        public double[,] St = new double[4, 4] { { 128, 0, 0, 0 }, { 0, -128, 0, 0 }, { 0, 0, 1, 0 }, { 512, 256, 0, 1 } };
 
 
 
@@ -181,7 +181,6 @@ namespace _3DCGA_PA15
             obj[index].TranslateM = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
             obj[index].RotateM = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         }
-
         public void TranslateObject(int index, double dx = 0, double dy = 0, double dz = 0)
         {
             double[,] temp = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { dx, dy, dz, 1 } };
@@ -642,7 +641,22 @@ namespace _3DCGA_PA15
                 GeneratePolygonList();
                 Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
             }
+
             debug = "";
+            //TPolygon poly1 = new TPolygon();
+            //poly1.c = Color.Red;
+            //TPoint p1 = new TPoint();
+            //TPoint p2 = new TPoint();
+            //TPoint p3 = new TPoint();
+            //SetPoint(ref p1, 1, 1, 0);
+            //SetPoint(ref p2, 8, 1, 0);
+            //SetPoint(ref p3, 3, 5, 0);
+            //List<TPoint> pl = new List<TPoint>();
+            //pl.Add(p1);
+            //pl.Add(p2);
+            //pl.Add(p3);
+            //poly1.P = pl;
+            //debug += IsPolygonSurroundArea(poly1.P, 3, 3, 4, 4);
             debugTextBox.Text = debug;
         }
 
@@ -766,9 +780,6 @@ namespace _3DCGA_PA15
 
 
 
-
-
-
         public void Warnock(int xmin, int ymin, int xmax, int ymax)
         {
             if ((xmax == xmin) || (ymax == ymin))
@@ -783,9 +794,9 @@ namespace _3DCGA_PA15
                 for (int i = 0; i < polygon_list.Count; i++)
                 {
                     TPolygon tempPolygon = polygon_list[i];
-                    (TPolygon clippedPolygon, int clipped_side) = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
+                    (TPolygon clippedPolygon, bool surrounding) = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
                     if (clippedPolygon.P.Count == 0) continue;
-                    else if (clipped_side == 4 && clippedPolygon.P.Count == 4)
+                    else if (surrounding && clippedPolygon.P.Count == 4)
                     {
                         nS++;
                         clipped_polygon_list.Add(clippedPolygon);
@@ -795,41 +806,16 @@ namespace _3DCGA_PA15
                         nIC++;
                         clipped_polygon_list.Add(clippedPolygon);
                     }
-                    //else
-                    //{
-                    //    if(clippedPolygon.P.Count == 4)
-                    //    {
-                    //        bool p0In = (clippedPolygon.P[0].x > xmin) && (clippedPolygon.P[0].x < xmax) || (clippedPolygon.P[0].y > ymin) && (clippedPolygon.P[0].y < ymax);
-                    //        bool p1In = (clippedPolygon.P[1].x > xmin) && (clippedPolygon.P[1].x < xmax) || (clippedPolygon.P[1].y > ymin) && (clippedPolygon.P[1].y < ymax);
-                    //        bool p2In = (clippedPolygon.P[2].x > xmin) && (clippedPolygon.P[2].x < xmax) || (clippedPolygon.P[2].y > ymin) && (clippedPolygon.P[2].y < ymax);
-                    //        bool p3In = (clippedPolygon.P[3].x > xmin) && (clippedPolygon.P[3].x < xmax) || (clippedPolygon.P[3].y > ymin) && (clippedPolygon.P[3].y < ymax);
-                    //        if (p0In && p1In && p2In && p3In)
-                    //        {
-                    //            nIC++;
-                    //            clipped_polygon_list.Add(clippedPolygon);
-                    //        }
-                    //        else
-                    //        {
-                    //            nS++;
-                    //            clipped_polygon_list.Add(clippedPolygon);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        nIC++;
-                    //        clipped_polygon_list.Add(clippedPolygon);
-                    //    }
-                    //}
                 }
 
                 if (nS == 0 && nIC == 0) // Case 1: All polygons are disjoint.
                 {
                     Point[] P = new Point[4];
-                    SolidBrush brush = new SolidBrush(Color.Bisque);
-                    P[0] = new Point(xmin, ymax);
+                    SolidBrush brush = new SolidBrush(Color.White);
+                    P[0] = new Point(xmin - 1, ymax);
                     P[1] = new Point(xmax, ymax);
-                    P[2] = new Point(xmax, ymin);
-                    P[3] = new Point(xmin, ymin);
+                    P[2] = new Point(xmax, ymin - 1);
+                    P[3] = new Point(xmin - 1, ymin - 1);
                     g.FillPolygon(brush, P);
                 }
                 else if (nS == 0 && nIC == 1) // Case 2: Only one intersecting or one contained polygon is the area.
@@ -846,10 +832,10 @@ namespace _3DCGA_PA15
                 {
                     Point[] P = new Point[4];
                     SolidBrush brush = new SolidBrush(clipped_polygon_list[0].c);
-                    P[0] = new Point(xmin, ymax);
+                    P[0] = new Point(xmin - 1, ymax);
                     P[1] = new Point(xmax, ymax);
-                    P[2] = new Point(xmax, ymin);
-                    P[3] = new Point(xmin, ymin);
+                    P[2] = new Point(xmax, ymin - 1);
+                    P[3] = new Point(xmin - 1, ymin - 1);
                     g.FillPolygon(brush, P);
                 }
                 else if (nS > 1) // Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
@@ -875,10 +861,10 @@ namespace _3DCGA_PA15
                     }
                     Point[] P = new Point[4];
                     SolidBrush brush = new SolidBrush(clipped_polygon_list[front_polygon_index].c);
-                    P[0] = new Point(xmin, ymax);
+                    P[0] = new Point(xmin - 1, ymax);
                     P[1] = new Point(xmax, ymax);
-                    P[2] = new Point(xmax, ymin);
-                    P[3] = new Point(xmin, ymin);
+                    P[2] = new Point(xmax, ymin - 1);
+                    P[3] = new Point(xmin - 1, ymin - 1);
                     g.FillPolygon(brush, P);
                 }
                 else
@@ -980,11 +966,62 @@ namespace _3DCGA_PA15
 
 
 
+        public bool IsPolygonSurroundArea(List<TPoint> polygon_points, int xmin, int ymin, int xmax, int ymax)
+        {
+            TPoint p1 = polygon_points[0];
+            TPoint p2 = polygon_points[1];
+            TPoint p3 = polygon_points[2];
+
+            TPoint p1p2 = FindVector(p1, p2);
+            TPoint p2p3 = FindVector(p2, p3);
+            TPoint p3p1 = FindVector(p3, p1);
+
+            TPoint A = new TPoint();
+            TPoint B = new TPoint();
+            TPoint C = new TPoint();
+            TPoint D = new TPoint();
+            SetPoint(ref A, xmin, ymin, 0);
+            SetPoint(ref B, xmax, ymin, 0);
+            SetPoint(ref C, xmax, ymax, 0);
+            SetPoint(ref D, xmin, ymax, 0);
+
+            TPoint p1A = FindVector(p1, A);
+            TPoint p2A = FindVector(p2, A);
+            TPoint p3A = FindVector(p3, A);
+            double cp1p2A = CrossProduct2D(p1A, p1p2);
+            double cp2p3A = CrossProduct2D(p2A, p2p3);
+            double cp3p1A = CrossProduct2D(p3A, p3p1);
+            bool AIn = ((cp1p2A > 0) && (cp2p3A > 0) && (cp3p1A > 0));
+
+            TPoint p1B = FindVector(p1, B);
+            TPoint p2B = FindVector(p2, B);
+            TPoint p3B = FindVector(p3, B);
+            double cp1p2B = CrossProduct2D(p1B, p1p2);
+            double cp2p3B = CrossProduct2D(p2B, p2p3);
+            double cp3p1B = CrossProduct2D(p3B, p3p1);
+            bool BIn = ((cp1p2B > 0) && (cp2p3B > 0) && (cp3p1B > 0));
+
+            TPoint p1C = FindVector(p1, C);
+            TPoint p2C = FindVector(p2, C);
+            TPoint p3C = FindVector(p3, C);
+            double cp1p2C = CrossProduct2D(p1C, p1p2);
+            double cp2p3C = CrossProduct2D(p2C, p2p3);
+            double cp3p1C = CrossProduct2D(p3C, p3p1);
+            bool CIn = ((cp1p2C > 0) && (cp2p3C > 0) && (cp3p1C > 0));
+
+            TPoint p1D = FindVector(p1, D);
+            TPoint p2D = FindVector(p2, D);
+            TPoint p3D = FindVector(p3, D);
+            double cp1p2D = CrossProduct2D(p1D, p1p2);
+            double cp2p3D = CrossProduct2D(p2D, p2p3);
+            double cp3p1D = CrossProduct2D(p3D, p3p1);
+            bool DIn = ((cp1p2D > 0) && (cp2p3D > 0) && (cp3p1D > 0));
+            return (AIn && BIn && CIn && DIn);
+        }
 
 
 
-
-        public Tuple<TPolygon, int> polygonClip(TPolygon polygon, int xmin, int ymin, int xmax, int ymax)
+        public Tuple<TPolygon, bool> polygonClip(TPolygon polygon, int xmin, int ymin, int xmax, int ymax)
         {
             TPolygon tempPolygon = new TPolygon();
             int clipped_side = 0;
@@ -998,6 +1035,8 @@ namespace _3DCGA_PA15
             {
                 polygon_points.Add(polygon.P[i]);
             }
+
+            bool surrounding = IsPolygonSurroundArea(polygon_points, xmin, ymin, xmax, ymax);
 
             // Left
             inIndex.Clear();
@@ -1058,7 +1097,7 @@ namespace _3DCGA_PA15
             tempPolygon.c = polygon.c;
             tempPolygon.P = polygon_points;
 
-            return Tuple.Create(tempPolygon, clipped_side);
+            return Tuple.Create(tempPolygon, surrounding);
         }
 
 
@@ -1283,7 +1322,7 @@ namespace _3DCGA_PA15
 
             translateRB.Checked = true;
             frontSurfaceCB.Checked = true;
-            warnockRB.Checked = true;
+            drawRB.Checked = true;
 
             Display();
         }
