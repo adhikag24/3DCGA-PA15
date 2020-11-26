@@ -640,10 +640,11 @@ namespace _3DCGA_PA15
             if (drawRB.Checked) Draw();
             else if (warnockRB.Checked)
             {
+                cntr = 0;
                 GeneratePolygonList();
                 Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
+                debug += cntr;
             }
-
             
             //TPolygon poly1 = new TPolygon();
             //poly1.c = Color.Red;
@@ -661,7 +662,7 @@ namespace _3DCGA_PA15
             //debug += IsPolygonSurroundArea(poly1.P, 3, 3, 4, 4);
             debugTextBox.Text = debug;
         }
-
+        int cntr = 0;
         public class TPolygon
         {
             public List<TPoint> P;
@@ -780,13 +781,19 @@ namespace _3DCGA_PA15
 
 
 
-
+        
 
         public void Warnock(int xmin, int ymin, int xmax, int ymax)
         {
-            if ((xmax == xmin) || (ymax == ymin))
+            if ((xmax == xmin) && (ymax == ymin))
             {
-                bmp.SetPixel(xmax - xmin, ymax - ymin, GetClosestPixelColor(xmax - xmin, ymax - ymin));
+                bmp.SetPixel(xmin-1, ymin-1, GetClosestPixelColor(xmin-1, ymin-1));
+                if (GetClosestPixelColor(xmin-1, ymin-1) == Color.White)
+                {
+                    //MessageBox.Show("Got you");
+                    cntr++;
+                }
+                //cntr++;
             }
             else
             {
@@ -794,6 +801,7 @@ namespace _3DCGA_PA15
                 List<TPolygon> clipped_polygon_list = new List<TPolygon>();
                 List<TPolygon> surrounding_polygon_list = new List<TPolygon>();
                 clipped_polygon_list.Clear();
+                surrounding_polygon_list.Clear();
                 for (int i = 0; i < polygon_list.Count; i++)
                 {
                     TPolygon tempPolygon = polygon_list[i];
@@ -1357,8 +1365,8 @@ namespace _3DCGA_PA15
             //TranslateObject(1, 2, 0, 0);
             //RotateObjectOnY(1, -45);
 
-            TranslateObject(0, 0, 0, -0.1);
-            TranslateObject(1, 0, 0, 0);
+            //TranslateObject(0, 0, 0, -0.1);
+            //TranslateObject(1, 0, 0, 0);
 
             selectListBox.SetSelected(0, true);
 
