@@ -635,6 +635,8 @@ namespace _3DCGA_PA15
                     obj[i].VS[j] = MultiplyMatrix(obj[i].VV[j], St);
                 }
             }
+
+            debug = "";
             if (drawRB.Checked) Draw();
             else if (warnockRB.Checked)
             {
@@ -642,7 +644,7 @@ namespace _3DCGA_PA15
                 Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
             }
 
-            debug = "";
+            
             //TPolygon poly1 = new TPolygon();
             //poly1.c = Color.Red;
             //TPoint p1 = new TPoint();
@@ -790,6 +792,7 @@ namespace _3DCGA_PA15
             {
                 int nS = 0, nIC = 0;
                 List<TPolygon> clipped_polygon_list = new List<TPolygon>();
+                List<TPolygon> surrounding_polygon_list = new List<TPolygon>();
                 clipped_polygon_list.Clear();
                 for (int i = 0; i < polygon_list.Count; i++)
                 {
@@ -800,6 +803,7 @@ namespace _3DCGA_PA15
                     {
                         nS++;
                         clipped_polygon_list.Add(clippedPolygon);
+                        surrounding_polygon_list.Add(clippedPolygon);
                     }
                     else
                     {
@@ -838,29 +842,11 @@ namespace _3DCGA_PA15
                     P[3] = new Point(xmin - 1, ymin - 1);
                     g.FillPolygon(brush, P);
                 }
-                else if (nS > 1) // Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
+                else if (nS > 0 && frontPolygonCheck(clipped_polygon_list, surrounding_polygon_list) != null) // Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
                 {
-                    List<double> zmax = new List<double>();
-                    List<double> zmin = new List<double>();
-                    for (int i = 0; i < clipped_polygon_list.Count; i++)
-                    {
-                        zmax.Add(Math.Max(clipped_polygon_list[i].P[0].z, Math.Max(clipped_polygon_list[i].P[1].z, Math.Max(clipped_polygon_list[i].P[2].z, clipped_polygon_list[i].P[3].z))));
-                        zmin.Add(Math.Min(clipped_polygon_list[i].P[0].z, Math.Min(clipped_polygon_list[i].P[1].z, Math.Min(clipped_polygon_list[i].P[2].z, clipped_polygon_list[i].P[3].z))));
-                    }
-                    int front_polygon_index = 0;
-                    for (int i = 0; i < zmin.Count; i++)
-                    {
-                        for (int j = 0; j < zmax.Count; j++)
-                        {
-                            if (i == j) continue;
-                            else
-                            {
-                                if (zmin[i] > zmax[j]) front_polygon_index = i;
-                            }
-                        }
-                    }
                     Point[] P = new Point[4];
-                    SolidBrush brush = new SolidBrush(clipped_polygon_list[front_polygon_index].c);
+                    TPolygon temp = frontPolygonCheck(clipped_polygon_list, surrounding_polygon_list);
+                    SolidBrush brush = new SolidBrush(temp.c);
                     P[0] = new Point(xmin - 1, ymax);
                     P[1] = new Point(xmax, ymax);
                     P[2] = new Point(xmax, ymin - 1);
@@ -878,6 +864,62 @@ namespace _3DCGA_PA15
                 }
             }
             pictureBox1.Image = bmp;
+        }
+
+        TPolygon frontPolygonCheck(List<TPolygon> clipped_polygon_list, List<TPolygon> surrounding_polygon_list)
+        {
+            //if (clipped_polygon_list.Count > 1 && surrounding_polygon_list.Count > 1)
+            //    MessageBox.Show("Here");
+            List<double> surroundzmin = new List<double>();
+            for (int i = 0; i < surrounding_polygon_list.Count; i++)
+            {
+                double ztemp = 9999;
+                for (int j = 0; j < surrounding_polygon_list[i].P.Count; j++)
+                {
+                    ztemp = Math.Min(ztemp, surrounding_polygon_list[i].P[j].z);
+                }
+                surroundzmin.Add(ztemp);
+            }
+
+            List<double> clippedzmax = new List<double>();
+            for (int i = 0; i < clipped_polygon_list.Count; i++)
+            {
+                double ztemp = -9999;
+                if (!surrounding_polygon_list.Contains(clipped_polygon_list[i]))
+                {
+                    for (int j = 0; j < clipped_polygon_list[i].P.Count; j++)
+                    {
+                        ztemp = Math.Max(ztemp, clipped_polygon_list[i].P[j].z);
+                    }
+                }
+                else continue;
+                clippedzmax.Add(ztemp);
+            }
+
+            List<double> final = new List<double>();
+            for (int i = 0; i < surroundzmin.Count; i++)
+            {
+                bool greater = true;
+                for (int j = 0; j < clippedzmax.Count; j++)
+                {
+                    if (surroundzmin[i] < clippedzmax[j]) greater = false;
+                }
+                if (greater) final.Add(surroundzmin[i]);
+            }
+
+            if (final.Count == 0) return null;
+
+            double temp = -9999;
+            int index = 99;
+            for (int i = 0; i < final.Count; i++)
+            {
+                if (temp < final[i])
+                {
+                    temp = final[i];
+                    index = i;
+                }
+            }
+            return surrounding_polygon_list[index];
         }
 
         private void drawRB_CheckedChanged(object sender, EventArgs e)
@@ -958,8 +1000,8 @@ namespace _3DCGA_PA15
                     }
                 }
             }
-            g.DrawLine(new Pen(Color.Blue), new Point(0, pictureBox1.Height / 2), new Point(pictureBox1.Width, pictureBox1.Height / 2));
-            g.DrawLine(new Pen(Color.Blue), new Point(pictureBox1.Width / 2, 0), new Point(pictureBox1.Width / 2, pictureBox1.Height));
+            //g.DrawLine(new Pen(Color.Blue), new Point(0, pictureBox1.Height / 2), new Point(pictureBox1.Width, pictureBox1.Height / 2));
+            //g.DrawLine(new Pen(Color.Blue), new Point(pictureBox1.Width / 2, 0), new Point(pictureBox1.Width / 2, pictureBox1.Height));
             //g.DrawRectangle(new Pen(Color.Green), new Rectangle(250, 250, 25, 25));
             pictureBox1.Image = bmp;
         }
@@ -1046,7 +1088,7 @@ namespace _3DCGA_PA15
                 if (polygon_points[i].x < xmin) outIndex.Add(i);
                 else inIndex.Add(i);
             }
-            temp_list = clip(polygon_points, inIndex, outIndex, "left", xmin);
+            temp_list = clip(polygon_points, inIndex, outIndex, "left", xmin-1);
             if (outIndex.Count > 0) clipped_side++;
             polygon_points.Clear();
             polygon_points.AddRange(temp_list);
@@ -1088,7 +1130,7 @@ namespace _3DCGA_PA15
                 if (polygon_points[i].y < ymin) outIndex.Add(i);
                 else inIndex.Add(i);
             }
-            temp_list = clip(polygon_points, inIndex, outIndex, "bottom", ymin);
+            temp_list = clip(polygon_points, inIndex, outIndex, "bottom", ymin-1);
             if (outIndex.Count > 0) clipped_side++;
             polygon_points.Clear();
             polygon_points.AddRange(temp_list);
@@ -1315,14 +1357,14 @@ namespace _3DCGA_PA15
             //TranslateObject(1, 2, 0, 0);
             //RotateObjectOnY(1, -45);
 
-            //TranslateObject(0, -2, 2, 0.5);
-            //TranslateObject(1, -2, 2, -0.5);
+            TranslateObject(0, 0, 0, -0.1);
+            TranslateObject(1, 0, 0, 0);
 
             selectListBox.SetSelected(0, true);
 
             translateRB.Checked = true;
             frontSurfaceCB.Checked = true;
-            drawRB.Checked = true;
+            warnockRB.Checked = true;
 
             Display();
         }
