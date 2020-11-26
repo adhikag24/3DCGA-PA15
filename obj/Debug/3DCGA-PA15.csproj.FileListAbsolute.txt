@@ -8,3 +8,10 @@ C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.csproj.Gener
 C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.csproj.CoreCompileInputs.cache
 C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.exe
 C:\Users\Luthfi Syauqi\source\repos\3DCGA-PA15\obj\Debug\3DCGA-PA15.pdb
+C:\Users\Adhika G\Desktop\test file cga\3DCGA-PA15\bin\Debug\3DCGA-PA15.exe.config
+C:\Users\Adhika G\Desktop\test file cga\3DCGA-PA15\obj\Debug\3DCGA-PA15.exe
+C:\Users\Adhika G\Desktop\test file cga\3DCGA-PA15\obj\Debug\3DCGA-PA15.pdb
+C:\Users\Adhika G\Desktop\test file cga\3DCGA-PA15\obj\Debug\3DCGA-PA15.csprojResolveAssemblyReference.cache
+C:\Users\Adhika G\Desktop\test file cga\3DCGA-PA15\obj\Debug\_3DCGA_PA15.Form1.resources
+C:\Users\Adhika G\Desktop\test file cga\3DCGA-PA15\obj\Debug\_3DCGA_PA15.Properties.Resources.resources
+C:\Users\Adhika G\Desktop\test file cga\3DCGA-PA15\obj\Debug\3DCGA-PA15.csproj.GenerateResource.Cache
