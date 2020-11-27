@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace _3DCGA_PA15
@@ -18,6 +19,7 @@ namespace _3DCGA_PA15
         }
         public class TObject
         {
+            public string objectName;
             public TPoint[] P;
             public TPoint[] VW;
             public TPoint[] VPr1;
@@ -42,11 +44,11 @@ namespace _3DCGA_PA15
             public int ymax, xofymin, dx, dy, carrier = 0;
         }
 
-
-
+        public bool firstLoad = true;
+        public int nObj = 2;
         Bitmap bmp;
         Graphics g;
-        public TObject[] obj = new TObject[2];
+        public List<TObject> obj = new List<TObject>();
         public string debug = "";
         TPoint VRP, VPN, VUP, COP, N, upUnit, upVec, v, u, CW, DOP, VN = new TPoint();
         double windowUmin, windowVmin, windowUmax, windowVmax, BP;
@@ -158,7 +160,7 @@ namespace _3DCGA_PA15
 
             Pr1 = MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(MatrixMultiplication(T1, T2), T3), T4), T5), T7), T8), T9);
 
-            for (int i = 0; i < obj.Length; i++)
+            for (int i = 0; i < obj.Count; i++)
             {
                 Wt = MatrixMultiplication(obj[i].TranslateM, obj[i].RotateM);
                 for (int j = 0; j < obj[i].P.Length; j++)
@@ -187,7 +189,7 @@ namespace _3DCGA_PA15
         public void Draw()
         {
             TPoint[] P = new TPoint[3];
-            for (int i = 0; i < obj.Length; i++)
+            for (int i = 0; i < obj.Count; i++)
             {
                 for (int j = 0; j < obj[i].S.Length; j++)
                 {
@@ -329,7 +331,7 @@ namespace _3DCGA_PA15
         public void GeneratePolygonList()
         {
             polygon_list.Clear();
-            for (int i = 0; i < obj.Length; i++)
+            for (int i = 0; i < obj.Count; i++)
             {
                 for (int j = 0; j < obj[i].S.Length; j++)
                 {
@@ -1121,7 +1123,7 @@ namespace _3DCGA_PA15
 
 
 
-
+        
 
 
 
@@ -1131,37 +1133,107 @@ namespace _3DCGA_PA15
             this.KeyPreview = true;
         }
 
+        private void importObjectBtn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog // Create an object from the OpenFileDialog Class.
+            {
+                InitialDirectory = @"D:\", // Initial directory when the dialogbox open for the first time.
+                Title = "Browse Text Files", // Dialogbox title.
+
+                CheckFileExists = true, // Check if the file exist.
+                CheckPathExists = true, // Check if the path exist.
+
+                DefaultExt = "txt", // Default file extension.
+                Filter = "txt files (*.txt)|*.txt", // File extension filter.
+
+                ReadOnlyChecked = true, // Read file only.
+                ShowReadOnly = true // Only for reading the file.
+            };
+            if (ofd.ShowDialog() == DialogResult.OK) // If the user click open.
+            {
+                var sr = new StreamReader(ofd.FileName); // make a variable from the StreamReader Class.
+                string line; // this variable will hold the current line from the file.
+
+                //obj = new TObject[nObj];
+                int PNum = 0, SNum = 0;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] lineSplit = line.Split(',');
+                    if (lineSplit[0] == "PNum")
+                    {
+                        PNum = Convert.ToInt32(lineSplit[1]);
+                    }
+                    else if (lineSplit[0] == "SNum")
+                    {
+                        SNum = Convert.ToInt32(lineSplit[1]);
+                    }
+                }
+                //obj[nObj - 1] = new TObject(PNum, SNum);
+                TObject tempObj = new TObject(PNum, SNum);
+                sr = new StreamReader(ofd.FileName); // make a variable from the StreamReader Class.
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] lineSplit = line.Split(',');
+                    if (lineSplit[0] == "ObjectName")
+                    {
+                        tempObj.objectName = lineSplit[1];
+                    }
+                    else if (lineSplit[0] == "Point")
+                    {
+                        SetPoint(ref tempObj.P[Convert.ToInt32(lineSplit[1])], Convert.ToDouble(lineSplit[2]), Convert.ToDouble(lineSplit[3]), Convert.ToDouble(lineSplit[4]));
+                    }
+                    else if (lineSplit[0] == "Surface")
+                    {
+                        SetSurface(ref tempObj.S[Convert.ToInt32(lineSplit[1])], Convert.ToInt32(lineSplit[2]), Convert.ToInt32(lineSplit[3]), Convert.ToInt32(lineSplit[4]), Color.FromName(lineSplit[5]));
+                    }
+                }
+                obj.Add(tempObj);
+            }
+            ResetTransM(obj.Count-1);
+            selectListBox.Items.Add(obj[obj.Count-1].objectName);
+            Display();
+        }
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            //obj = new TObject[nObj];
+
             // 1. Prepare the objects
-            obj[0] = new TObject(4, 4);
-            SetPoint(ref obj[0].P[0], -1, -1, 1);
-            SetPoint(ref obj[0].P[1], 1, -1, 1);
-            SetPoint(ref obj[0].P[2], 0, 1, 0);
-            SetPoint(ref obj[0].P[3], 0, -1, -1);
-            SetSurface(ref obj[0].S[0], 0, 1, 2, Color.Red);
-            SetSurface(ref obj[0].S[1], 1, 3, 2, Color.Yellow);
-            SetSurface(ref obj[0].S[2], 3, 0, 2, Color.Green);
-            SetSurface(ref obj[0].S[3], 0, 3, 1, Color.Blue);
+            TObject objTemp = new TObject(4, 4);
+            objTemp.objectName = "Triangular Pyramid";
+            SetPoint(ref objTemp.P[0], -1, -1, 1);
+            SetPoint(ref objTemp.P[1], 1, -1, 1);
+            SetPoint(ref objTemp.P[2], 0, 1, 0);
+            SetPoint(ref objTemp.P[3], 0, -1, -1);
+            SetSurface(ref objTemp.S[0], 0, 1, 2, Color.Red);
+            SetSurface(ref objTemp.S[1], 1, 3, 2, Color.Yellow);
+            SetSurface(ref objTemp.S[2], 3, 0, 2, Color.Green);
+            SetSurface(ref objTemp.S[3], 0, 3, 1, Color.Blue);
+            obj.Add(objTemp);
 
-            obj[1] = new TObject(5, 6);
-            SetPoint(ref obj[1].P[0], -1, -1, 1);
-            SetPoint(ref obj[1].P[1], 1, -1, 1);
-            SetPoint(ref obj[1].P[2], 1, -1, -1);
-            SetPoint(ref obj[1].P[3], -1, -1, -1);
-            SetPoint(ref obj[1].P[4], 0, 1, 0);
-            SetSurface(ref obj[1].S[0], 0, 1, 4, Color.Purple);
-            SetSurface(ref obj[1].S[1], 1, 2, 4, Color.Orange);
-            SetSurface(ref obj[1].S[2], 2, 3, 4, Color.Magenta);
-            SetSurface(ref obj[1].S[3], 3, 0, 4, Color.Black);
-            SetSurface(ref obj[1].S[4], 3, 2, 0, Color.Gray);
-            SetSurface(ref obj[1].S[5], 2, 1, 0, Color.Aqua);
+            TObject objTemp1 = new TObject(4, 4);
+            objTemp1 = new TObject(5, 6);
+            objTemp1.objectName = "Square Pyramid";
+            SetPoint(ref objTemp1.P[0], -1, -1, 1);
+            SetPoint(ref objTemp1.P[1], 1, -1, 1);
+            SetPoint(ref objTemp1.P[2], 1, -1, -1);
+            SetPoint(ref objTemp1.P[3], -1, -1, -1);
+            SetPoint(ref objTemp1.P[4], 0, 1, 0);
+            SetSurface(ref objTemp1.S[0], 0, 1, 4, Color.Purple);
+            SetSurface(ref objTemp1.S[1], 1, 2, 4, Color.Orange);
+            SetSurface(ref objTemp1.S[2], 2, 3, 4, Color.Magenta);
+            SetSurface(ref objTemp1.S[3], 3, 0, 4, Color.Black);
+            SetSurface(ref objTemp1.S[4], 3, 2, 0, Color.Gray);
+            SetSurface(ref objTemp1.S[5], 2, 1, 0, Color.Aqua);
+            obj.Add(objTemp1);
 
-            for (int i = 0; i < obj.Length; i++)
+            for (int i = 0; i < obj.Count; i++)
             {
-                selectListBox.Items.Add(i);
+                selectListBox.Items.Add(obj[i].objectName);
                 ResetTransM(i);
             }
+
 
             //TranslateObject(0, -2, 0, 0);
             //RotateObjectOnX(0, 45);
@@ -1175,7 +1247,7 @@ namespace _3DCGA_PA15
 
             translateRB.Checked = true;
             frontSurfaceCB.Checked = true;
-            warnockRB.Checked = true;
+            drawRB.Checked = true;
 
             debug += "Key pressed: " + Environment.NewLine;
 
@@ -1255,7 +1327,6 @@ namespace _3DCGA_PA15
                 resetBtn.BackColor = Color.Yellow;
                 int index = selectListBox.SelectedIndex;
                 ResetTransM(index);
-                Display();
             }
             Display();
         }

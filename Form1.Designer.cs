@@ -52,6 +52,8 @@
             this.drawRB = new System.Windows.Forms.RadioButton();
             this.warnockRB = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.importObjectBtn = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -163,13 +165,13 @@
             // debugTextBox
             // 
             this.debugTextBox.BackColor = System.Drawing.Color.White;
-            this.debugTextBox.Location = new System.Drawing.Point(1043, 12);
+            this.debugTextBox.Location = new System.Drawing.Point(1043, 31);
             this.debugTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.debugTextBox.Multiline = true;
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
             this.debugTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debugTextBox.Size = new System.Drawing.Size(359, 701);
+            this.debugTextBox.Size = new System.Drawing.Size(359, 781);
             this.debugTextBox.TabIndex = 10;
             // 
             // downBtn
@@ -232,7 +234,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(680, 526);
+            this.label3.Location = new System.Drawing.Point(911, 526);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(125, 17);
             this.label3.TabIndex = 16;
@@ -266,7 +268,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label4.Location = new System.Drawing.Point(653, 661);
+            this.label4.Location = new System.Drawing.Point(790, 725);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(246, 87);
             this.label4.TabIndex = 19;
@@ -276,7 +278,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(680, 546);
+            this.label5.Location = new System.Drawing.Point(911, 546);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(30, 17);
             this.label5.TabIndex = 20;
@@ -285,7 +287,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(680, 568);
+            this.label6.Location = new System.Drawing.Point(911, 568);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(31, 17);
             this.label6.TabIndex = 21;
@@ -330,11 +332,32 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Methods:";
             // 
+            // importObjectBtn
+            // 
+            this.importObjectBtn.Location = new System.Drawing.Point(606, 546);
+            this.importObjectBtn.Name = "importObjectBtn";
+            this.importObjectBtn.Size = new System.Drawing.Size(104, 37);
+            this.importObjectBtn.TabIndex = 25;
+            this.importObjectBtn.Text = "Import object";
+            this.importObjectBtn.UseVisualStyleBackColor = true;
+            this.importObjectBtn.Click += new System.EventHandler(this.importObjectBtn_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(1040, 12);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(107, 17);
+            this.label7.TabIndex = 26;
+            this.label7.Text = "Debug console:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1415, 823);
+            this.ClientSize = new System.Drawing.Size(1415, 841);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.importObjectBtn);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -396,6 +419,8 @@
         private System.Windows.Forms.RadioButton drawRB;
         private System.Windows.Forms.RadioButton warnockRB;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button importObjectBtn;
+        private System.Windows.Forms.Label label7;
     }
 }
 
