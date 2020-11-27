@@ -636,33 +636,17 @@ namespace _3DCGA_PA15
                 }
             }
 
-            debug = "";
+            //debug = "";
             if (drawRB.Checked) Draw();
             else if (warnockRB.Checked)
             {
-                cntr = 0;
                 GeneratePolygonList();
                 Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
-                debug += cntr;
             }
             
-            //TPolygon poly1 = new TPolygon();
-            //poly1.c = Color.Red;
-            //TPoint p1 = new TPoint();
-            //TPoint p2 = new TPoint();
-            //TPoint p3 = new TPoint();
-            //SetPoint(ref p1, 1, 1, 0);
-            //SetPoint(ref p2, 8, 1, 0);
-            //SetPoint(ref p3, 3, 5, 0);
-            //List<TPoint> pl = new List<TPoint>();
-            //pl.Add(p1);
-            //pl.Add(p2);
-            //pl.Add(p3);
-            //poly1.P = pl;
-            //debug += IsPolygonSurroundArea(poly1.P, 3, 3, 4, 4);
             debugTextBox.Text = debug;
         }
-        int cntr = 0;
+
         public class TPolygon
         {
             public List<TPoint> P;
@@ -693,16 +677,16 @@ namespace _3DCGA_PA15
                 }
             }
 
-            debug = "";
-            for (int i = 0; i < polygon_list.Count; i++)
-            {
-                debug += "Polygon " + (i + 1) + Environment.NewLine;
-                for (int j = 0; j < polygon_list[i].P.Count; j++)
-                {
-                    debug += "P[" + (j + 1) + "] => (" + polygon_list[i].P[j].x + "    " + polygon_list[i].P[j].y + "    " + polygon_list[i].P[j].z + ")" + Environment.NewLine;
-                }
-                debug += Environment.NewLine;
-            }
+            //debug = "";
+            //for (int i = 0; i < polygon_list.Count; i++)
+            //{
+            //    debug += "Polygon " + (i + 1) + Environment.NewLine;
+            //    for (int j = 0; j < polygon_list[i].P.Count; j++)
+            //    {
+            //        debug += "P[" + (j + 1) + "] => (" + polygon_list[i].P[j].x + "    " + polygon_list[i].P[j].y + "    " + polygon_list[i].P[j].z + ")" + Environment.NewLine;
+            //    }
+            //    debug += Environment.NewLine;
+            //}
         }
 
 
@@ -730,15 +714,15 @@ namespace _3DCGA_PA15
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            label5.Text = e.X.ToString();
-            label6.Text = e.Y.ToString();
+            label5.Text = "x = " + e.X.ToString();
+            label6.Text = "y = " + e.Y.ToString();
         }
 
         public Color GetClosestPixelColor(int x, int y)
         {
             //if (x == 511 && y == 192)
             //    MessageBox.Show("Got you");
-            double zmax = 0;
+            double zmax = -9999;
             TPoint tempPoint = new TPoint();
             tempPoint.x = x;
             tempPoint.y = y;
@@ -790,13 +774,6 @@ namespace _3DCGA_PA15
             if ((xmax == xmin) && (ymax == ymin))
             {
                 bmp.SetPixel(xmin-1, ymin-1, GetClosestPixelColor(xmax, ymax));
-                //if (GetClosestPixelColor(xmin, ymin) == Color.White)
-                //{
-                //    //MessageBox.Show("Got you");
-                //    cntr++;
-                //    bmp.SetPixel(xmin - 1, ymin - 1, Color.Purple);
-                //}
-                //cntr++;
             }
             else
             {
@@ -811,7 +788,7 @@ namespace _3DCGA_PA15
                     var clippedPolygon = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
                     //(TPolygon clippedPolygon, bool surrounding) = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
                     if (clippedPolygon.Item1.P.Count == 0) continue;
-                    else if (clippedPolygon.Item2 && clippedPolygon.Item1.P.Count == 4)
+                    else if (clippedPolygon.Item2)
                     {
                         nS++;
                         clipped_polygon_list.Add(clippedPolygon.Item1);
@@ -936,11 +913,15 @@ namespace _3DCGA_PA15
 
         private void drawRB_CheckedChanged(object sender, EventArgs e)
         {
+            filledCB.Enabled = true;
+            frontSurfaceCB.Enabled = true;
             Display();
         }
 
         private void warnockRB_CheckedChanged(object sender, EventArgs e)
         {
+            filledCB.Enabled = false;
+            frontSurfaceCB.Enabled = false;
             Display();
         }
 
@@ -1017,8 +998,6 @@ namespace _3DCGA_PA15
             //g.DrawRectangle(new Pen(Color.Green), new Rectangle(250, 250, 25, 25));
             pictureBox1.Image = bmp;
         }
-
-
 
         public bool IsPolygonSurroundArea(List<TPoint> polygon_points, int xmin, int ymin, int xmax, int ymax)
         {
@@ -1378,6 +1357,8 @@ namespace _3DCGA_PA15
             frontSurfaceCB.Checked = true;
             warnockRB.Checked = true;
 
+            debug += "Key pressed: " + Environment.NewLine;
+
             Display();
         }
 
@@ -1387,33 +1368,40 @@ namespace _3DCGA_PA15
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             selectedObjectIndex = selectListBox.SelectedIndex;
+            debug += e.KeyCode + " ";
             if (e.KeyCode == Keys.W)
             {
+                upBtn.BackColor = Color.Yellow;
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0.1, 0);
                 else RotateObjectOnX(selectedObjectIndex, -1);
             }
             else if (e.KeyCode == Keys.S)
             {
+                downBtn.BackColor = Color.Yellow;
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, -0.1, 0);
                 else RotateObjectOnX(selectedObjectIndex, 1);
             }
             else if (e.KeyCode == Keys.A)
             {
+                leftBtn.BackColor = Color.Yellow;
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, -0.1, 0, 0);
                 else RotateObjectOnZ(selectedObjectIndex, 1);
             }
             else if (e.KeyCode == Keys.D)
             {
+                rightBtn.BackColor = Color.Yellow;
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0.1, 0, 0);
                 else RotateObjectOnZ(selectedObjectIndex, -1);
             }
             else if (e.KeyCode == Keys.Q)
             {
+                frontBtn.BackColor = Color.Yellow;
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0, 0.1);
                 else RotateObjectOnY(selectedObjectIndex, -1);
             }
             else if (e.KeyCode == Keys.E)
             {
+                backBtn.BackColor = Color.Yellow;
                 if (translateRB.Checked) TranslateObject(selectedObjectIndex, 0, 0, -0.1);
                 else RotateObjectOnY(selectedObjectIndex, 1);
             }
@@ -1442,9 +1430,47 @@ namespace _3DCGA_PA15
                 if (index < selectListBox.Items.Count - 1) index += 1;
                 selectListBox.SetSelected(index, true);
             }
+            else if (e.KeyCode == Keys.R)
+            {
+                resetBtn.BackColor = Color.Yellow;
+                int index = selectListBox.SelectedIndex;
+                ResetTransM(index);
+                Display();
+            }
             Display();
         }
 
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.W)
+            {
+                upBtn.BackColor = Color.White;
+            }
+            else if (e.KeyCode == Keys.S)
+            {
+                downBtn.BackColor = Color.White;
+            }
+            else if (e.KeyCode == Keys.A)
+            {
+                leftBtn.BackColor = Color.White;
+            }
+            else if (e.KeyCode == Keys.D)
+            {
+                rightBtn.BackColor = Color.White;
+            }
+            else if (e.KeyCode == Keys.Q)
+            {
+                frontBtn.BackColor = Color.White;
+            }
+            else if (e.KeyCode == Keys.E)
+            {
+                backBtn.BackColor = Color.White;
+            }
+            else if (e.KeyCode == Keys.R)
+            {
+                resetBtn.BackColor = Color.White;
+            }
+        }
 
 
         private void upBtn_Click(object sender, EventArgs e)
