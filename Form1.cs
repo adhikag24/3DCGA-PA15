@@ -736,6 +736,8 @@ namespace _3DCGA_PA15
 
         public Color GetClosestPixelColor(int x, int y)
         {
+            //if (x == 511 && y == 192)
+            //    MessageBox.Show("Got you");
             double zmax = 0;
             TPoint tempPoint = new TPoint();
             tempPoint.x = x;
@@ -787,12 +789,13 @@ namespace _3DCGA_PA15
         {
             if ((xmax == xmin) && (ymax == ymin))
             {
-                bmp.SetPixel(xmin-1, ymin-1, GetClosestPixelColor(xmin-1, ymin-1));
-                if (GetClosestPixelColor(xmin-1, ymin-1) == Color.White)
-                {
-                    //MessageBox.Show("Got you");
-                    cntr++;
-                }
+                bmp.SetPixel(xmin-1, ymin-1, GetClosestPixelColor(xmax, ymax));
+                //if (GetClosestPixelColor(xmin, ymin) == Color.White)
+                //{
+                //    //MessageBox.Show("Got you");
+                //    cntr++;
+                //    bmp.SetPixel(xmin - 1, ymin - 1, Color.Purple);
+                //}
                 //cntr++;
             }
             else
@@ -805,18 +808,19 @@ namespace _3DCGA_PA15
                 for (int i = 0; i < polygon_list.Count; i++)
                 {
                     TPolygon tempPolygon = polygon_list[i];
-                    (TPolygon clippedPolygon, bool surrounding) = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
-                    if (clippedPolygon.P.Count == 0) continue;
-                    else if (surrounding && clippedPolygon.P.Count == 4)
+                    var clippedPolygon = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
+                    //(TPolygon clippedPolygon, bool surrounding) = polygonClip(tempPolygon, xmin, ymin, xmax, ymax);
+                    if (clippedPolygon.Item1.P.Count == 0) continue;
+                    else if (clippedPolygon.Item2 && clippedPolygon.Item1.P.Count == 4)
                     {
                         nS++;
-                        clipped_polygon_list.Add(clippedPolygon);
-                        surrounding_polygon_list.Add(clippedPolygon);
+                        clipped_polygon_list.Add(clippedPolygon.Item1);
+                        surrounding_polygon_list.Add(clippedPolygon.Item1);
                     }
                     else
                     {
                         nIC++;
-                        clipped_polygon_list.Add(clippedPolygon);
+                        clipped_polygon_list.Add(clippedPolygon.Item1);
                     }
                 }
 
@@ -1147,7 +1151,7 @@ namespace _3DCGA_PA15
             tempPolygon.c = polygon.c;
             tempPolygon.P = polygon_points;
 
-            return Tuple.Create(tempPolygon, surrounding);
+            return new Tuple<TPolygon, bool>(tempPolygon, surrounding);
         }
 
 
