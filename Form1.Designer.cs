@@ -52,6 +52,7 @@
             this.drawRB = new System.Windows.Forms.RadioButton();
             this.warnockRB = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.scanlineRB = new System.Windows.Forms.RadioButton();
             this.importObjectBtn = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -61,6 +62,7 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.White;
+            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Cross;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
@@ -171,7 +173,7 @@
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
             this.debugTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debugTextBox.Size = new System.Drawing.Size(359, 781);
+            this.debugTextBox.Size = new System.Drawing.Size(869, 781);
             this.debugTextBox.TabIndex = 10;
             // 
             // downBtn
@@ -202,14 +204,13 @@
             // resetBtn
             // 
             this.resetBtn.Image = ((System.Drawing.Image)(resources.GetObject("resetBtn.Image")));
-            this.resetBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.resetBtn.Location = new System.Drawing.Point(20, 765);
             this.resetBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.resetBtn.Name = "resetBtn";
-            this.resetBtn.Size = new System.Drawing.Size(107, 48);
+            this.resetBtn.Size = new System.Drawing.Size(89, 48);
             this.resetBtn.TabIndex = 13;
             this.resetBtn.Text = "Reset";
-            this.resetBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.resetBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.resetBtn.UseVisualStyleBackColor = true;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
@@ -296,7 +297,7 @@
             // drawRB
             // 
             this.drawRB.AutoSize = true;
-            this.drawRB.Location = new System.Drawing.Point(5, 21);
+            this.drawRB.Location = new System.Drawing.Point(6, 21);
             this.drawRB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.drawRB.Name = "drawRB";
             this.drawRB.Size = new System.Drawing.Size(61, 21);
@@ -309,7 +310,7 @@
             // warnockRB
             // 
             this.warnockRB.AutoSize = true;
-            this.warnockRB.Location = new System.Drawing.Point(5, 48);
+            this.warnockRB.Location = new System.Drawing.Point(6, 47);
             this.warnockRB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.warnockRB.Name = "warnockRB";
             this.warnockRB.Size = new System.Drawing.Size(85, 21);
@@ -321,24 +322,39 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.scanlineRB);
             this.groupBox1.Controls.Add(this.drawRB);
             this.groupBox1.Controls.Add(this.warnockRB);
             this.groupBox1.Location = new System.Drawing.Point(375, 701);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox1.Size = new System.Drawing.Size(200, 100);
+            this.groupBox1.Size = new System.Drawing.Size(200, 111);
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Methods:";
             // 
+            // scanlineRB
+            // 
+            this.scanlineRB.AutoSize = true;
+            this.scanlineRB.Location = new System.Drawing.Point(6, 73);
+            this.scanlineRB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.scanlineRB.Name = "scanlineRB";
+            this.scanlineRB.Size = new System.Drawing.Size(83, 21);
+            this.scanlineRB.TabIndex = 24;
+            this.scanlineRB.TabStop = true;
+            this.scanlineRB.Text = "Scanline";
+            this.scanlineRB.UseVisualStyleBackColor = true;
+            // 
             // importObjectBtn
             // 
+            this.importObjectBtn.Image = ((System.Drawing.Image)(resources.GetObject("importObjectBtn.Image")));
             this.importObjectBtn.Location = new System.Drawing.Point(606, 546);
             this.importObjectBtn.Name = "importObjectBtn";
-            this.importObjectBtn.Size = new System.Drawing.Size(104, 37);
+            this.importObjectBtn.Size = new System.Drawing.Size(124, 39);
             this.importObjectBtn.TabIndex = 25;
             this.importObjectBtn.Text = "Import object";
+            this.importObjectBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.importObjectBtn.UseVisualStyleBackColor = true;
             this.importObjectBtn.Click += new System.EventHandler(this.importObjectBtn_Click);
             // 
@@ -355,7 +371,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1415, 841);
+            this.ClientSize = new System.Drawing.Size(1924, 841);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.importObjectBtn);
             this.Controls.Add(this.groupBox1);
@@ -421,6 +437,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button importObjectBtn;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.RadioButton scanlineRB;
     }
 }
 

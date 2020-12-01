@@ -39,10 +39,23 @@ namespace _3DCGA_PA15
                 S = new TSurface[sNum];
             }
         }
-        public class SETElement
+
+        public class TPolygon
         {
-            public int ymax, xofymin, dx, dy, carrier = 0;
+            public int polygon_id;
+            public double A, B, C, D;
+            public List<TPoint> P;
+            public Color c;
+            public bool flag;
         }
+        List<TPolygon> polygon_list = new List<TPolygon>();
+
+        public class Edge
+        {
+            public int ymax, xofymin, dx, dy, carrier = 0, polygon_id;
+        }
+
+        
 
         public bool firstLoad = true;
         public int nObj = 2;
@@ -176,14 +189,498 @@ namespace _3DCGA_PA15
                 }
             }
 
-            //debug = "";
-            if (drawRB.Checked) Draw();
+            debug = "";
+            if (drawRB.Checked)
+            {
+                g.Clear(Color.White);
+                Draw();
+            }
             else if (warnockRB.Checked)
             {
+                g.Clear(Color.White);
                 GeneratePolygonList();
                 Warnock(0, 0, pictureBox1.Width, pictureBox1.Height);
             }
+            else if (scanlineRB.Checked)
+            {
+                g.Clear(Color.White);
+                List<TPolygon> scanline_polygon_list = GenerateScanlinePolygon();
+                Scanline(scanline_polygon_list);
+            }
             debugTextBox.Text = debug;
+        }
+
+        List<TPolygon> GenerateScanlinePolygon()
+        {
+            List<TPolygon> scanline_list_temp = new List<TPolygon>();
+            //int id = 0;
+            TPoint pA = new TPoint();
+            TPoint pB = new TPoint();
+            TPoint pC = new TPoint();
+            TPoint pD = new TPoint();
+            TPoint pE = new TPoint();
+            TPoint pF = new TPoint();
+            TPoint pG = new TPoint();
+            TPoint pH = new TPoint();
+            TPoint pI = new TPoint();
+
+            TPoint pApB;
+            TPoint pBpC;
+            TPoint pDpE;
+            TPoint pEpF;
+            TPoint pGpH;
+            TPoint pHpI;
+
+            TPoint N1;
+            TPoint N2;
+            TPoint N3;
+
+            double D1;
+            double D2;
+            double D3;
+
+            TPolygon scanlinePolygonTemp = new TPolygon();
+            TPolygon scanlinePolygonTemp1 = new TPolygon();
+            TPolygon scanlinePolygonTemp2 = new TPolygon();
+
+            SetPoint(ref pA, 1, 6, 7);
+            SetPoint(ref pB, 3, 1, 4);
+            SetPoint(ref pC, 5, 4, 10);
+            SetPoint(ref pD, 0, 4, 3);
+            SetPoint(ref pE, 2, 0, 3);
+            SetPoint(ref pF, 4, 8, 12);
+            SetPoint(ref pG, 1, 1, 7);
+            SetPoint(ref pH, 3, 2, 6);
+            SetPoint(ref pI, 4, 6, 1);
+
+
+            pApB = FindVector(pA, pB);
+            pBpC = FindVector(pB, pC);
+            N1 = CrossProduct(pApB, pBpC);
+            D1 = -(N1.x * pA.x + N1.y * pA.y + N1.z * pA.z);
+            scanlinePolygonTemp.polygon_id = 0;
+            scanlinePolygonTemp.A = N1.x;
+            scanlinePolygonTemp.B = N1.y;
+            scanlinePolygonTemp.C = N1.z;
+            scanlinePolygonTemp.D = D1;
+            scanlinePolygonTemp.c = Color.Red;
+            scanlinePolygonTemp.flag = false;
+            List<TPoint> Pabc = new List<TPoint>();
+            Pabc.Add(pA);
+            Pabc.Add(pB);
+            Pabc.Add(pC);
+            scanlinePolygonTemp.P = Pabc;
+            scanline_list_temp.Add(scanlinePolygonTemp);
+
+
+            pDpE = FindVector(pD, pE);
+            pEpF = FindVector(pE, pF);
+            N2 = CrossProduct(pDpE, pEpF);
+            D2 = -(N2.x * pD.x + N2.y * pD.y + N2.z * pD.z);
+            scanlinePolygonTemp1.polygon_id = 1;
+            scanlinePolygonTemp1.A = N2.x;
+            scanlinePolygonTemp1.B = N2.y;
+            scanlinePolygonTemp1.C = N2.z;
+            scanlinePolygonTemp1.D = D2;
+            scanlinePolygonTemp1.c = Color.Green;
+            scanlinePolygonTemp1.flag = false;
+            List<TPoint> Pdef = new List<TPoint>();
+            Pdef.Add(pD);
+            Pdef.Add(pE);
+            Pdef.Add(pF);
+            scanlinePolygonTemp1.P = Pdef;
+            scanline_list_temp.Add(scanlinePolygonTemp1);
+
+
+            pGpH = FindVector(pG, pH);
+            pHpI = FindVector(pH, pI);
+            N3 = CrossProduct(pGpH, pHpI);
+            D3 = -(N3.x * pG.x + N3.y * pG.y + N3.z * pG.z);
+            scanlinePolygonTemp2.polygon_id = 2;
+            scanlinePolygonTemp2.A = N3.x;
+            scanlinePolygonTemp2.B = N3.y;
+            scanlinePolygonTemp2.C = N3.z;
+            scanlinePolygonTemp2.D = D3;
+            scanlinePolygonTemp2.c = Color.Blue;
+            scanlinePolygonTemp2.flag = false;
+            List<TPoint> Pghi = new List<TPoint>();
+            Pghi.Add(pG);
+            Pghi.Add(pH);
+            Pghi.Add(pI);
+            scanlinePolygonTemp2.P = Pghi;
+            scanline_list_temp.Add(scanlinePolygonTemp2);
+            //for (int i = 0; i < obj.Count; i++)
+            //{
+            //    for (int j = 0; j < obj[i].S.Length; j++)
+            //    {
+            //        if (obj[i].visibleSurfaceIndex.Contains(j))
+            //        {
+            //            TPoint p1 = obj[i].VS[obj[i].S[j].p1];
+            //            TPoint p2 = obj[i].VS[obj[i].S[j].p2];
+            //            TPoint p3 = obj[i].VS[obj[i].S[j].p3];
+            //            Color c = obj[i].S[j].c;
+
+            //            TPoint p1p2 = FindVector(p1, p2);
+            //            TPoint p2p3 = FindVector(p2, p3);
+
+            //            TPoint N = CrossProduct(p1p2, p2p3);
+
+            //            double D = -(N.x * p1.x + N.y * p1.y + N.z * p1.z);
+
+            //            TScanlinePolygon scanlinePolygonTemp = new TScanlinePolygon();
+            //            scanlinePolygonTemp.polygon_id = id;
+            //            scanlinePolygonTemp.A = N.x;
+            //            scanlinePolygonTemp.B = N.y;
+            //            scanlinePolygonTemp.C = N.z;
+            //            scanlinePolygonTemp.D = D;
+            //            scanlinePolygonTemp.c = c;
+            //            scanlinePolygonTemp.flag = false;
+
+            //            scanline_list_temp.Add(scanlinePolygonTemp);
+
+            //            id++;
+            //        }
+            //    }
+            //}
+            return scanline_list_temp;
+        }
+
+        public List<Edge>[] GenerateLocalSET(TPolygon polygon, int wholeymax)
+        {
+            Pen pen = new Pen(polygon.c);
+            int dx, dy, ymin, ymax, xofymin;
+            int wholeymin = 9999;
+            List<Edge>[] SET = new List<Edge>[wholeymax + 1];
+
+            for (int i = 0; i <= wholeymax; i++)
+            {
+                SET[i] = new List<Edge>();
+            }
+
+            for (int i = 0; i < polygon.P.Count; i++)
+            {
+                TPoint first_vertices, second_vertices;
+                int x1, y1, x2, y2;
+                Edge edgeTemp = new Edge();
+                if (i == polygon.P.Count - 1)
+                {
+                    first_vertices = polygon.P[i];
+                    second_vertices = polygon.P[0];
+                    x1 = Convert.ToInt32(first_vertices.x);
+                    y1 = Convert.ToInt32(first_vertices.y);
+                    x2 = Convert.ToInt32(second_vertices.x);
+                    y2 = Convert.ToInt32(second_vertices.y);
+                    g.DrawLine(pen, x1, y1, x2, y2);
+
+                    dx = x2 - x1;
+                    dy = y2 - y1;
+                    if (y1 > y2)
+                    {
+                        ymax = y1;
+                        ymin = y2;
+                    }
+                    else
+                    {
+                        ymax = y2;
+                        ymin = y1;
+                    }
+                    if (ymin == y1) xofymin = x1;
+                    else xofymin = x2;
+                    if (dy < 0)
+                    {
+                        dy *= -1;
+                        dx *= -1;
+                    }
+                    if (dy != 0)
+                    {
+                        if (ymin < wholeymin) wholeymin = ymin;
+                        if (ymax > wholeymax) wholeymax = ymax;
+                        edgeTemp.ymax = ymax;
+                        edgeTemp.xofymin = xofymin;
+                        edgeTemp.dx = dx;
+                        edgeTemp.dy = dy;
+                        SET[ymin].Add(edgeTemp);
+                    }
+                }
+                else
+                {
+                    first_vertices = polygon.P[i];
+                    second_vertices = polygon.P[i + 1];
+                    x1 = Convert.ToInt32(first_vertices.x);
+                    y1 = Convert.ToInt32(first_vertices.y);
+                    x2 = Convert.ToInt32(second_vertices.x);
+                    y2 = Convert.ToInt32(second_vertices.y);
+                    g.DrawLine(pen, x1, y1, x2, y2);
+
+                    dx = x2 - x1;
+                    dy = y2 - y1;
+                    if (y1 > y2)
+                    {
+                        ymax = y1;
+                        ymin = y2;
+                    }
+                    else
+                    {
+                        ymax = y2;
+                        ymin = y1;
+                    }
+                    if (ymin == y1) xofymin = x1;
+                    else xofymin = x2;
+                    if (dy < 0)
+                    {
+                        dy *= -1;
+                        dx *= -1;
+                    }
+                    if (dy != 0)
+                    {
+                        if (ymin < wholeymin) wholeymin = ymin;
+                        if (ymax > wholeymax) wholeymax = ymax;
+                        edgeTemp.ymax = ymax;
+                        edgeTemp.xofymin = xofymin;
+                        edgeTemp.dx = dx;
+                        edgeTemp.dy = dy;
+                        SET[ymin].Add(edgeTemp);
+                    }
+                }
+            }
+            return SET;
+        }
+
+        public List<Edge>[] GenerateGlobalSET(List<Edge>[][] polygonSET, int wholeymax)
+        {
+            List<Edge>[] GlobalSET = new List<Edge>[wholeymax + 1];
+            for (int i = 0; i <= wholeymax; i++)
+            {
+                GlobalSET[i] = new List<Edge>();
+            }
+            for (int i = 0; i < polygonSET.GetLength(0); i++)
+            {
+                for (int j = 0; j < wholeymax; j++)
+                {
+                    for (int k = 0; k < polygonSET[i][j].Count; k++)
+                    {
+                        polygonSET[i][j][k].polygon_id = i;
+                        GlobalSET[j].Add(polygonSET[i][j][k]);
+                    }
+                }
+            }
+            return GlobalSET;
+        }
+
+        public List<Edge> CheckYmax(List<Edge> currentList, int ymin)
+        {
+            List<Edge> result = new List<Edge>(currentList);
+            List<Edge> result1 = new List<Edge>();
+            for(int i=0; i< result.Count; i++)
+            {
+                if (result[i].ymax == ymin) result[i] = null;
+            }
+            for(int i=0; i<result.Count; i++)
+            {
+                if (result[i] != null) result1.Add(result[i]);
+            }
+            return result1;
+        }
+
+        public List<Edge> SortList(List<Edge> ymaxCheckedList)
+        {
+            List<Edge> result = new List<Edge>(ymaxCheckedList);
+            int n = result.Count;
+            for(int i=0; i<n-1; i++)
+            {
+                for(int j=0; j<n-i-1; j++)
+                {
+                    double x1 = Convert.ToDouble(result[j].xofymin) + (Convert.ToDouble(result[j].carrier) / Convert.ToDouble(result[j].dy));
+                    double x2 = Convert.ToDouble(result[j+1].xofymin) + (Convert.ToDouble(result[j+1].carrier) / Convert.ToDouble(result[j+1].dy));
+                    if (x1 > x2)
+                    {
+                        Edge temp = result[j];
+                        result[j] = result[j + 1];
+                        result[j + 1] = temp;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public List<Edge> ProcessList(List<Edge> sortedList)
+        {
+            List<Edge> result = new List<Edge>();
+
+            for(int i=0; i<sortedList.Count; i++)
+            {
+                Edge tempEdge = new Edge();
+                tempEdge.ymax = sortedList[i].ymax;
+                tempEdge.xofymin = sortedList[i].xofymin;
+                tempEdge.dx = sortedList[i].dx;
+                tempEdge.dy = sortedList[i].dy;
+                tempEdge.carrier = sortedList[i].carrier;
+                tempEdge.polygon_id = sortedList[i].polygon_id;
+                result.Add(tempEdge);
+            }
+
+            for(int i=0; i<result.Count; i++)
+            {
+                result[i].carrier += result[i].dx;
+                if(result[i].carrier >= result[i].dy)
+                {
+                    while(result[i].carrier >= result[i].dy)
+                    {
+                        result[i].xofymin++;
+                        result[i].carrier -= result[i].dy;
+                    }
+                }
+                else if(result[i].carrier < 0)
+                {
+                    while(result[i].carrier < 0)
+                    {
+                        result[i].xofymin--;
+                        result[i].carrier += result[i].dy;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public List<Edge>[] GenerateAEL(List<Edge>[] globalSET, int wholeymax)
+        {
+            List<Edge>[] AEL = new List<Edge>[wholeymax + 1];
+            for (int i = 0; i <= wholeymax; i++)
+            {
+                AEL[i] = new List<Edge>();
+            }
+
+            List<Edge> currentList = new List<Edge>();
+            for(int i=0; i<globalSET[0].Count; i++)
+            {
+                Edge tempEdge = new Edge();
+                tempEdge.ymax = globalSET[0][i].ymax;
+                tempEdge.xofymin = globalSET[0][i].xofymin;
+                tempEdge.dx = globalSET[0][i].dx;
+                tempEdge.dy = globalSET[0][i].dy;
+                tempEdge.carrier = globalSET[0][i].carrier;
+                tempEdge.polygon_id = globalSET[0][i].polygon_id;
+                currentList.Add(tempEdge);
+            }
+            List<Edge> tempListInit = new List<Edge>(currentList);
+            AEL[0] = tempListInit;
+
+            for (int i = 1; i < globalSET.Length; i++)
+            {
+                List<Edge> ymaxCheckedList, processedList, sortedList;
+                // Check y
+                ymaxCheckedList = CheckYmax(currentList, i);
+                // Process
+                processedList = ProcessList(ymaxCheckedList);
+                // Add new item list
+                for (int j = 0; j < globalSET[i].Count; j++)
+                {
+                    Edge tempEdge = new Edge();
+                    tempEdge.ymax = globalSET[i][j].ymax;
+                    tempEdge.xofymin = globalSET[i][j].xofymin;
+                    tempEdge.dx = globalSET[i][j].dx;
+                    tempEdge.dy = globalSET[i][j].dy;
+                    tempEdge.carrier = globalSET[i][j].carrier;
+                    tempEdge.polygon_id = globalSET[i][j].polygon_id;
+                    processedList.Add(tempEdge);
+                }
+
+                // Sort
+                sortedList = SortList(processedList);
+                currentList = new List<Edge>(sortedList);
+
+                List<Edge> tempList = new List<Edge>(currentList);
+                AEL[i] = tempList;
+            }
+
+            return AEL;
+        }
+
+        public void Scanline(List<TPolygon> scanline_polygon_list)
+        {
+
+            //for(int i=0; i<scanline_polygon_list.Count; i++)
+            //{
+            //    debug += "Polygon " + i + Environment.NewLine;
+            //    debug += "Polygon ID = " + scanline_polygon_list[i].polygon_id + Environment.NewLine;
+            //    debug += "Polygon A = " + scanline_polygon_list[i].A + Environment.NewLine;
+            //    debug += "Polygon B = " + scanline_polygon_list[i].B + Environment.NewLine;
+            //    debug += "Polygon C = " + scanline_polygon_list[i].C + Environment.NewLine;
+            //    debug += "Polygon D = " + scanline_polygon_list[i].D + Environment.NewLine;
+            //    debug += "Color = " + scanline_polygon_list[i].c + Environment.NewLine;
+            //    debug += "Flag = " + scanline_polygon_list[i].flag + Environment.NewLine;
+            //    debug += Environment.NewLine;
+            //}
+
+            //List<Edge>[][] polygonSET = GenerateLocalSET(scanline_polygon_list[0]);
+            //List<Edge>[][] polygonSET = GenerateLocalSET(scanline_polygon_list[1]);
+            //List<Edge>[][] polygonSET = GenerateLocalSET(scanline_polygon_list[2]);
+
+            int wholeymax = -9999;
+            for(int i=0; i<scanline_polygon_list.Count; i++)
+            {
+                for(int j=0; j<scanline_polygon_list[i].P.Count; j++)
+                {
+                    wholeymax = Math.Max(wholeymax, Convert.ToInt32(scanline_polygon_list[i].P[j].y));
+                }
+            }
+
+            List<Edge>[][] polygonSET = new List<Edge>[scanline_polygon_list.Count][];
+            for(int i=0; i<3; i++)
+            {
+                polygonSET[i] = GenerateLocalSET(scanline_polygon_list[i], wholeymax);
+            }
+
+            List<Edge>[] globalSET = GenerateGlobalSET(polygonSET, wholeymax);
+
+            List<Edge>[] AEL = GenerateAEL(globalSET, wholeymax);
+
+            //debug += "SET" + Environment.NewLine;
+            //for(int i=0; i<3; i++)
+            //{
+            //    debug += "Polygon " + i + Environment.NewLine;
+            //    for (int j = 0; j < wholeymax + 1; j++)
+            //    {
+            //        debug += j + " = ";
+            //        if (polygonSET[i][j] != null)
+            //        {
+            //            for (int k = 0; k < polygonSET[i][j].Count; k++)
+            //            {
+            //                debug += polygonSET[i][j][k].ymax + "   " + polygonSET[i][j][k].xofymin + "   " + polygonSET[i][j][k].dx + "   " + polygonSET[i][j][k].dy + " => ";
+            //            }
+            //        }
+            //        debug += Environment.NewLine;
+            //    }
+            //    debug += Environment.NewLine;
+            //}
+            //debug += Environment.NewLine;
+
+            debug += "Global SET" + Environment.NewLine;
+            for (int i = 0; i < globalSET.Length; i++)
+            {
+                debug += i + " = ";
+                for (int j = 0; j < globalSET[i].Count; j++)
+                {
+                    debug += globalSET[i][j].ymax + "   " + globalSET[i][j].xofymin + "   " + globalSET[i][j].dx + "   " + globalSET[i][j].dy + "   " + globalSET[i][j].carrier + "   " + globalSET[i][j].polygon_id + "   =>   ";
+                }
+                debug += Environment.NewLine;
+            }
+            debug += Environment.NewLine;
+
+            debug += "AEL" + Environment.NewLine;
+            for (int i = 0; i < AEL.Length; i++)
+            {
+                debug += i + " = ";
+                for (int j = 0; j < AEL[i].Count; j++)
+                {
+                    debug += AEL[i][j].ymax + "   " + AEL[i][j].xofymin + "   " + AEL[i][j].dx + "   " + AEL[i][j].dy + "   " + AEL[i][j].carrier + "   " + AEL[i][j].polygon_id + "   =>   ";
+                }
+                debug += Environment.NewLine;
+            }
+            debug += Environment.NewLine;
+
+            pictureBox1.Image = bmp;
         }
 
         public void Draw()
@@ -294,13 +791,13 @@ namespace _3DCGA_PA15
                     }
                     PolygonFill(pen, P);
                 }
-                // Case 3: Only one surrounding polygon in the area.
+                //Case 3: Only one surrounding polygon in the area.
                 else if (nS == 1 && nIC == 0)
                 {
                     Pen pen = new Pen(clipped_polygon_list[0].c);
                     DrawRect(pen, xmin - 1, ymin - 1, xmax, ymax);
                 }
-                // Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
+                //Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
                 else if (nS > 0 && frontPolygonCheck(clipped_polygon_list, surrounding_polygon_list) != null)
                 {
                     TPolygon temp = frontPolygonCheck(clipped_polygon_list, surrounding_polygon_list);
@@ -322,12 +819,7 @@ namespace _3DCGA_PA15
 
 
 
-        public class TPolygon
-        {
-            public List<TPoint> P;
-            public Color c;
-        }
-        List<TPolygon> polygon_list = new List<TPolygon>();
+        
         public void GeneratePolygonList()
         {
             polygon_list.Clear();
@@ -616,7 +1108,7 @@ namespace _3DCGA_PA15
             }
             return temp_list;
         }
-        public bool IsPolygonSurroundArea(List<TPoint> polygon_points, int xmin, int ymin, int xmax, int ymax)
+        public bool IsPolygonSurroundArea(List<TPoint> polygon_points, int xmin, int ymin, int xmax, int ymax) // Fungsi tidak penting, ada alternatif lain
         {
             TPoint p1 = polygon_points[0];
             TPoint p2 = polygon_points[1];
@@ -671,15 +1163,28 @@ namespace _3DCGA_PA15
         TPolygon frontPolygonCheck(List<TPolygon> clipped_polygon_list, List<TPolygon> surrounding_polygon_list)
         {
             List<double> surroundzmin = new List<double>();
+            List<double> surroundzmax = new List<double>();
+            List<double> surroundzmaxy = new List<double>();
+            List<double> surroundzminy = new List<double>();
             for (int i = 0; i < surrounding_polygon_list.Count; i++)
             {
-                double ztemp = 9999;
+                double ztempMin = 9999;
+                double ztempMax = -9999;
+                double zmaxy = 0;
+                double zminy = 0;
                 for (int j = 0; j < surrounding_polygon_list[i].P.Count; j++)
                 {
-                    ztemp = Math.Min(ztemp, surrounding_polygon_list[i].P[j].z);
+                    if (ztempMin > surrounding_polygon_list[i].P[j].z) zminy = surrounding_polygon_list[i].P[j].y;
+                    ztempMin = Math.Min(ztempMin, surrounding_polygon_list[i].P[j].z);
+                    if (ztempMax < surrounding_polygon_list[i].P[j].z) zmaxy = surrounding_polygon_list[i].P[j].y;
+                    ztempMax = Math.Max(ztempMax, surrounding_polygon_list[i].P[j].z);
                 }
-                surroundzmin.Add(ztemp);
+                surroundzmin.Add(ztempMin);
+                surroundzmax.Add(ztempMax);
+                surroundzmaxy.Add(zmaxy);
+                surroundzminy.Add(zminy);
             }
+
             List<double> clippedzmax = new List<double>();
             for (int i = 0; i < clipped_polygon_list.Count; i++)
             {
@@ -694,6 +1199,7 @@ namespace _3DCGA_PA15
                 else continue;
                 clippedzmax.Add(ztemp);
             }
+
             List<double> final = new List<double>();
             for (int i = 0; i < surroundzmin.Count; i++)
             {
@@ -705,17 +1211,38 @@ namespace _3DCGA_PA15
                 if (greater) final.Add(surroundzmin[i]);
             }
             if (final.Count == 0) return null;
-            double temp = -9999;
-            int index = 99;
-            for (int i = 0; i < final.Count; i++)
+            else if (final.Count == 1) return surrounding_polygon_list[0];
+
+            else
             {
-                if (temp < final[i])
+                bool intersect = false;
+                double initSlope = (surroundzmaxy[0] - surroundzminy[0]) / (surroundzmax[0] - final[0]);
+                for (int i = 1; i < final.Count; i++)
                 {
-                    temp = final[i];
-                    index = i;
+                    double tempSlope = (surroundzmaxy[i] - surroundzminy[i]) / (surroundzmax[i] - final[i]);
+                    if (tempSlope != initSlope) intersect = true;
+                    if (intersect) return null;
                 }
+
+                double tempZmax = -9999;
+                double tempZmin = -9999;
+                int indexZmax = 99;
+                int indexZmin = 99;
+                for (int i = 0; i < final.Count; i++)
+                {
+                    if (tempZmax < surroundzmax[i])
+                    {
+                        tempZmax = surroundzmax[i];
+                        indexZmax = i;
+                    }
+                    if (tempZmin < surroundzmin[i])
+                    {
+                        tempZmin = surroundzmin[i];
+                        indexZmin = i;
+                    }
+                }
+                return surrounding_polygon_list[indexZmax];
             }
-            return surrounding_polygon_list[index];
         }
         public void SetPoint(ref TPoint V, double x, double y, double z)
         {
@@ -890,12 +1417,12 @@ namespace _3DCGA_PA15
                 indexItemCount[i] = 0;
             }
 
-            var SET = new SETElement[pictureBox1.Height, pictureBox1.Width];
+            var SET = new Edge[pictureBox1.Height, pictureBox1.Width];
             for (int i = 0; i < P.Length; i++)
             {
                 TPoint first_vertices, second_vertices;
                 int x1, y1, x2, y2;
-                SETElement se = new SETElement();
+                Edge se = new Edge();
                 if (i == P.Length - 1)
                 {
                     first_vertices = P[i];
@@ -984,10 +1511,10 @@ namespace _3DCGA_PA15
             }
             ConstructAEL(SET, wholeymin, wholeymax, pen);
         }
-        public SETElement[] YmaxCheck(SETElement[] cr, int index, int currentY)
+        public Edge[] YmaxCheck(Edge[] cr, int index, int currentY)
         {
             int new_index = 0;
-            var coppied_row = new SETElement[pictureBox1.Width];
+            var coppied_row = new Edge[pictureBox1.Width];
             cr.CopyTo(coppied_row, 0);
             for (int i = 0; i < index + 1; i++)
             {
@@ -999,7 +1526,7 @@ namespace _3DCGA_PA15
                     }
                 }
             }
-            var checkedCurrentRow = new SETElement[pictureBox1.Width];
+            var checkedCurrentRow = new Edge[pictureBox1.Width];
             for (int i = 0; i < index + 1; i++)
             {
                 if (coppied_row[i] != null)
@@ -1011,9 +1538,9 @@ namespace _3DCGA_PA15
 
             return checkedCurrentRow;
         }
-        public SETElement[] ProcessCurrentRow(SETElement[] cr, int index)
+        public Edge[] ProcessCurrentRow(Edge[] cr, int index)
         {
-            var processed = new SETElement[pictureBox1.Width];
+            var processed = new Edge[pictureBox1.Width];
             cr.CopyTo(processed, 0);
             for (int i = 0; i < index + 1; i++)
             {
@@ -1041,11 +1568,11 @@ namespace _3DCGA_PA15
             }
             return processed;
         }
-        public SETElement[] SortCurrentRow(SETElement[] cr, int index)
+        public Edge[] SortCurrentRow(Edge[] cr, int index)
         {
-            var sorted = new SETElement[pictureBox1.Width];
+            var sorted = new Edge[pictureBox1.Width];
             cr.CopyTo(sorted, 0);
-            SETElement temp = new SETElement();
+            Edge temp = new Edge();
             for (int i = 0; i < index + 1; i++)
             {
                 for (int j = 0; j < index; j++)
@@ -1063,9 +1590,9 @@ namespace _3DCGA_PA15
             }
             return sorted;
         }
-        public void ConstructAEL(SETElement[,] se, int wholeymin, int wholeymax, Pen pen)
+        public void ConstructAEL(Edge[,] se, int wholeymin, int wholeymax, Pen pen)
         {
-            var current_row = new SETElement[pictureBox1.Width];
+            var current_row = new Edge[pictureBox1.Width];
             int current_row_index = 0;
             for (int i = wholeymin; i <= wholeymax - 1; i++)
             {
@@ -1076,7 +1603,7 @@ namespace _3DCGA_PA15
 
                 current_row = SortCurrentRow(current_row, current_row_index);
 
-                var temp_row = new SETElement[current_row_index + 1];
+                var temp_row = new Edge[current_row_index + 1];
                 int temp_counter = 0;
 
                 for (int k = 0; k < pictureBox1.Width; k++)
@@ -1235,32 +1762,35 @@ namespace _3DCGA_PA15
             }
 
 
-            //TranslateObject(0, -2, 0, 0);
-            //RotateObjectOnX(0, 45);
-            //TranslateObject(1, 2, 0, 0);
-            //RotateObjectOnY(1, -45);
+            TranslateObject(0, -2, 0, 0);
+            RotateObjectOnX(0, 45);
+            TranslateObject(1, 2, 0, 0);
+            RotateObjectOnY(1, -45);
 
             //TranslateObject(0, 0, 0, -0.1);
             //TranslateObject(1, 0, 0, 0);
+            //RotateObjectOnX(0, 45);
+            //RotateObjectOnY(0, 45);
 
             selectListBox.SetSelected(0, true);
 
             translateRB.Checked = true;
             frontSurfaceCB.Checked = true;
-            drawRB.Checked = true;
-
-            debug += "Key pressed: " + Environment.NewLine;
+            scanlineRB.Checked = true;
 
             Display();
         }
 
 
-
+        //int keycount = 0;
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            selectedObjectIndex = selectListBox.SelectedIndex;
-            debug += e.KeyCode + " ";
+            //if(keycount % 100 == 0) debug = "Key pressed: " + Environment.NewLine;
+            //selectedObjectIndex = selectListBox.SelectedIndex;
+            //debug += e.KeyCode + " ";
+            //keycount++;
+
             if (e.KeyCode == Keys.W)
             {
                 upBtn.BackColor = Color.Yellow;
