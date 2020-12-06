@@ -613,7 +613,7 @@ namespace _3DCGA_PA15
             c2 = -polygon2.B * y - polygon2.D;
             zi = (c1 * a2 - c2 * a1) / (b1 * a2 - b2 * a1);
             xi = (c1 - b1 * zi) / a1; // This is the intersection
-
+            if (xi == double.PositiveInfinity) xi = 0.01;
             return xi;
         }
 
@@ -955,17 +955,17 @@ namespace _3DCGA_PA15
             //List<Edge>[][] polygonSET = GenerateLocalSET(scanline_polygon_list[1]);
             //List<Edge>[][] polygonSET = GenerateLocalSET(scanline_polygon_list[2]);
 
-            debug += "AEL" + Environment.NewLine;
-            for (int i = 0; i < AEL.Length; i++)
-            {
-                debug += i + " = ";
-                for (int j = 0; j < AEL[i].Count; j++)
-                {
-                    debug += AEL[i][j].ymax + "   " + AEL[i][j].xofymin + "   " + AEL[i][j].dx + "   " + AEL[i][j].dy + "   " + AEL[i][j].carrier + "   " + AEL[i][j].polygon_id + "   =>   ";
-                }
-                debug += Environment.NewLine;
-            }
-            debug += Environment.NewLine;
+            //debug += "AEL" + Environment.NewLine;
+            //for (int i = 0; i < AEL.Length; i++)
+            //{
+            //    debug += i + " = ";
+            //    for (int j = 0; j < AEL[i].Count; j++)
+            //    {
+            //        debug += AEL[i][j].ymax + "   " + AEL[i][j].xofymin + "   " + AEL[i][j].dx + "   " + AEL[i][j].dy + "   " + AEL[i][j].carrier + "   " + AEL[i][j].polygon_id + "   =>   ";
+            //    }
+            //    debug += Environment.NewLine;
+            //}
+            //debug += Environment.NewLine;
 
             pictureBox1.Image = bmp;
         }
