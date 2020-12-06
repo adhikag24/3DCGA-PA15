@@ -345,6 +345,7 @@
             this.scanlineRB.TabStop = true;
             this.scanlineRB.Text = "Scanline";
             this.scanlineRB.UseVisualStyleBackColor = true;
+            this.scanlineRB.CheckedChanged += new System.EventHandler(this.scanlineRB_CheckedChanged);
             // 
             // importObjectBtn
             // 
@@ -396,6 +397,7 @@
             this.Controls.Add(this.upBtn);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "3DCGA-PA15";
