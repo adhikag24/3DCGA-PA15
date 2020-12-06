@@ -173,7 +173,7 @@
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
             this.debugTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debugTextBox.Size = new System.Drawing.Size(869, 781);
+            this.debugTextBox.Size = new System.Drawing.Size(292, 781);
             this.debugTextBox.TabIndex = 10;
             // 
             // downBtn
@@ -371,7 +371,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1924, 841);
+            this.ClientSize = new System.Drawing.Size(1342, 841);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.importObjectBtn);
             this.Controls.Add(this.groupBox1);
