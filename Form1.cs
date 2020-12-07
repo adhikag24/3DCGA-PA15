@@ -273,7 +273,7 @@ namespace _3DCGA_PA15
         {
             if ((xmax == xmin) && (ymax == ymin))
             {
-                bmp.SetPixel(xmin - 1, ymin - 1, GetClosestPixelColor(xmax, ymax));
+                bmp.SetPixel(xmin-1, ymin-1, GetClosestPixelColor(xmin, ymin));
             }
             else
             {
@@ -323,9 +323,9 @@ namespace _3DCGA_PA15
                     DrawRect(pen, xmin - 1, ymin - 1, xmax, ymax);
                 }
                 //Case 4: More than one polygon is intersecting, contained in, or surroundingthe area, with sorrounding polygon wholly in front.
-                else if (nS > 0 && frontPolygonCheck(clipped_polygon_list, surrounding_polygon_list) != null)
+                else if (nS > 0 && frontPolygonCheck(clipped_polygon_list, surrounding_polygon_list, xmin, ymin, xmax, ymax) != null)
                 {
-                    TPolygon temp = frontPolygonCheck(clipped_polygon_list, surrounding_polygon_list);
+                    TPolygon temp = frontPolygonCheck(clipped_polygon_list, surrounding_polygon_list, xmin, ymin, xmax, ymax);
                     Pen pen = new Pen(temp.c);
                     DrawRect(pen, xmin - 1, ymin - 1, xmax, ymax);
                 }
@@ -471,17 +471,21 @@ namespace _3DCGA_PA15
 
             tempPolygon.c = polygon.c;
             tempPolygon.P = polygon_points;
+            tempPolygon.A = polygon.A;
+            tempPolygon.B = polygon.B;
+            tempPolygon.C = polygon.C;
+            tempPolygon.D = polygon.D;
 
             return new Tuple<TPolygon, bool>(tempPolygon, surrounding);
         }
         public Color GetClosestPixelColor(int x, int y)
         {
+            Color zmaxColor = Color.White;
             double zmax = -9999;
             TPoint tempPoint = new TPoint();
             tempPoint.x = x;
             tempPoint.y = y;
             tempPoint.z = 0;
-            Color zmaxColor = Color.White;
             for (int i = 0; i < polygon_list.Count; i++)
             {
                 TPoint p1 = polygon_list[i].P[0];
@@ -489,19 +493,44 @@ namespace _3DCGA_PA15
                 TPoint p3 = polygon_list[i].P[2];
                 if (IsPointInTriangle(tempPoint, p1, p2, p3))
                 {
-                    TPoint p1p2 = FindVector(p1, p2);
-                    TPoint p2p3 = FindVector(p2, p3);
-                    TPoint N = CrossProduct(p1p2, p2p3);
-                    double d = -(N.x * p1.x + N.y * p1.y + N.z * p1.z);
-                    double t = -(d + N.x * x + N.y * y) / N.z * -1;
-                    double newZ = -1 * t;
-                    if (zmax < newZ)
+                    double z = -(polygon_list[i].A * Convert.ToDouble(x) + polygon_list[i].B * Convert.ToDouble(y) + polygon_list[i].D) / polygon_list[i].C; // xmin, ymin
+                    if (zmax < z)
                     {
-                        zmax = newZ;
+                        zmax = z;
                         zmaxColor = polygon_list[i].c;
                     }
                 }
             }
+            //double zmax = -9999;
+            //TPoint tempPoint = new TPoint();
+            //tempPoint.x = x;
+            //tempPoint.y = y;
+            //tempPoint.z = 0;
+            //Color zmaxColor = Color.White;
+            //for (int i = 0; i < polygon_list.Count; i++)
+            //{
+            //    TPoint p1 = polygon_list[i].P[0];
+            //    TPoint p2 = polygon_list[i].P[1];
+            //    TPoint p3 = polygon_list[i].P[2];
+            //    if (IsPointInTriangle(tempPoint, p1, p2, p3))
+            //    {
+            //        TPoint p1p2 = FindVector(p1, p2);
+            //        TPoint p2p3 = FindVector(p2, p3);
+            //        TPoint N = CrossProduct(p1p2, p2p3);
+            //        double d = -(N.x * p1.x + N.y * p1.y + N.z * p1.z);
+            //        double t = -(d + N.x * x + N.y * y) / N.z * -1;
+            //        double newZ = -1 * t;
+            //        if (zmax < newZ)
+            //        {
+            //            zmax = newZ;
+            //            zmaxColor = polygon_list[i].c;
+            //        }
+            //    }
+            //}
+            //if(zmaxColor == Color.White)
+            //{
+            //    MessageBox.Show("test");
+            //}
             return zmaxColor;
         }
         public List<TPoint> clip(List<TPoint> polygon_points, List<int> inIndex, List<int> outIndex, string side, double p)
@@ -689,89 +718,69 @@ namespace _3DCGA_PA15
             bool DIn = ((cp1p2D > 0) && (cp2p3D > 0) && (cp3p1D > 0));
             return (AIn && BIn && CIn && DIn);
         }
-        TPolygon frontPolygonCheck(List<TPolygon> clipped_polygon_list, List<TPolygon> surrounding_polygon_list)
+        TPolygon frontPolygonCheck(List<TPolygon> clipped_polygon_list, List<TPolygon> surrounding_polygon_list, int xmin, int ymin, int xmax, int ymax)
         {
-            List<double> surroundzmin = new List<double>();
-            List<double> surroundzmax = new List<double>();
-            List<double> surroundzmaxy = new List<double>();
-            List<double> surroundzminy = new List<double>();
+            // **TODO**
+            // Urutkan surrounding polygon dari zmax tertinggi
+            // Loop dan bandingkan surrounding polygon pertama dengan polygon yang lain
+            // Jika ada intersect, break dari loop dan return null
+            // Jika tidak, return surround polygon dengan z tertinggi
+
+            List<TPolygon> sortedSurroundingPolygon = new List<TPolygon>();
+            for(int i=0; i<surrounding_polygon_list.Count; i++)
+            {
+                sortedSurroundingPolygon.Add(surrounding_polygon_list[i]);
+            }
+
+            List<double> surroundingPolygonZMax = new List<double>();
+
             for (int i = 0; i < surrounding_polygon_list.Count; i++)
             {
-                double ztempMin = 9999;
-                double ztempMax = -9999;
-                double zmaxy = 0;
-                double zminy = 0;
-                for (int j = 0; j < surrounding_polygon_list[i].P.Count; j++)
-                {
-                    if (ztempMin > surrounding_polygon_list[i].P[j].z) zminy = surrounding_polygon_list[i].P[j].y;
-                    ztempMin = Math.Min(ztempMin, surrounding_polygon_list[i].P[j].z);
-                    if (ztempMax < surrounding_polygon_list[i].P[j].z) zmaxy = surrounding_polygon_list[i].P[j].y;
-                    ztempMax = Math.Max(ztempMax, surrounding_polygon_list[i].P[j].z);
-                }
-                surroundzmin.Add(ztempMin);
-                surroundzmax.Add(ztempMax);
-                surroundzmaxy.Add(zmaxy);
-                surroundzminy.Add(zminy);
+                double z1 = -(surrounding_polygon_list[i].A * Convert.ToDouble(xmin) + surrounding_polygon_list[i].B * Convert.ToDouble(ymin) + surrounding_polygon_list[i].D) / surrounding_polygon_list[i].C; // xmin, ymin
+                double z2 = -(surrounding_polygon_list[i].A * Convert.ToDouble(xmax) + surrounding_polygon_list[i].B * Convert.ToDouble(ymin) + surrounding_polygon_list[i].D) / surrounding_polygon_list[i].C; // xmax, ymin
+                double z3 = -(surrounding_polygon_list[i].A * Convert.ToDouble(xmax) + surrounding_polygon_list[i].B * Convert.ToDouble(ymax) + surrounding_polygon_list[i].D) / surrounding_polygon_list[i].C; // xmax, ymax
+                double z4 = -(surrounding_polygon_list[i].A * Convert.ToDouble(xmin) + surrounding_polygon_list[i].B * Convert.ToDouble(ymax) + surrounding_polygon_list[i].D) / surrounding_polygon_list[i].C; // xmin, ymax
+                double zMax = Math.Max(z1, Math.Max(z2, Math.Max(z3, z4)));
+                surroundingPolygonZMax.Add(zMax);
             }
 
-            List<double> clippedzmax = new List<double>();
-            for (int i = 0; i < clipped_polygon_list.Count; i++)
+            int allZMaxIndex = 99;
+            double tempZmax = -9999;
+            for(int i=0; i<surroundingPolygonZMax.Count; i++)
             {
-                double ztemp = -9999;
-                if (!surrounding_polygon_list.Contains(clipped_polygon_list[i]))
+                if(tempZmax < surroundingPolygonZMax[i])
                 {
-                    for (int j = 0; j < clipped_polygon_list[i].P.Count; j++)
-                    {
-                        ztemp = Math.Max(ztemp, clipped_polygon_list[i].P[j].z);
-                    }
+                    allZMaxIndex = i;
+                    tempZmax = surroundingPolygonZMax[i];
                 }
-                else continue;
-                clippedzmax.Add(ztemp);
             }
 
-            List<double> final = new List<double>();
-            for (int i = 0; i < surroundzmin.Count; i++)
+            TPolygon tempSurroundPolygon = sortedSurroundingPolygon[allZMaxIndex];
+            sortedSurroundingPolygon.RemoveAt(allZMaxIndex);
+            sortedSurroundingPolygon.Insert(0, tempSurroundPolygon);
+
+            bool intersect = false;
+
+            TPolygon frontSurroundPolygon = sortedSurroundingPolygon[0];
+            double frontPolygonz1 = -(frontSurroundPolygon.A * Convert.ToDouble(xmin) + frontSurroundPolygon.B * Convert.ToDouble(ymin) + frontSurroundPolygon.D) / frontSurroundPolygon.C; // xmin, ymin
+            double frontPolygonz2 = -(frontSurroundPolygon.A * Convert.ToDouble(xmax) + frontSurroundPolygon.B * Convert.ToDouble(ymin) + frontSurroundPolygon.D) / frontSurroundPolygon.C; // xmax, ymin
+            double frontPolygonz3 = -(frontSurroundPolygon.A * Convert.ToDouble(xmax) + frontSurroundPolygon.B * Convert.ToDouble(ymax) + frontSurroundPolygon.D) / frontSurroundPolygon.C; // xmax, ymax
+            double frontPolygonz4 = -(frontSurroundPolygon.A * Convert.ToDouble(xmin) + frontSurroundPolygon.B * Convert.ToDouble(ymax) + frontSurroundPolygon.D) / frontSurroundPolygon.C; // xmin, ymax
+            for (int i=0; i<clipped_polygon_list.Count; i++)
             {
-                bool greater = true;
-                for (int j = 0; j < clippedzmax.Count; j++)
+                double z1 = -(clipped_polygon_list[i].A * Convert.ToDouble(xmin) + clipped_polygon_list[i].B * Convert.ToDouble(ymin) + clipped_polygon_list[i].D) / clipped_polygon_list[i].C; // xmin, ymin
+                double z2 = -(clipped_polygon_list[i].A * Convert.ToDouble(xmax) + clipped_polygon_list[i].B * Convert.ToDouble(ymin) + clipped_polygon_list[i].D) / clipped_polygon_list[i].C; // xmax, ymin
+                double z3 = -(clipped_polygon_list[i].A * Convert.ToDouble(xmax) + clipped_polygon_list[i].B * Convert.ToDouble(ymax) + clipped_polygon_list[i].D) / clipped_polygon_list[i].C; // xmax, ymax
+                double z4 = -(clipped_polygon_list[i].A * Convert.ToDouble(xmin) + clipped_polygon_list[i].B * Convert.ToDouble(ymax) + clipped_polygon_list[i].D) / clipped_polygon_list[i].C; // xmin, ymax
+                if((frontPolygonz1 < z1) || (frontPolygonz2 < z2) || (frontPolygonz3 < z3) || (frontPolygonz4 < z4))
                 {
-                    if (surroundzmin[i] < clippedzmax[j]) greater = false;
+                    intersect = true;
+                    break;
                 }
-                if (greater) final.Add(surroundzmin[i]);
             }
-            if (final.Count == 0) return null;
-            else if (final.Count == 1) return surrounding_polygon_list[0];
 
-            else
-            {
-                bool intersect = false;
-                double initSlope = (surroundzmaxy[0] - surroundzminy[0]) / (surroundzmax[0] - final[0]);
-                for (int i = 1; i < final.Count; i++)
-                {
-                    double tempSlope = (surroundzmaxy[i] - surroundzminy[i]) / (surroundzmax[i] - final[i]);
-                    if (tempSlope != initSlope) intersect = true;
-                    if (intersect) return null;
-                }
-
-                double tempZmax = -9999;
-                double tempZmin = -9999;
-                int indexZmax = 99;
-                int indexZmin = 99;
-                for (int i = 0; i < final.Count; i++)
-                {
-                    if (tempZmax < surroundzmax[i])
-                    {
-                        tempZmax = surroundzmax[i];
-                        indexZmax = i;
-                    }
-                    if (tempZmin < surroundzmin[i])
-                    {
-                        tempZmin = surroundzmin[i];
-                        indexZmin = i;
-                    }
-                }
-                return surrounding_polygon_list[indexZmax];
-            }
+            if (intersect) return null;
+            else return frontSurroundPolygon;
         }
 
         List<TPolygon> GenerateScanlinePolygon()
@@ -1817,6 +1826,7 @@ namespace _3DCGA_PA15
 
             TranslateObject(0, -2, 0, 0);
             RotateObjectOnX(0, 45);
+            RotateObjectOnY(0, 5);
             TranslateObject(1, 2, 0, 0);
             RotateObjectOnY(1, -45);
 
@@ -1829,7 +1839,7 @@ namespace _3DCGA_PA15
 
             translateRB.Checked = true;
             frontSurfaceCB.Checked = true;
-            scanlineRB.Checked = true;
+            warnockRB.Checked = true;
 
             Display();
         }
