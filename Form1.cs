@@ -52,8 +52,7 @@ namespace _3DCGA_PA15
             public int ymax, xofymin, dx, dy, carrier = 0, polygon_id;
         }
 
-        List<TPolygon> polygon_list = new List<TPolygon>();
-        public bool firstLoad = true;
+        public List<TPolygon> polygon_list = new List<TPolygon>();
         public int nObj = 2;
         Bitmap bmp;
         Graphics g;
@@ -1839,7 +1838,7 @@ namespace _3DCGA_PA15
 
             translateRB.Checked = true;
             frontSurfaceCB.Checked = true;
-            warnockRB.Checked = true;
+            drawRB.Checked = true;
 
             Display();
         }
