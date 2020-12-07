@@ -39,7 +39,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>1770409 %283%29.ico</ApplicationIcon>
+    <ApplicationIcon>geometric.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="1770409 %283%29.ico" />
+    <Content Include="geometric.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
