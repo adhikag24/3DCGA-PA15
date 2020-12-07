@@ -1,8 +1,8 @@
-#3D COMPUTER GRAPHICS AND ANIMATION
-#PROGRAMMING ASSIGNMENT 15
+# 3D COMPUTER GRAPHICS AND ANIMATION
+# PROGRAMMING ASSIGNMENT 15
 
-##Visible Surface Detection: Warnock & Scan Line Algorithms
-##Difficulty: 5/5
+## Visible Surface Detection: Warnock & Scan Line Algorithms
+## Difficulty: 5/5
 
 Create an application that allows the user to manipulate two pyramids (one triangular pyramid, one square pyramid). You decide the object coordinates of both pyramids. The pyramids are represented with traingle meshes. The faces of the pyramids must have different colors. Both pyramids are placed on the world coordinate system (WCS) which is viewed with a perspective projection. You decide the initial position of the pyramids on the WCS.
 
