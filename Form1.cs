@@ -8,16 +8,17 @@ namespace _3DCGA_PA15
 {
     public partial class Form1 : Form
     {
-        public struct TPoint
+        // DATA STRUCTURES
+        public struct TPoint // This data structure represent a point in 3D world
         {
             public double x, y, z, w;
         }
-        public struct TSurface
+        public struct TSurface // This data structure represent a surface
         {
             public int p1, p2, p3;
             public Color c;
         }
-        public class TObject
+        public class TObject // This data structure represent an object
         {
             public string objectName;
             public TPoint[] P;
@@ -29,7 +30,7 @@ namespace _3DCGA_PA15
             public List<int> visibleSurfaceIndex = new List<int>();
             public double[,] TranslateM;
             public double[,] RotateM;
-            public TObject(int pNum, int sNum)
+            public TObject(int pNum, int sNum) // TObject class constructor
             {
                 P = new TPoint[pNum];
                 VW = new TPoint[pNum];
@@ -39,7 +40,7 @@ namespace _3DCGA_PA15
                 S = new TSurface[sNum];
             }
         }
-        public class TPolygon
+        public class TPolygon // This data structure represent a polygon
         {
             public int polygon_id;
             public double A, B, C, D;
@@ -47,36 +48,42 @@ namespace _3DCGA_PA15
             public Color c;
             public bool flag;
         }
-        public class Edge
+        public class Edge // This data structure represent a SET and AEL edge component
         {
             public int ymax, xofymin, dx, dy, carrier = 0, polygon_id;
         }
 
-        public List<TPolygon> polygon_list = new List<TPolygon>();
-        public int nObj = 2;
-        Bitmap bmp;
-        Graphics g;
-        public List<TObject> obj = new List<TObject>();
-        public string debug = "";
-        TPoint VRP, VPN, VUP, COP, N, upUnit, upVec, v, u, CW, DOP, VN = new TPoint();
-        double windowUmin, windowVmin, windowUmax, windowVmax, BP;
-        public int selectedObjectIndex;
-        public double[,] T1 = new double[4, 4];
-        public double[,] T2 = new double[4, 4];
-        public double[,] T3 = new double[4, 4];
-        public double[,] T4 = new double[4, 4];
-        public double[,] T5 = new double[4, 4];
-        public double[,] T7 = new double[4, 4];
-        public double[,] T8 = new double[4, 4];
-        public double[,] T9 = new double[4, 4];
-        public double[,] Pr1 = new double[4, 4];
-        public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-        public double[,] Wt = new double[4, 4];
-        public double[,] Vt = new double[4, 4];
-        public double[,] St = new double[4, 4] { { 128, 0, 0, 0 }, { 0, -128, 0, 0 }, { 0, 0, 1, 0 }, { 512, 256, 0, 1 } };
+
+
+        // GLOBAL VARIABLES
+        public List<TPolygon> polygon_list = new List<TPolygon>(); // This variable store the list of polygon after backface culling process
+        public int nObj = 2; // Initial amount of the objects. At first, there are 2 objects that already loaded
+        Bitmap bmp; // Object from Bitmap class to draw a pixel
+        Graphics g; // Object from Graphics class to draw line
+        public List<TObject> obj = new List<TObject>(); // This list is used to list the current loaded object
+        public string debug = ""; // This variable is used for debugging
+        TPoint VRP, VPN, VUP, COP, N, upUnit, upVec, v, u, CW, DOP, VN = new TPoint(); // Required variables to construct persepective projection
+        double windowUmin, windowVmin, windowUmax, windowVmax, BP; // Required variables to construct persepective projection
+        public int selectedObjectIndex; // This variable is to store the index number of the selected item from the listbox
+        public double[,] T1 = new double[4, 4]; // This 2 dimensional array is to store the T1 matrix.
+        public double[,] T2 = new double[4, 4]; // This 2 dimensional array is to store the T2 matrix.
+        public double[,] T3 = new double[4, 4]; // This 2 dimensional array is to store the T3 matrix.
+        public double[,] T4 = new double[4, 4]; // This 2 dimensional array is to store the T4 matrix.
+        public double[,] T5 = new double[4, 4]; // This 2 dimensional array is to store the T5 matrix.
+        public double[,] T7 = new double[4, 4]; // This 2 dimensional array is to store the T7 matrix.
+        public double[,] T8 = new double[4, 4]; // This 2 dimensional array is to store the T8 matrix.
+        public double[,] T9 = new double[4, 4]; // This 2 dimensional array is to store the T9 matrix.
+        public double[,] Pr1 = new double[4, 4]; // This 2 dimensional array is to store the Pr1 matrix.
+        public double[,] Pr2 = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } }; // This 2 dimensional array is to store the Pr2 matrix.
+        public double[,] Wt = new double[4, 4]; // This 2 dimensional array is to store the Wt matrix.
+        public double[,] Vt = new double[4, 4]; // This 2 dimensional array is to store the Vt matrix.
+        public double[,] St = new double[4, 4] { { 128, 0, 0, 0 }, { 0, -128, 0, 0 }, { 0, 0, 1, 0 }, { 512, 256, 0, 1 } }; // This 2 dimensional array is to store the St matrix.
+        int keycount = 0; // This variable is used for debugging
 
 
 
+        // MAIN CODE
+        // This function is for displaying the object into the screen
         public void Display()
         {
             bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
@@ -205,8 +212,7 @@ namespace _3DCGA_PA15
             debugTextBox.Text = debug;
         }
 
-        
-
+        // This function used to draw the objects without any VSD (Visible Surface Detection) method
         public void Draw()
         {
             TPoint[] P = new TPoint[3];
@@ -268,8 +274,29 @@ namespace _3DCGA_PA15
             pictureBox1.Image = bmp;
         }
 
+        // This function used to draw the objects using Warnock Visible Surface Detection method
         public void Warnock(int xmin, int ymin, int xmax, int ymax)
         {
+            // Pseudocode:
+            // 1. If area is single pixel then find polygon P closest to viewer at pixel
+            // 2. Else
+            // 2.1. Initialize the nS and nIC to 0
+            // 2.2. For each polygon
+            // 2.2.1. Clip the polygon
+            // 2.2.2. Increase nS or nIC accordingly
+            // 2.3. If area is easy to draw
+            // 2.3.1. If all polygons are disjoint, then fill area with background color
+            // 2.3.2. Only one intersectin polygon in the area, then fill area with the clipped polygon
+            // 2.3.3. Only one surrounding polygon in the area, then fill area with the polygon color
+            // 2.3.4. More than one polygon is intersecting, contained, in, or surrounding area, With the surrounding polygon is wholly in front. Fill area with front surrounding polygon.
+            // 2.4. Else
+            // 2.4.1. Update xmid
+            // 2.4.2. Update ymid
+            // 2.4.3. Call Warnock(xmin, ymin, xmid, ymid)
+            // 2.4.4. Call Warnock(xmid + 1, ymin, xmid, ymid)
+            // 2.4.5. Call Warnock(xmid + 1, ymid + 1, xmax, ymax)
+            // 2.4.6. Call Warnock(xmin, ymid + 1, xmid, ymax)
+
             if ((xmax == xmin) && (ymax == ymin))
             {
                 bmp.SetPixel(xmin-1, ymin-1, GetClosestPixelColor(xmin, ymin));
@@ -341,6 +368,43 @@ namespace _3DCGA_PA15
             pictureBox1.Image = bmp;
         }
 
+        // This function used to draw the objects using Scanline Visible Surface Detection method
+        public void Scanline(List<TPolygon> scanline_polygon_list)
+        {
+            // Pseudocode:
+            // 1. Generate the local SET
+            // 2. Generate the global SET
+            // 3. Generate the global AEL
+            // 4. For each AEL, detect the visible surface
+
+            // **MAIN CODE**
+            int wholeymax = -9999;
+            for (int i = 0; i < scanline_polygon_list.Count; i++)
+            {
+                for (int j = 0; j < scanline_polygon_list[i].P.Count; j++)
+                {
+                    wholeymax = Math.Max(wholeymax, Convert.ToInt32(scanline_polygon_list[i].P[j].y));
+                }
+            }
+            List<Edge>[][] polygonSET = new List<Edge>[scanline_polygon_list.Count][];
+            for (int i = 0; i < scanline_polygon_list.Count; i++)
+            {
+                polygonSET[i] = GenerateLocalSET(scanline_polygon_list[i], wholeymax);
+            }
+            List<Edge>[] globalSET = GenerateGlobalSET(polygonSET, wholeymax);
+            List<Edge>[] AEL = GenerateAEL(globalSET, wholeymax);
+            for (int i = 0; i < AEL.Length; i++)
+            {
+                if (AEL[i].Count == 0) continue;
+                else VisibleSurfaceDetection(i, AEL[i], scanline_polygon_list);
+            }
+            pictureBox1.Image = bmp;
+        }
+
+
+
+        // UTILITES
+        // This function is to generate polygon list after then backface culling process
         public void GeneratePolygonList()
         {
             polygon_list.Clear();
@@ -374,10 +438,14 @@ namespace _3DCGA_PA15
                 }
             }
         }
+
+        // This function is to find the cross product if the we want to find the cross product of 2d point
         public double CrossProduct2D(TPoint p1, TPoint p2)
         {
             return (p1.x * p2.y) - (p2.x * p1.y);
         }
+
+        // This sign function is to find the cross product of two points and the selected point
         public double Sign(TPoint p, TPoint p1, TPoint p2)
         {
             TPoint p1p = FindVector(p, p1);
@@ -385,6 +453,8 @@ namespace _3DCGA_PA15
             double temp = CrossProduct2D(p1p, p1p2);
             return temp;
         }
+
+        // This boolean return function is to determine if a point is inside a polygon or not
         public bool IsPointInTriangle(TPoint pt, TPoint v1, TPoint v2, TPoint v3)
         {
             double d1, d2, d3;
@@ -393,6 +463,8 @@ namespace _3DCGA_PA15
             d3 = Sign(pt, v3, v1);
             return ((d1 < 0) && (d2 < 0) && (d3 < 0)) || ((d1 > 0) && (d2 > 0) && (d3 > 0));
         }
+
+        // Function to draw rectangle
         public void DrawRect(Pen pen, int xmin, int ymin, int xmax, int ymax)
         {
             for(int i=ymin; i<ymax; i++)
@@ -400,6 +472,8 @@ namespace _3DCGA_PA15
                 g.DrawLine(pen, new Point(xmin, i), new Point(xmax, i));
             }
         }
+
+        // Function to perform sutherland hodgeman clipping
         public Tuple<TPolygon, bool> polygonClip(TPolygon polygon, int xmin, int ymin, int xmax, int ymax)
         {
             TPolygon tempPolygon = new TPolygon();
@@ -477,6 +551,8 @@ namespace _3DCGA_PA15
 
             return new Tuple<TPolygon, bool>(tempPolygon, surrounding);
         }
+
+        // Function to return the color of closest polygon for the given coordinate
         public Color GetClosestPixelColor(int x, int y)
         {
             Color zmaxColor = Color.White;
@@ -532,6 +608,8 @@ namespace _3DCGA_PA15
             //}
             return zmaxColor;
         }
+
+        // Function to clip in the sutherland hodgeman method
         public List<TPoint> clip(List<TPoint> polygon_points, List<int> inIndex, List<int> outIndex, string side, double p)
         {
             List<TPoint> temp_list = new List<TPoint>();
@@ -665,7 +743,9 @@ namespace _3DCGA_PA15
             }
             return temp_list;
         }
-        public bool IsPolygonSurroundArea(List<TPoint> polygon_points, int xmin, int ymin, int xmax, int ymax) // Fungsi tidak penting, ada alternatif lain
+
+        // Function to check if a polygon is a surrounding polygon
+        public bool IsPolygonSurroundArea(List<TPoint> polygon_points, int xmin, int ymin, int xmax, int ymax)
         {
             TPoint p1 = polygon_points[0];
             TPoint p2 = polygon_points[1];
@@ -717,6 +797,8 @@ namespace _3DCGA_PA15
             bool DIn = ((cp1p2D > 0) && (cp2p3D > 0) && (cp3p1D > 0));
             return (AIn && BIn && CIn && DIn);
         }
+
+        // Function to check if there is a front surrounding polygon exist
         TPolygon frontPolygonCheck(List<TPolygon> clipped_polygon_list, List<TPolygon> surrounding_polygon_list, int xmin, int ymin, int xmax, int ymax)
         {
             // **TODO**
@@ -781,7 +863,8 @@ namespace _3DCGA_PA15
             if (intersect) return null;
             else return frontSurroundPolygon;
         }
-
+        
+        // This function to generate polygon information needed for scanline VSD process
         List<TPolygon> GenerateScanlinePolygon()
         {
             List<TPolygon> scanline_list_temp = new List<TPolygon>();
@@ -821,6 +904,7 @@ namespace _3DCGA_PA15
             return scanline_list_temp;
         }
 
+        // Function to generate local SET
         public List<Edge>[] GenerateLocalSET(TPolygon polygon, int wholeymax)
         {
             int dx, dy, ymin, ymax, xofymin;
@@ -915,6 +999,7 @@ namespace _3DCGA_PA15
             return SET;
         }
 
+        // Function to generate global SET
         public List<Edge>[] GenerateGlobalSET(List<Edge>[][] polygonSET, int wholeymax)
         {
             List<Edge>[] GlobalSET = new List<Edge>[wholeymax + 1];
@@ -936,6 +1021,7 @@ namespace _3DCGA_PA15
             return GlobalSET;
         }
 
+        // Function to eliminte expired ymax
         public List<Edge> CheckYmax(List<Edge> currentList, int ymin)
         {
             List<Edge> result = new List<Edge>(currentList);
@@ -951,6 +1037,7 @@ namespace _3DCGA_PA15
             return result1;
         }
 
+        // Function to sort the current AEL
         public List<Edge> SortList(List<Edge> ymaxCheckedList)
         {
             List<Edge> result = new List<Edge>(ymaxCheckedList);
@@ -972,6 +1059,7 @@ namespace _3DCGA_PA15
             return result;
         }
 
+        // Function to process the AEL for the next y
         public List<Edge> ProcessList(List<Edge> sortedList)
         {
             List<Edge> result = new List<Edge>();
@@ -1009,6 +1097,7 @@ namespace _3DCGA_PA15
             return result;
         }
 
+        // Function to generate the AEL from the global SET
         public List<Edge>[] GenerateAEL(List<Edge>[] globalSET, int wholeymax)
         {
             List<Edge>[] AEL = new List<Edge>[wholeymax + 1];
@@ -1060,6 +1149,7 @@ namespace _3DCGA_PA15
             return AEL;
         }
 
+        // This function is to find the intersection of two polygons
         public double FindIntersection(TPolygon polygon1, TPolygon polygon2, double y)
         {
             double a1, b1, c1, a2, b2, c2, xi, zi;
@@ -1075,6 +1165,7 @@ namespace _3DCGA_PA15
             return xi;
         }
 
+        // This function is to fing the visible surface and display it on the screen
         public void VisibleSurfaceDetection(int index, List<Edge> AEL, List<TPolygon> scanline_polygon_list)
         {
             // Pseudocode:
@@ -1297,31 +1388,7 @@ namespace _3DCGA_PA15
             }
         }
 
-        public void Scanline(List<TPolygon> scanline_polygon_list)
-        {
-            int wholeymax = -9999;
-            for (int i = 0; i < scanline_polygon_list.Count; i++)
-            {
-                for (int j = 0; j < scanline_polygon_list[i].P.Count; j++)
-                {
-                    wholeymax = Math.Max(wholeymax, Convert.ToInt32(scanline_polygon_list[i].P[j].y));
-                }
-            }
-            List<Edge>[][] polygonSET = new List<Edge>[scanline_polygon_list.Count][];
-            for (int i = 0; i < scanline_polygon_list.Count; i++)
-            {
-                polygonSET[i] = GenerateLocalSET(scanline_polygon_list[i], wholeymax);
-            }
-            List<Edge>[] globalSET = GenerateGlobalSET(polygonSET, wholeymax);
-            List<Edge>[] AEL = GenerateAEL(globalSET, wholeymax);
-            for (int i = 0; i < AEL.Length; i++)
-            {
-                if (AEL[i].Count == 0) continue;
-                else VisibleSurfaceDetection(i, AEL[i], scanline_polygon_list);
-            }
-            pictureBox1.Image = bmp;
-        }
-
+        // This function is to set the values of a point
         public void SetPoint(ref TPoint V, double x, double y, double z)
         {
             V.x = x;
@@ -1329,6 +1396,8 @@ namespace _3DCGA_PA15
             V.z = z;
             V.w = 1;
         }
+
+        // This function is to set the values of a surface
         public void SetSurface(ref TSurface S, int p1, int p2, int p3, Color c)
         {
             S.p1 = p1;
@@ -1336,6 +1405,8 @@ namespace _3DCGA_PA15
             S.p3 = p3;
             S.c = c;
         }
+
+        // This function is to set the row values of a matrix
         public void SetRowMatrix(ref double[,] M, int row, double a, double b, double c, double d)
         {
             M[row, 0] = a;
@@ -1343,6 +1414,8 @@ namespace _3DCGA_PA15
             M[row, 2] = c;
             M[row, 3] = d;
         }
+
+        // This function is used to multiply a matrix with a point
         public TPoint MultiplyMatrix(TPoint P, double[,] M)
         {
             TPoint temp;
@@ -1353,6 +1426,8 @@ namespace _3DCGA_PA15
             temp.w = 1;
             return temp;
         }
+
+        // This function is used to multiply two matrices
         public double[,] MatrixMultiplication(double[,] M1, double[,] M2)
         {
             double[,] temp = new double[4, 4];
@@ -1369,6 +1444,8 @@ namespace _3DCGA_PA15
             }
             return temp;
         }
+
+        // This function is to find the vector of two points
         public TPoint FindVector(TPoint p1, TPoint p2)
         {
             TPoint temp;
@@ -1378,12 +1455,16 @@ namespace _3DCGA_PA15
             temp.w = 1;
             return temp;
         }
+
+        // This function is to find the dot product of two points
         public double DotProduct(TPoint P1, TPoint P2)
         {
             double temp;
             temp = P1.x * P2.x + P1.y * P2.y + P1.z * P2.z;
             return temp;
         }
+
+        // This function is to find the normal vector of two points
         public TPoint CrossProduct(TPoint P1, TPoint P2)
         {
             TPoint tempPoint;
@@ -1393,6 +1474,8 @@ namespace _3DCGA_PA15
             tempPoint.w = 1;
             return tempPoint;
         }
+
+        // This function is to find the unit vector of a vector
         public TPoint UnitVector(TPoint P)
         {
             TPoint tempPoint;
@@ -1404,16 +1487,22 @@ namespace _3DCGA_PA15
             tempPoint.w = 1;
             return tempPoint;
         }
+
+        // This function is to reset the transformation matrix of an object
         public void ResetTransM(int index)
         {
             obj[index].TranslateM = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
             obj[index].RotateM = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
         }
+
+        // This function is to translate object
         public void TranslateObject(int index, double dx = 0, double dy = 0, double dz = 0)
         {
             double[,] temp = new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { dx, dy, dz, 1 } };
             obj[index].TranslateM = MatrixMultiplication(obj[index].TranslateM, temp);
         }
+
+        // This function is to rotate object based on the x axis
         public void RotateObjectOnX(int index, double angle)
         {
             double dx, dy, dz;
@@ -1431,6 +1520,8 @@ namespace _3DCGA_PA15
             double[,] res1 = MatrixMultiplication(MatrixMultiplication(minTranslate, temp), obj[index].TranslateM);
             obj[index].RotateM = MatrixMultiplication(obj[index].RotateM, res1);
         }
+
+        // This function is to rotate object based on the y axis
         public void RotateObjectOnY(int index, double angle)
         {
             double dx, dy, dz;
@@ -1448,6 +1539,8 @@ namespace _3DCGA_PA15
             double[,] res1 = MatrixMultiplication(MatrixMultiplication(minTranslate, temp), obj[index].TranslateM);
             obj[index].RotateM = MatrixMultiplication(obj[index].RotateM, res1);
         }
+
+        // This function is to rotate object based on the z axis
         public void RotateObjectOnZ(int index, double angle)
         {
             double dx, dy, dz;
@@ -1465,6 +1558,8 @@ namespace _3DCGA_PA15
             double[,] res1 = MatrixMultiplication(MatrixMultiplication(minTranslate, temp), obj[index].TranslateM);
             obj[index].RotateM = MatrixMultiplication(obj[index].RotateM, res1);
         }
+
+        // This function is to eliminate the backside of an object that cannot be seen by the viewer
         public void BackfaceCulling(int index, TSurface[] S, TPoint[] V)
         {
             obj[index].visibleSurfaceIndex.Clear();
@@ -1483,6 +1578,8 @@ namespace _3DCGA_PA15
                 if (res < 0) obj[index].visibleSurfaceIndex.Add(i);
             }
         }
+
+        // This function is to perform a polygon fill
         public void PolygonFill(Pen pen, TPoint[] P)
         {
             int dx, dy, ymin, ymax, xofymin; 
@@ -1589,6 +1686,8 @@ namespace _3DCGA_PA15
             }
             ConstructAEL(SET, wholeymin, wholeymax, pen);
         }
+
+        // This function is to eliminate the expired ymax
         public Edge[] YmaxCheck(Edge[] cr, int index, int currentY)
         {
             int new_index = 0;
@@ -1616,6 +1715,8 @@ namespace _3DCGA_PA15
 
             return checkedCurrentRow;
         }
+
+        // Function to process the AEL for the next y
         public Edge[] ProcessCurrentRow(Edge[] cr, int index)
         {
             var processed = new Edge[pictureBox1.Width];
@@ -1646,6 +1747,8 @@ namespace _3DCGA_PA15
             }
             return processed;
         }
+
+        // Function to sort the current AEL
         public Edge[] SortCurrentRow(Edge[] cr, int index)
         {
             var sorted = new Edge[pictureBox1.Width];
@@ -1668,6 +1771,8 @@ namespace _3DCGA_PA15
             }
             return sorted;
         }
+
+        // Function to construct AEL
         public void ConstructAEL(Edge[,] se, int wholeymin, int wholeymax, Pen pen)
         {
             var current_row = new Edge[pictureBox1.Width];
@@ -1713,6 +1818,7 @@ namespace _3DCGA_PA15
                 pictureBox1.Image = bmp;
             }
         }
+        
 
 
         public Form1()
@@ -1720,68 +1826,6 @@ namespace _3DCGA_PA15
             InitializeComponent();
             this.KeyPreview = true;
         }
-
-        private void importObjectBtn_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog // Create an object from the OpenFileDialog Class.
-            {
-                InitialDirectory = @"D:\", // Initial directory when the dialogbox open for the first time.
-                Title = "Browse Text Files", // Dialogbox title.
-
-                CheckFileExists = true, // Check if the file exist.
-                CheckPathExists = true, // Check if the path exist.
-
-                DefaultExt = "txt", // Default file extension.
-                Filter = "txt files (*.txt)|*.txt", // File extension filter.
-
-                ReadOnlyChecked = true, // Read file only.
-                ShowReadOnly = true // Only for reading the file.
-            };
-            if (ofd.ShowDialog() == DialogResult.OK) // If the user click open.
-            {
-                var sr = new StreamReader(ofd.FileName); // make a variable from the StreamReader Class.
-                string line; // this variable will hold the current line from the file.
-
-                //obj = new TObject[nObj];
-                int PNum = 0, SNum = 0;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    string[] lineSplit = line.Split(',');
-                    if (lineSplit[0] == "PNum")
-                    {
-                        PNum = Convert.ToInt32(lineSplit[1]);
-                    }
-                    else if (lineSplit[0] == "SNum")
-                    {
-                        SNum = Convert.ToInt32(lineSplit[1]);
-                    }
-                }
-                //obj[nObj - 1] = new TObject(PNum, SNum);
-                TObject tempObj = new TObject(PNum, SNum);
-                sr = new StreamReader(ofd.FileName); // make a variable from the StreamReader Class.
-                while ((line = sr.ReadLine()) != null)
-                {
-                    string[] lineSplit = line.Split(',');
-                    if (lineSplit[0] == "ObjectName")
-                    {
-                        tempObj.objectName = lineSplit[1];
-                    }
-                    else if (lineSplit[0] == "Point")
-                    {
-                        SetPoint(ref tempObj.P[Convert.ToInt32(lineSplit[1])], Convert.ToDouble(lineSplit[2]), Convert.ToDouble(lineSplit[3]), Convert.ToDouble(lineSplit[4]));
-                    }
-                    else if (lineSplit[0] == "Surface")
-                    {
-                        SetSurface(ref tempObj.S[Convert.ToInt32(lineSplit[1])], Convert.ToInt32(lineSplit[2]), Convert.ToInt32(lineSplit[3]), Convert.ToInt32(lineSplit[4]), Color.FromName(lineSplit[5]));
-                    }
-                }
-                obj.Add(tempObj);
-            }
-            ResetTransM(obj.Count-1);
-            selectListBox.Items.Add(obj[obj.Count-1].objectName);
-            Display();
-        }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -1843,9 +1887,6 @@ namespace _3DCGA_PA15
             Display();
         }
 
-
-
-        int keycount = 0;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (keycount % 100 == 0) debug = "Key pressed: " + Environment.NewLine;
@@ -1955,6 +1996,66 @@ namespace _3DCGA_PA15
             }
         }
 
+        private void importObjectBtn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog // Create an object from the OpenFileDialog Class.
+            {
+                InitialDirectory = @"D:\", // Initial directory when the dialogbox open for the first time.
+                Title = "Browse Text Files", // Dialogbox title.
+
+                CheckFileExists = true, // Check if the file exist.
+                CheckPathExists = true, // Check if the path exist.
+
+                DefaultExt = "txt", // Default file extension.
+                Filter = "txt files (*.txt)|*.txt", // File extension filter.
+
+                ReadOnlyChecked = true, // Read file only.
+                ShowReadOnly = true // Only for reading the file.
+            };
+            if (ofd.ShowDialog() == DialogResult.OK) // If the user click open.
+            {
+                var sr = new StreamReader(ofd.FileName); // make a variable from the StreamReader Class.
+                string line; // this variable will hold the current line from the file.
+
+                //obj = new TObject[nObj];
+                int PNum = 0, SNum = 0;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] lineSplit = line.Split(',');
+                    if (lineSplit[0] == "PNum")
+                    {
+                        PNum = Convert.ToInt32(lineSplit[1]);
+                    }
+                    else if (lineSplit[0] == "SNum")
+                    {
+                        SNum = Convert.ToInt32(lineSplit[1]);
+                    }
+                }
+                //obj[nObj - 1] = new TObject(PNum, SNum);
+                TObject tempObj = new TObject(PNum, SNum);
+                sr = new StreamReader(ofd.FileName); // make a variable from the StreamReader Class.
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] lineSplit = line.Split(',');
+                    if (lineSplit[0] == "ObjectName")
+                    {
+                        tempObj.objectName = lineSplit[1];
+                    }
+                    else if (lineSplit[0] == "Point")
+                    {
+                        SetPoint(ref tempObj.P[Convert.ToInt32(lineSplit[1])], Convert.ToDouble(lineSplit[2]), Convert.ToDouble(lineSplit[3]), Convert.ToDouble(lineSplit[4]));
+                    }
+                    else if (lineSplit[0] == "Surface")
+                    {
+                        SetSurface(ref tempObj.S[Convert.ToInt32(lineSplit[1])], Convert.ToInt32(lineSplit[2]), Convert.ToInt32(lineSplit[3]), Convert.ToInt32(lineSplit[4]), Color.FromName(lineSplit[5]));
+                    }
+                }
+                obj.Add(tempObj);
+            }
+            ResetTransM(obj.Count - 1);
+            selectListBox.Items.Add(obj[obj.Count - 1].objectName);
+            Display();
+        }
 
         private void upBtn_Click(object sender, EventArgs e)
         {
