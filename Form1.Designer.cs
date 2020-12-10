@@ -52,6 +52,9 @@
             this.drawRB = new System.Windows.Forms.RadioButton();
             this.warnockRB = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.scanlineRB = new System.Windows.Forms.RadioButton();
+            this.importObjectBtn = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -59,85 +62,91 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.White;
-            this.pictureBox1.Location = new System.Drawing.Point(9, 10);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(768, 416);
+            this.pictureBox1.Size = new System.Drawing.Size(1024, 512);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             // 
             // upBtn
             // 
+            this.upBtn.BackColor = System.Drawing.Color.White;
             this.upBtn.Image = ((System.Drawing.Image)(resources.GetObject("upBtn.Image")));
             this.upBtn.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.upBtn.Location = new System.Drawing.Point(102, 466);
-            this.upBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.upBtn.Location = new System.Drawing.Point(136, 546);
+            this.upBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.upBtn.Name = "upBtn";
-            this.upBtn.Size = new System.Drawing.Size(57, 60);
+            this.upBtn.Size = new System.Drawing.Size(76, 74);
             this.upBtn.TabIndex = 3;
             this.upBtn.Text = "Up(W)";
             this.upBtn.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.upBtn.UseVisualStyleBackColor = true;
+            this.upBtn.UseVisualStyleBackColor = false;
             this.upBtn.Click += new System.EventHandler(this.upBtn_Click);
             // 
             // frontBtn
             // 
-            this.frontBtn.Location = new System.Drawing.Point(35, 495);
-            this.frontBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.frontBtn.BackColor = System.Drawing.Color.White;
+            this.frontBtn.Location = new System.Drawing.Point(47, 581);
+            this.frontBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.frontBtn.Name = "frontBtn";
-            this.frontBtn.Size = new System.Drawing.Size(56, 29);
+            this.frontBtn.Size = new System.Drawing.Size(75, 36);
             this.frontBtn.TabIndex = 4;
             this.frontBtn.Text = "Front(Q)";
-            this.frontBtn.UseVisualStyleBackColor = true;
+            this.frontBtn.UseVisualStyleBackColor = false;
             this.frontBtn.Click += new System.EventHandler(this.frontBtn_Click);
             // 
             // leftBtn
             // 
+            this.leftBtn.BackColor = System.Drawing.Color.White;
             this.leftBtn.Image = ((System.Drawing.Image)(resources.GetObject("leftBtn.Image")));
             this.leftBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.leftBtn.Location = new System.Drawing.Point(9, 534);
-            this.leftBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.leftBtn.Location = new System.Drawing.Point(12, 629);
+            this.leftBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.leftBtn.Name = "leftBtn";
-            this.leftBtn.Size = new System.Drawing.Size(86, 46);
+            this.leftBtn.Size = new System.Drawing.Size(115, 57);
             this.leftBtn.TabIndex = 5;
             this.leftBtn.Text = "Left(A)";
             this.leftBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.leftBtn.UseVisualStyleBackColor = true;
+            this.leftBtn.UseVisualStyleBackColor = false;
             this.leftBtn.Click += new System.EventHandler(this.leftBtn_Click);
             // 
             // rightBtn
             // 
+            this.rightBtn.BackColor = System.Drawing.Color.White;
             this.rightBtn.Image = ((System.Drawing.Image)(resources.GetObject("rightBtn.Image")));
             this.rightBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.rightBtn.Location = new System.Drawing.Point(163, 534);
-            this.rightBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.rightBtn.Location = new System.Drawing.Point(217, 629);
+            this.rightBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.rightBtn.Name = "rightBtn";
-            this.rightBtn.Size = new System.Drawing.Size(86, 46);
+            this.rightBtn.Size = new System.Drawing.Size(115, 57);
             this.rightBtn.TabIndex = 7;
             this.rightBtn.Text = "Right(D)";
             this.rightBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.rightBtn.UseVisualStyleBackColor = true;
+            this.rightBtn.UseVisualStyleBackColor = false;
             this.rightBtn.Click += new System.EventHandler(this.rightBtn_Click);
             // 
             // backBtn
             // 
-            this.backBtn.Location = new System.Drawing.Point(166, 493);
-            this.backBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.backBtn.BackColor = System.Drawing.Color.White;
+            this.backBtn.Location = new System.Drawing.Point(221, 579);
+            this.backBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.backBtn.Name = "backBtn";
-            this.backBtn.Size = new System.Drawing.Size(56, 29);
+            this.backBtn.Size = new System.Drawing.Size(75, 36);
             this.backBtn.TabIndex = 6;
             this.backBtn.Text = "Back(E)";
-            this.backBtn.UseVisualStyleBackColor = true;
+            this.backBtn.UseVisualStyleBackColor = false;
             this.backBtn.Click += new System.EventHandler(this.backBtn_Click);
             // 
             // translateRB
             // 
             this.translateRB.AutoSize = true;
-            this.translateRB.Location = new System.Drawing.Point(15, 610);
-            this.translateRB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.translateRB.Location = new System.Drawing.Point(20, 713);
+            this.translateRB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.translateRB.Name = "translateRB";
-            this.translateRB.Size = new System.Drawing.Size(69, 17);
+            this.translateRB.Size = new System.Drawing.Size(89, 21);
             this.translateRB.TabIndex = 8;
             this.translateRB.TabStop = true;
             this.translateRB.Text = "Translate";
@@ -146,10 +155,10 @@
             // rotateRB
             // 
             this.rotateRB.AutoSize = true;
-            this.rotateRB.Location = new System.Drawing.Point(15, 632);
-            this.rotateRB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.rotateRB.Location = new System.Drawing.Point(20, 740);
+            this.rotateRB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.rotateRB.Name = "rotateRB";
-            this.rotateRB.Size = new System.Drawing.Size(57, 17);
+            this.rotateRB.Size = new System.Drawing.Size(71, 21);
             this.rotateRB.TabIndex = 9;
             this.rotateRB.TabStop = true;
             this.rotateRB.Text = "Rotate";
@@ -158,89 +167,87 @@
             // debugTextBox
             // 
             this.debugTextBox.BackColor = System.Drawing.Color.White;
-            this.debugTextBox.Location = new System.Drawing.Point(782, 10);
-            this.debugTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.debugTextBox.Location = new System.Drawing.Point(1043, 31);
+            this.debugTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.debugTextBox.Multiline = true;
             this.debugTextBox.Name = "debugTextBox";
             this.debugTextBox.ReadOnly = true;
             this.debugTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debugTextBox.Size = new System.Drawing.Size(270, 570);
+            this.debugTextBox.Size = new System.Drawing.Size(292, 781);
             this.debugTextBox.TabIndex = 10;
             // 
             // downBtn
             // 
+            this.downBtn.BackColor = System.Drawing.Color.White;
             this.downBtn.Image = ((System.Drawing.Image)(resources.GetObject("downBtn.Image")));
             this.downBtn.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.downBtn.Location = new System.Drawing.Point(102, 534);
-            this.downBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.downBtn.Location = new System.Drawing.Point(136, 629);
+            this.downBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.downBtn.Name = "downBtn";
-            this.downBtn.Size = new System.Drawing.Size(56, 60);
+            this.downBtn.Size = new System.Drawing.Size(75, 74);
             this.downBtn.TabIndex = 11;
             this.downBtn.Text = "Down(S)";
             this.downBtn.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.downBtn.UseVisualStyleBackColor = true;
+            this.downBtn.UseVisualStyleBackColor = false;
             this.downBtn.Click += new System.EventHandler(this.downBtn_Click);
             // 
             // selectListBox
             // 
             this.selectListBox.FormattingEnabled = true;
-            this.selectListBox.Location = new System.Drawing.Point(281, 466);
-            this.selectListBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.selectListBox.ItemHeight = 16;
+            this.selectListBox.Location = new System.Drawing.Point(375, 546);
+            this.selectListBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.selectListBox.Name = "selectListBox";
-            this.selectListBox.Size = new System.Drawing.Size(170, 121);
+            this.selectListBox.Size = new System.Drawing.Size(225, 148);
             this.selectListBox.TabIndex = 1;
             // 
             // resetBtn
             // 
             this.resetBtn.Image = ((System.Drawing.Image)(resources.GetObject("resetBtn.Image")));
-            this.resetBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.resetBtn.Location = new System.Drawing.Point(15, 664);
-            this.resetBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.resetBtn.Location = new System.Drawing.Point(20, 765);
+            this.resetBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.resetBtn.Name = "resetBtn";
-            this.resetBtn.Size = new System.Drawing.Size(80, 39);
+            this.resetBtn.Size = new System.Drawing.Size(89, 48);
             this.resetBtn.TabIndex = 13;
             this.resetBtn.Text = "Reset";
-            this.resetBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.resetBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.resetBtn.UseVisualStyleBackColor = true;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(282, 450);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(376, 526);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(86, 13);
+            this.label1.Size = new System.Drawing.Size(112, 17);
             this.label1.TabIndex = 14;
             this.label1.Text = "Selected Object:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 450);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(12, 526);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(48, 13);
+            this.label2.Size = new System.Drawing.Size(64, 17);
             this.label2.TabIndex = 15;
             this.label2.Text = "Controls:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(510, 450);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Location = new System.Drawing.Point(911, 526);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(82, 13);
+            this.label3.Size = new System.Drawing.Size(125, 17);
             this.label3.TabIndex = 16;
-            this.label3.Text = "Debug console:";
+            this.label3.Text = "Cursor coordinate:";
             // 
             // frontSurfaceCB
             // 
             this.frontSurfaceCB.AutoSize = true;
-            this.frontSurfaceCB.Location = new System.Drawing.Point(86, 610);
-            this.frontSurfaceCB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.frontSurfaceCB.Location = new System.Drawing.Point(115, 713);
+            this.frontSurfaceCB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.frontSurfaceCB.Name = "frontSurfaceCB";
-            this.frontSurfaceCB.Size = new System.Drawing.Size(112, 17);
+            this.frontSurfaceCB.Size = new System.Drawing.Size(146, 21);
             this.frontSurfaceCB.TabIndex = 17;
             this.frontSurfaceCB.Text = "Front Surface only";
             this.frontSurfaceCB.UseVisualStyleBackColor = true;
@@ -249,10 +256,10 @@
             // filledCB
             // 
             this.filledCB.AutoSize = true;
-            this.filledCB.Location = new System.Drawing.Point(86, 632);
-            this.filledCB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.filledCB.Location = new System.Drawing.Point(115, 740);
+            this.filledCB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.filledCB.Name = "filledCB";
-            this.filledCB.Size = new System.Drawing.Size(50, 17);
+            this.filledCB.Size = new System.Drawing.Size(63, 21);
             this.filledCB.TabIndex = 18;
             this.filledCB.Text = "Filled";
             this.filledCB.UseVisualStyleBackColor = true;
@@ -262,10 +269,9 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label4.Location = new System.Drawing.Point(490, 560);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Location = new System.Drawing.Point(790, 725);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(188, 67);
+            this.label4.Size = new System.Drawing.Size(246, 87);
             this.label4.TabIndex = 19;
             this.label4.Text = "Shortcut keys:\r\n* T - Translate/Rotate toggle\r\n* Up Arrow - Select next object\r\n*" +
     " Down Arrow - Select previous object\r\n\r\n";
@@ -273,30 +279,28 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(487, 491);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Location = new System.Drawing.Point(911, 546);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(35, 13);
+            this.label5.Size = new System.Drawing.Size(30, 17);
             this.label5.TabIndex = 20;
-            this.label5.Text = "label5";
+            this.label5.Text = "x = ";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(487, 509);
-            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Location = new System.Drawing.Point(911, 568);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(35, 13);
+            this.label6.Size = new System.Drawing.Size(31, 17);
             this.label6.TabIndex = 21;
-            this.label6.Text = "label6";
+            this.label6.Text = "y = ";
             // 
             // drawRB
             // 
             this.drawRB.AutoSize = true;
-            this.drawRB.Location = new System.Drawing.Point(4, 17);
-            this.drawRB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.drawRB.Location = new System.Drawing.Point(6, 21);
+            this.drawRB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.drawRB.Name = "drawRB";
-            this.drawRB.Size = new System.Drawing.Size(50, 17);
+            this.drawRB.Size = new System.Drawing.Size(61, 21);
             this.drawRB.TabIndex = 22;
             this.drawRB.TabStop = true;
             this.drawRB.Text = "Draw";
@@ -306,10 +310,10 @@
             // warnockRB
             // 
             this.warnockRB.AutoSize = true;
-            this.warnockRB.Location = new System.Drawing.Point(4, 39);
-            this.warnockRB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.warnockRB.Location = new System.Drawing.Point(6, 47);
+            this.warnockRB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.warnockRB.Name = "warnockRB";
-            this.warnockRB.Size = new System.Drawing.Size(69, 17);
+            this.warnockRB.Size = new System.Drawing.Size(85, 21);
             this.warnockRB.TabIndex = 23;
             this.warnockRB.TabStop = true;
             this.warnockRB.Text = "Warnock";
@@ -318,22 +322,59 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.scanlineRB);
             this.groupBox1.Controls.Add(this.drawRB);
             this.groupBox1.Controls.Add(this.warnockRB);
-            this.groupBox1.Location = new System.Drawing.Point(281, 592);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Location = new System.Drawing.Point(375, 701);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.groupBox1.Size = new System.Drawing.Size(150, 81);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox1.Size = new System.Drawing.Size(200, 111);
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Methods:";
             // 
+            // scanlineRB
+            // 
+            this.scanlineRB.AutoSize = true;
+            this.scanlineRB.Location = new System.Drawing.Point(6, 73);
+            this.scanlineRB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.scanlineRB.Name = "scanlineRB";
+            this.scanlineRB.Size = new System.Drawing.Size(83, 21);
+            this.scanlineRB.TabIndex = 24;
+            this.scanlineRB.TabStop = true;
+            this.scanlineRB.Text = "Scanline";
+            this.scanlineRB.UseVisualStyleBackColor = true;
+            this.scanlineRB.CheckedChanged += new System.EventHandler(this.scanlineRB_CheckedChanged);
+            // 
+            // importObjectBtn
+            // 
+            this.importObjectBtn.Image = ((System.Drawing.Image)(resources.GetObject("importObjectBtn.Image")));
+            this.importObjectBtn.Location = new System.Drawing.Point(606, 546);
+            this.importObjectBtn.Name = "importObjectBtn";
+            this.importObjectBtn.Size = new System.Drawing.Size(124, 39);
+            this.importObjectBtn.TabIndex = 25;
+            this.importObjectBtn.Text = "Import object";
+            this.importObjectBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.importObjectBtn.UseVisualStyleBackColor = true;
+            this.importObjectBtn.Click += new System.EventHandler(this.importObjectBtn_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(1040, 12);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(107, 17);
+            this.label7.TabIndex = 26;
+            this.label7.Text = "Debug console:";
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1028, 714);
+            this.ClientSize = new System.Drawing.Size(1342, 841);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.importObjectBtn);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -356,11 +397,13 @@
             this.Controls.Add(this.upBtn);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "3DCGA-PA15";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -394,6 +437,9 @@
         private System.Windows.Forms.RadioButton drawRB;
         private System.Windows.Forms.RadioButton warnockRB;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button importObjectBtn;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.RadioButton scanlineRB;
     }
 }
 
